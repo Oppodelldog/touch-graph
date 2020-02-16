@@ -1,0 +1,27 @@
+{
+  "name": "touch-graph",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "directories": {
+    "example": "example"
+  },
+  "dependencies": {
+    "@types/d3": "^5.7.2",
+    "d3": "^5.15.0"
+  },
+  "devDependencies": {
+    "awesome-typescript-loader": "^5.2.1",
+    "typescript": "^3.7.5",
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --display-error-details",
+    "start": "webpack-dev-server --open --host 0.0.0.0"
+  },
+  "author": "",
+  "license": "ISC"
+}

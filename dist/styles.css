@@ -1,0 +1,135 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: black;
+    font-family: Verdana, sans-serif;
+    font-size: 14px;
+}
+
+#canvas, .node {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently supported by Chrome, Opera and Firefox */
+}
+
+#canvas {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+#background-canvas {
+    position: absolute;
+    background-color: black;
+    background-image: url("grid.png");
+    background-repeat: repeat;
+    width: 10000px;
+    height: 10000px;
+    transform-origin: left top;
+}
+
+#svg-canvas {
+    position: absolute;
+    background: none;
+    width: 10000px;
+    height: 10000px;
+    transform-origin: left top;
+}
+
+#html-canvas {
+    position: absolute;
+    background: none;
+    width: 10000px;
+    height: 10000px;
+    transform-origin: left top;
+}
+
+.node {
+    padding: 5px;
+    position: absolute;
+    border: 1px solid rgba(45, 35, 164, 0.68);
+    border-radius: 10px;
+    background-color: rgba(178, 212, 222, 0.88);
+    background: linear-gradient(to bottom, #7d7e7dc7 0%, #0e0e0ec2 100%);
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.title {
+    display: block;
+    color: white;
+    font-weight: bold;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #796caad9;
+    width: 100%;
+    text-align: center;
+}
+
+.body {
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.port {
+    width: 14px;
+    height: 14px;
+    border: 1px solid white;
+    border-radius: 50px;
+}
+
+.port-wrapper + .port-wrapper {
+    margin-top: 3px;
+}
+
+.port-caption {
+    color: white;
+}
+
+.port-wrapper {
+    display: flex;
+}
+
+.ports-in .port-wrapper {
+    flex-direction: row;
+    margin-right:5px;
+}
+
+.ports-in .port-caption {
+    margin-left: 5px;
+}
+
+.ports-out .port-wrapper {
+    flex-direction: row-reverse;
+    margin-left:5px;
+}
+
+.ports-out .port-caption {
+    margin-right: 5px;
+}
+
+.ports-in, .ports-out {
+    display: flex;
+    flex-flow: column;
+}
+
+.connection {
+    stroke: #7ee838cf;
+    stroke-width: 4;
+    stroke-linecap:round;
+}
+
+.connection--hovered{
+    stroke: rgba(106, 230, 232, 0.89);
+    stroke-width: 5;
+}

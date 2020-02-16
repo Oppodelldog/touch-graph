@@ -1,11 +1,15 @@
-import {Connection, Node, Nodes, Port, Position} from "./data"
+import {Node} from "./data/Node";
+import {Connection} from "./data/Connection";
+import {Nodes} from "./data/Nodes";
+import {Port} from "./data/Port";
+import {Position} from "./data/Position"
 import {DragPortAction} from "./dragndrop/DragPortAction";
 import {DragNodeAction} from "./dragndrop/DragNodeAction";
 import {DragAction} from "./dragndrop/DragActionInterface";
 import {DragDiagramAction} from "./dragndrop/DragDiagramAction";
 import {DragActions} from "./dragndrop/DragActions";
 import {Controller} from "./Controller";
-import {ApplicationInterface} from "./ApplicationInterface";
+import {GraphInterface} from "./GraphInterface";
 
 export enum PortDirection {
     Unknown = 0,
@@ -13,7 +17,9 @@ export enum PortDirection {
     Output = 2
 }
 
-export class Graph implements ApplicationInterface {
+type CallbackValidateNewConnection = (connection: Connection) => void;
+
+export class Graph implements GraphInterface {
 
     private pinchStart = null;
     private dragActions: DragActions;
@@ -26,6 +32,10 @@ export class Graph implements ApplicationInterface {
             new DragNodeAction(this.controller),
             new DragDiagramAction(this.controller)
         ] as DragAction[])
+    }
+
+    onValidateNewConnection(f: CallbackValidateNewConnection): void {
+        this.controller.onValidateNewConnection = (connection) => f(connection)
     }
 
     public getNodes(): Nodes {
@@ -99,7 +109,7 @@ export class Graph implements ApplicationInterface {
     private registerEvents(): void {
         const theApp = this;
         const canvasElement = this.controller.getCanvasElement();
-        const scale = this.controller.getScale();
+        const theController = this.controller;
 
         if ('ontouchstart' in window || navigator.msMaxTouchPoints) {
             // Touch device
@@ -161,7 +171,7 @@ export class Graph implements ApplicationInterface {
             });
             canvasElement.addEventListener("wheel", function (event) {
                 let factor = (event.deltaY) > 0 ? 1 : -1;
-                let newScale = scale + (0.1 * factor);
+                let newScale = theController.getScale() + (0.1 * factor);
                 if (newScale < 0.1) {
                     newScale = 0.1;
                 }

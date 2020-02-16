@@ -1,3 +1,3 @@
-import {DiagramApplication} from "./app"
+import {Graph} from "./Graph"
 
-export {DiagramApplication}
+export {Graph}

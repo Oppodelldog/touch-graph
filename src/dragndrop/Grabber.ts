@@ -1,4 +1,4 @@
-import {Position} from "./data";
+import {Position} from "../data/Position";
 
 export class Grabber {
     public name: string = "";

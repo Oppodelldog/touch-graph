@@ -1,6 +1,10 @@
-import {Connection, Node, Nodes, Port} from "./data";
+import {Node,} from "./data/Node";
+import {Connection,} from "./data/Connection";
+import {Nodes,} from "./data/Nodes";
+import {Port} from "./data/Port";
 
-export interface ApplicationInterface {
+
+export interface GraphInterface {
 
     getNodes(): Nodes
 

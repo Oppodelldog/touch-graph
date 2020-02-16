@@ -12,8 +12,8 @@
 <script src="touch-graph.js"></script>
 <script type="application/javascript">
 
-    // initialize a new diagram application
-    var app = new touchGraph.DiagramApplication();
+    // initialize a new Graph
+    var graph = new touchGraph.Graph();
 
     // fill some random nodes with random connections
     //  var randomSample = new RandomSample(app);
@@ -21,65 +21,66 @@
     //      randomSample.createNodeWithRandomConnections(i);
     //  }
 
-    n1 = app.createNode();
+    n1 = graph.createNode();
     n1.x = 100;
     n1.y = 200;
     n1.caption = "Root Component";
-    n1p1 = app.createPort();
+    n1p1 = graph.createPort();
     n1p1.caption = "Output 1";
-    n1p2 = app.createPort();
+    n1p2 = graph.createPort();
     n1p2.caption = "Output 2";
-    n1p3 = app.createPort();
+    n1p3 = graph.createPort();
     n1p3.caption = "Output 3";
     n1.addOutPort(n1p1);
     n1.addOutPort(n1p2);
     n1.addOutPort(n1p3);
-    app.addNode(n1);
+    graph.addNode(n1);
 
-    n2 = app.createNode();
+    n2 = graph.createNode();
     n2.x = 500;
     n2.y = 230;
     n2.caption = "Sub Node 1";
-    n2p1 = app.createPort();
+    n2p1 = graph.createPort();
     n2p1.caption = "Input";
     n2.addInPort(n2p1);
-    n2p2 = app.createPort();
+    n2p2 = graph.createPort();
     n2p2.caption = "Output";
     n2.addOutPort(n2p2);
-    app.addNode(n2);
+    graph.addNode(n2);
 
-    n3 = app.createNode();
+    n3 = graph.createNode();
     n3.x = 500;
     n3.y = 330;
     n3.caption = "Sub Node 2";
-    n3p1 = app.createPort();
+    n3p1 = graph.createPort();
     n3p1.caption = "Input";
     n3.addInPort(n3p1);
-    app.addNode(n3);
+    graph.addNode(n3);
 
-    n4 = app.createNode();
+    n4 = graph.createNode();
     n4.x = 600;
     n4.y = 130;
     n4.caption = "Sub Node 3";
-    n4p1 = app.createPort();
+    n4p1 = graph.createPort();
     n4p1.caption = "Input";
     n4.addInPort(n4p1);
-    n4p2 = app.createPort();
+    n4p2 = graph.createPort();
     n4p2.caption = "Input";
     n4.addInPort(n4p2);
-    app.addNode(n4);
+    graph.addNode(n4);
 
-    app.addConnection(app.createConnection(n2.id, n2p1.id, n1.id, n1p1.id));
-    app.addConnection(app.createConnection(n3.id, n3p1.id, n1.id, n1p2.id));
+    graph.addConnection(n2.id, n2p1.id, n1.id, n1p1.id);
+    graph.addConnection(n3.id, n3p1.id, n1.id, n1p2.id);
 
     // custom connection handling, only allow to connect:
     // * only between different nodes
     // * out port with in port
     // * only one connection per port
-    app.onValidateNewConnection = (connection) => {
-        const isDifferentNodes = (connection.from.node !== connection.to.node);
-        const isOppositePortDirection = (app.getPortDirection(connection.from.port) !== app.getPortDirection(connection.to.port));
-        const isZeroConnections = 0 === (app.getNumberOfPortConnections(connection.from.port) + app.getNumberOfPortConnections(connection.to.port));
+    graph.onValidateNewConnection((connection) => {
+        const isDifferentNodes = (connection.from.nodeId !== connection.to.nodeId);
+        const isOppositePortDirection = (graph.getNodes().getPortDirection(connection.from.portId) !== graph.getNodes().getPortDirection(connection.to.portId));
+        const isZeroConnections = 0 === (graph.getNumberOfPortConnections(connection.from.portId) + graph.getNumberOfPortConnections(connection.to.portId));
+
 
         if (!isZeroConnections) {
             console.log("ports must be empty");
@@ -98,10 +99,10 @@
 
         return true;
 
-    };
+    });
 
     // connect event listeners and render
-    app.start();
+    graph.start();
 
 </script>
 </body>

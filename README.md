@@ -2,4 +2,4 @@
 
 Fun project with d3 and typescript
 
-![sample][sample.png]
+![sample](sample.png)

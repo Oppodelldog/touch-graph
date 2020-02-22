@@ -1,0 +1,16 @@
+digraph {
+    "Idle" -> "Node Grabbed" [ label = "Grab Node" ]
+    "Node Grabbed" -> "Idle" [ label = "Release Node" ]
+
+    "Idle" -> "Port Grabbed" [ label = "Grab Port" ]
+    "Port Grabbed" -> "Idle" [ label = "Release Port" ]
+
+    "Idle" -> "Diagram Grabbed" [ label = "Grab Diagram" ]
+    "Diagram Grabbed" -> "Idle" [ label = "Release Diagram" ]
+
+    "Idle" -> "Zooming" [ label = "Use Mousewheel" ]
+    "Zooming" -> "Idle" [ label = "Zoom finished" ]
+
+    "Idle" -> "Adjusting Focus" [ label = "Double Click" ]
+    "Adjusting Focus" -> "Idle" [ label = "Focus adjustment finished" ]
+}

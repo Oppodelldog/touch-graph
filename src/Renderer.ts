@@ -1,7 +1,31 @@
 import d3 = require("d3");
 import {Node} from "./data/Node"
 
-export class Renderer {
+interface RenderInterface {
+    renderNode(node): void
+
+    updateCanvasPosition(x?: number, y?: number): void
+
+    setScale(scale: number): void
+
+    updateNodePos(node: Node): void
+
+    updateLine(connectionId, fromPortId, toPortId, fromNode, toNode): void
+
+    updateGrabLine(x1: number, y1: number, x2: number, y2: number): void
+
+    removeGrabLine(): void
+}
+
+interface ViewInterface {
+    getHoveredNodeId(x: number, y: number): string
+
+    getHoveredPortId(x: number, y: number): string
+
+    isCanvasHovered(x: number, y: number): boolean
+}
+
+export class Renderer implements RenderInterface, ViewInterface {
     private nodeElements = [];
     private canvas;
     public diagramXOffset = 0;
@@ -31,7 +55,7 @@ export class Renderer {
         this.canvasLayersTransforms = {translate: "translate(0,0)", scale: "scale(1)"};
     }
 
-    renderNode(node): void {
+    public renderNode(node): void {
         let div = document.getElementById("#" + node.id);
         if (div) {
             div.parentNode.removeChild(div);
@@ -98,12 +122,11 @@ export class Renderer {
         this.htmlCanvas.appendChild(div);
     }
 
-
-    updateLayerTransforms(): void {
+    private updateLayerTransforms(): void {
         this.canvasLayers.forEach((layer) => layer.style.transform = `${this.canvasLayersTransforms.translate} ${this.canvasLayersTransforms.scale}`);
     }
 
-    updateCanvasPosition(x?: number, y?: number): void {
+    public updateCanvasPosition(x?: number, y?: number): void {
         if (typeof x === "undefined" || typeof y === "undefined") {
             x = this.diagramXOffset;
             y = this.diagramYOffset;
@@ -112,32 +135,32 @@ export class Renderer {
         this.updateLayerTransforms();
     }
 
-    setScale(scale): void {
+    public setScale(scale: number): void {
         this.scale = scale;
         this.canvasLayers.forEach((layer) => this.canvasLayersTransforms.scale = `scale(${scale})`);
         this.updateLayerTransforms();
     }
 
-    private portCenter(v): number {
+    private portCenter(v: number): number {
         return v + this.portRadius + 1;
     }
 
-    private portPosX(v): number {
+    private portPosX(v: number): number {
         return this.portCenter(v);
     }
 
-    private portPosY(v): number {
+    private portPosY(v: number): number {
         return this.portCenter(v);
     }
 
-    updateNodePos(node: Node): void {
+    public updateNodePos(node: Node): void {
         let div = document.getElementById(node.id);
         if (div) {
             div.style.transform = "translate(" + node.x + "px, " + node.y + "px)";
         }
     }
 
-    getHoveredNodeId(x, y): string {
+    public getHoveredNodeId(x: number, y: number): string {
         let touchedNodeId = "";
         this.nodeElements.forEach(nodeElement => {
                 const rect = nodeElement.getBoundingClientRect();
@@ -151,7 +174,7 @@ export class Renderer {
         return touchedNodeId;
     }
 
-    getHoveredPortId(x, y): string {
+    public getHoveredPortId(x: number, y: number): string {
         let touchedPortId = "";
         let touchedNodeId = this.getHoveredNodeId(x, y);
         if (touchedNodeId) {
@@ -168,13 +191,13 @@ export class Renderer {
         return touchedPortId;
     }
 
-    isCanvasHovered(x, y): boolean {
+    public isCanvasHovered(x: number, y: number): boolean {
         const rect = this.canvas.getBoundingClientRect();
         return x >= rect.left && x <= (rect.width + rect.left)
             && y > rect.top && y < (rect.height + rect.top);
     }
 
-    updateLine(connectionId, fromPortId, toPortId, fromNode, toNode): void {
+    public updateLine(connectionId, fromPortId, toPortId, fromNode, toNode): void {
         const portFrom = document.getElementById(fromPortId);
         const portTo = document.getElementById(toPortId);
 
@@ -208,7 +231,7 @@ export class Renderer {
             .attr("d", `M${x1} ${y1} Q${x1} ${y2} ${x2} ${y2}`);
     }
 
-    updateGrabLine(x1, y1, x2, y2): void {
+    public updateGrabLine(x1: number, y1: number, x2: number, y2: number): void {
         const id = "grab-line";
         let path = this.svg.select("#" + id);
         if (path.empty()) {
@@ -222,7 +245,7 @@ export class Renderer {
             .attr("d", `M${x1} ${y1} Q${x1} ${y2} ${x2} ${y2}`);
     }
 
-    removeGrabLine(): void {
+    public removeGrabLine(): void {
         const id = "grab-line";
         this.svg.select("#" + id).remove();
     }

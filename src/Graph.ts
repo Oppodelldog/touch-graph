@@ -3,13 +3,15 @@ import {Connection} from "./data/Connection";
 import {Nodes} from "./data/Nodes";
 import {Port} from "./data/Port";
 import {Position} from "./data/Position"
-import {DragPortAction} from "./dragndrop/DragPortAction";
-import {DragNodeAction} from "./dragndrop/DragNodeAction";
-import {DragAction} from "./dragndrop/DragActionInterface";
-import {DragDiagramAction} from "./dragndrop/DragDiagramAction";
-import {DragActions} from "./dragndrop/DragActions";
 import {Controller} from "./Controller";
 import {GraphInterface} from "./GraphInterface";
+import {Builder} from "./State/Builder";
+import {State, Transition} from "./State/State";
+import {GrabNode, NodeGrabbed, ReleaseNode} from "./Transitions/GrabNode";
+import {GrabPort, PortGrabbed, ReleasePort} from "./Transitions/GrabPort";
+import {DiagramGrabbed, GrabDiagram, ReleaseDiagram} from "./Transitions/GrabDiagram";
+import {UseMousewheel, ZoomFinished, Zooming} from "./Transitions/Zoom";
+import {AdjustingFocus, DoubleClick, FocusAdjustmentFinished} from "./Transitions/FocusElement";
 
 export enum PortDirection {
     Unknown = 0,
@@ -21,17 +23,10 @@ type CallbackValidateNewConnection = (connection: Connection) => void;
 
 export class Graph implements GraphInterface {
 
-    private pinchStart = null;
-    private dragActions: DragActions;
     private readonly controller: Controller;
 
     constructor() {
         this.controller = new Controller();
-        this.dragActions = new DragActions([
-            new DragPortAction(this.controller),
-            new DragNodeAction(this.controller),
-            new DragDiagramAction(this.controller)
-        ] as DragAction[])
     }
 
     onValidateNewConnection(f: CallbackValidateNewConnection): void {
@@ -88,101 +83,69 @@ export class Graph implements GraphInterface {
         this.controller.center(x, y)
     }
 
-    private touchStart(x, y): void {
-        const mousePos = {x: x, y: y} as Position;
-        const diagramPointerPos = this.getDiagramPos(x, y);
-        this.dragActions.start(mousePos, diagramPointerPos);
-    }
-
-    private touchMove(x, y): void {
-        const mousePos = {x: x, y: y} as Position;
-        const diagramPointerPos = this.getDiagramPos(x, y);
-        this.dragActions.move(mousePos, diagramPointerPos);
-    }
-
-    private touchEnd(x, y): void {
-        const mousePos = {x: x, y: y} as Position;
-        const diagramPointerPos = this.getDiagramPos(x, y);
-        this.dragActions.end(mousePos, diagramPointerPos);
-    }
-
     private registerEvents(): void {
         const theApp = this;
         const canvasElement = this.controller.getCanvasElement();
         const theController = this.controller;
 
+        let b = new Builder();
+        let context = b.build(
+            (name: string): State => {
+                switch (name) {
+                    case 'Node Grabbed':
+                        return new NodeGrabbed(name, this.controller);
+                    case 'Port Grabbed':
+                        return new PortGrabbed(name, this.controller);
+                    case 'Diagram Grabbed':
+                        return new DiagramGrabbed(name, this.controller);
+                    case 'Zooming':
+                        return new Zooming(name, this.controller);
+                    case 'Adjusting Focus':
+                        return new AdjustingFocus(name, this.controller);
+                    default:
+                        return new State(name);
+                }
+            },
+            (name: string): Transition => {
+                switch (name) {
+                    case 'Grab Node':
+                        return new GrabNode(name, this.controller);
+                    case 'Release Node':
+                        return new ReleaseNode(name, this.controller);
+                    case 'Grab Port':
+                        return new GrabPort(name, this.controller);
+                    case 'Release Port':
+                        return new ReleasePort(name, this.controller);
+                    case 'Grab Diagram':
+                        return new GrabDiagram(name, this.controller);
+                    case 'Release Diagram':
+                        return new ReleaseDiagram(name, this.controller);
+                    case 'Use Mousewheel':
+                        return new UseMousewheel(name, this.controller);
+                    case 'Zoom finished':
+                        return new ZoomFinished(name);
+                    case 'Double Click':
+                        return new DoubleClick(name, this.controller);
+                    case 'Focus adjustment finished':
+                        return new FocusAdjustmentFinished(name);
+                    default:
+                        throw new Error("unexpected Transition: " + name);
+                }
+            }
+        );
+
         if ('ontouchstart' in window || navigator.msMaxTouchPoints) {
             // Touch device
             canvasElement.addEventListener("touchstart", function (event) {
-                if (event.touches.length === 1) {
-                    const touch = event.touches[0];
-                    theApp.touchStart(touch.clientX, touch.clientY);
-                } else if (event.touches.length === 2) {
-                    if (theApp.pinchStart === null) {
-                        let t1 = event.touches[0];
-                        let t2 = event.touches[1];
-                        theApp.pinchStart = Math.sqrt((t1.clientX - t2.clientX) * (t1.clientX - t2.clientX) + (t1.clientY - t2.clientY) * (t1.clientY - t2.clientY));
-                    } else {
-                        let t1 = event.touches[0];
-                        let t2 = event.touches[1];
-                        const newPinch = Math.sqrt((t1.clientX - t2.clientX) * (t1.clientX - t2.clientX) + (t1.clientY - t2.clientY) * (t1.clientY - t2.clientY));
-                        theApp.setScale((theApp.pinchStart - newPinch) / 100);
-                    }
-                } else {
-                    alert(event.touches.length)
-                }
-                event.preventDefault();
             });
             canvasElement.addEventListener("touchmove", function (event) {
-                const touch = event.touches[0];
-                theApp.touchMove(touch.clientX, touch.clientY);
-                event.preventDefault();
             });
             canvasElement.addEventListener("touchend", function (event) {
-                let touch = Graph.getTouchEndEventTouch(event);
-                if (touch === null) {
-                    throw "could not get touch end position.";
-                }
-
-                theApp.touchEnd(touch.clientX, touch.clientY);
-                event.preventDefault();
             });
             canvasElement.addEventListener("touchcancel", function (event) {
-                let touch = Graph.getTouchEndEventTouch(event);
-                if (touch === null) {
-                    throw "could not get touch end position.";
-                }
-                theApp.touchEnd(touch.clientX, touch.clientY);
-                event.preventDefault();
             });
         } else {
-            // Desktop Device
-            canvasElement.addEventListener("mousedown", function (event) {
-                theApp.touchStart(event.clientX, event.clientY);
-                event.preventDefault();
-            });
-            canvasElement.addEventListener("mousemove", function (event) {
-                theApp.touchMove(event.clientX, event.clientY);
-                event.preventDefault();
-            });
-            canvasElement.addEventListener("mouseup", function (event) {
-                theApp.touchEnd(event.clientX, event.clientY);
-                event.preventDefault();
-            });
-            canvasElement.addEventListener("wheel", function (event) {
-                let factor = (event.deltaY) > 0 ? 1 : -1;
-                let newScale = theController.getScale() + (0.1 * factor);
-                if (newScale < 0.1) {
-                    newScale = 0.1;
-                }
-                theApp.setScale(newScale);
-                event.preventDefault();
-            });
         }
-
-        canvasElement.addEventListener('dblclick', function (event) {
-            theApp.doubleClick(event.clientX, event.clientY);
-        })
     }
 
     private static getTouchEndEventTouch(event) {

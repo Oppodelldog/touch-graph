@@ -75,19 +75,18 @@ export class ReleaseDiagram extends Transition {
         this.mouseUpFunc = this.onMouseUp.bind(this);
     }
 
-    onMouseUp(event) {
+    private onMouseUp(event) {
         this.controller.dragStopDiagram();
-        this.controller.syncOffset();
         (this.originState as DiagramGrabbed).isGrabbed = false;
         this.switchState();
         event.preventDefault();
     }
 
-    activate() {
+    public activate() {
         this.eventHandlerId = this.controller.registerEventHandler(EventType.TouchEnd, this.mouseUpFunc);
     }
 
-    deactivate() {
+    public deactivate() {
         this.controller.removeEventHandler(this.eventHandlerId);
     }
 }

@@ -113,11 +113,7 @@ export class Controller {
         this.nodes.forEach((node) => this.renderer.renderNode(node));
     }
 
-    public updateNodes(): void {
-        this.nodes.forEach((node) => this.renderer.updateNodePos(node));
-    }
-
-    public updateLines(): void {
+    public updateConnection(): void {
         this.connections.forEach((connection) => {
             let fromNode = this.nodes.getNodeById(connection.from.nodeId);
             let toNode = this.nodes.getNodeById(connection.to.nodeId);
@@ -137,8 +133,7 @@ export class Controller {
         this.diagram.xOffset += diagramCanvasRect.width / 2;
         this.diagram.yOffset += diagramCanvasRect.height / 2;
 
-        this.syncOffset();
-        this.renderer.updateCanvasPosition()
+        this.renderer.updateCanvasPosition(this.diagram.xOffset,this.diagram.yOffset)
     }
 
     public center(x: any, y: any) {
@@ -147,11 +142,6 @@ export class Controller {
         if (node !== null) {
             this.moveTo(node.x, node.y);
         }
-    }
-
-    public syncOffset(): void {
-        this.renderer.diagramXOffset = this.diagram.xOffset;
-        this.renderer.diagramYOffset = this.diagram.yOffset;
     }
 
     public getScale(): number {
@@ -175,7 +165,8 @@ export class Controller {
     }
 
     public dragStopDiagram(): void {
-        this.diagram.dragStop()
+        this.diagram.dragStop();
+        this.renderer.updateCanvasPosition(this.diagram.xOffset,this.diagram.yOffset)
     }
 
     public dragMoveDiagram(x: number, y: number): void {
@@ -215,8 +206,7 @@ export class Controller {
 
     public renderAll() {
         this.renderNodes();
-        this.updateNodes();
-        this.updateLines();
+        this.updateConnection();
     }
 
     public selectNode(nodeId: string) {

@@ -30,20 +30,18 @@ interface ViewInterface {
 }
 
 export class Renderer implements RenderInterface, ViewInterface {
-    private nodeElements = [];
     private readonly canvas: HTMLDivElement;
-    public diagramXOffset = 0;
-    public diagramYOffset = 0;
-    private portRadius = 7;
     private readonly backgroundCanvas;
     private readonly svgCanvas;
     private readonly htmlCanvas;
-    private canvasLayers;
-    private svg;
+    private readonly nodeElements = [];
+    private readonly canvasLayers;
+    private readonly svg;
+    private readonly canvasLayersTransforms: { scale: string; translate: string };
+    private readonly viewEvents: ViewEvents;
+    private portRadius = 7;
     public onClickLine;
     private scale = 1;
-    private canvasLayersTransforms: { scale: string; translate: string };
-    private viewEvents: ViewEvents;
 
     constructor(canvas) {
         this.canvas = canvas;
@@ -99,6 +97,8 @@ export class Renderer implements RenderInterface, ViewInterface {
 
         this.nodeElements.push(div);
         this.htmlCanvas.appendChild(div);
+
+        this.updateNodePos(node);
     }
 
     private createNodePorts(ports) {
@@ -126,11 +126,7 @@ export class Renderer implements RenderInterface, ViewInterface {
         this.canvasLayers.forEach((layer) => layer.style.transform = `${this.canvasLayersTransforms.translate} ${this.canvasLayersTransforms.scale}`);
     }
 
-    public updateCanvasPosition(x?: number, y?: number): void {
-        if (typeof x === "undefined" || typeof y === "undefined") {
-            x = this.diagramXOffset;
-            y = this.diagramYOffset;
-        }
+    public updateCanvasPosition(x: number, y: number): void {
         this.canvasLayersTransforms.translate = `translate(${x}px,${y}px)`;
         this.updateLayerTransforms();
     }

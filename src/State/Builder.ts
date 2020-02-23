@@ -40,7 +40,7 @@ export class Builder {
             }
             transition.targetState = to;
             from.transitions.push(transition);
-            transition.state = from;
+            transition.originState = from;
 
             if (configItem.StateFrom === IdleStateName) {
                 idle = from;

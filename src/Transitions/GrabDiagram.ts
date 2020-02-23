@@ -78,7 +78,7 @@ export class ReleaseDiagram extends Transition {
     onMouseUp(event, touchInputPos: Position, diagramInputPos: Position) {
         this.controller.dragStopDiagram();
         this.controller.syncOffset();
-        (this.state as DiagramGrabbed).isGrabbed = false;
+        (this.originState as DiagramGrabbed).isGrabbed = false;
         this.switchState();
         event.preventDefault();
     }

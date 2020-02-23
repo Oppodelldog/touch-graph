@@ -6,8 +6,11 @@ export enum EventType {
     TouchStart,
     TouchMove,
     TouchEnd,
+    Click,
     DoubleClick,
     Wheel,
+    KeyDown,
+    KeyUp,
 }
 
 interface EventCallbackRegistration {
@@ -21,12 +24,12 @@ type EventNamesByType = {
     [key in EventType]: string;
 };
 
-export class ViewEvents{
+export class ViewEvents {
     private eventCallbacks: EventCallbackRegistration[] = [] as EventCallbackRegistration[];
-    private canvas:HTMLDivElement;
-    private renderer:Renderer;
+    private canvas: HTMLDivElement;
+    private renderer: Renderer;
 
-    constructor(canvas:HTMLDivElement,renderer:Renderer) {
+    constructor(canvas: HTMLDivElement, renderer: Renderer) {
         this.canvas = canvas;
         this.renderer = renderer;
     }
@@ -56,8 +59,11 @@ export class ViewEvents{
             case EventType.TouchStart:
             case EventType.TouchMove:
             case EventType.TouchEnd:
+            case EventType.Click:
             case EventType.DoubleClick:
             case EventType.Wheel:
+            case EventType.KeyDown:
+            case EventType.KeyUp:
                 return (event) => {
                     const touchInputPos = this.getTouchInputPos(event);
                     const diagramInputPos = this.renderer.getDiagramPos(touchInputPos.x, touchInputPos.y);
@@ -73,6 +79,9 @@ export class ViewEvents{
             [EventType.TouchEnd]: "mouseup",
             [EventType.Wheel]: "wheel",
             [EventType.DoubleClick]: "dblclick",
+            [EventType.Click]: "click",
+            [EventType.KeyDown]: "keydown",
+            [EventType.KeyUp]: "keyup",
         } as EventNamesByType;
 
         let touch = {
@@ -95,15 +104,25 @@ export class ViewEvents{
             Callback: wrappedCallback
         } as EventCallbackRegistration;
 
-        this.canvas.addEventListener(eventName, wrappedCallback);
+        let eventTarget = this.getEventTarget(eventName);
+
+        eventTarget.addEventListener(eventName, wrappedCallback);
 
         return id
+    }
+
+    private getEventTarget(eventName: string) {
+        if (eventName === "keyup" || eventName === "keydown") {
+            return window;
+        }
+        return this.canvas;
     }
 
     public removeEventHandler(id: string) {
         let eventName = this.eventCallbacks[id].EventName;
         let callback = this.eventCallbacks[id].Callback;
-        this.canvas.removeEventListener(eventName, callback);
+        let eventTarget = this.getEventTarget(eventName);
+        eventTarget.removeEventListener(eventName, callback);
         delete this.eventCallbacks[id];
     }
 

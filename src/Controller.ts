@@ -9,6 +9,7 @@ import UUID from "./UUID";
 import {Renderer} from "./Renderer";
 import {EventCallback, EventType} from "./ViewEvents";
 
+
 export class Controller {
     public onValidateNewConnection = null;
     private connections: Connections;
@@ -17,6 +18,7 @@ export class Controller {
     private renderer: Renderer;
     private diagram: Diagram;
     private scale = 1;
+    private selectedNodes: string[];
 
     constructor() {
         this.canvasElement = document.getElementById("canvas");
@@ -27,6 +29,7 @@ export class Controller {
         this.renderer.onClickLine = (connectionId) => {
             this.connections.remove(connectionId);
         };
+        this.selectedNodes = [];
     }
 
     public getCanvasElement() {
@@ -194,7 +197,7 @@ export class Controller {
         return this.renderer.getHoveredNodeId(x, y);
     }
 
-    getNodeById(nodeId: string) {
+    getNodeById(nodeId: string): Node | null {
         return this.nodes.getNodeById(nodeId);
     }
 
@@ -212,5 +215,30 @@ export class Controller {
         this.renderNodes();
         this.updateNodes();
         this.updateLines();
+    }
+
+    selectNode(nodeId: string) {
+        this.selectedNodes.push(nodeId);
+        this.renderer.updateNodeSelection(nodeId, this.isNodeSelected(nodeId))
+    }
+
+    deselectNode(nodeId: string) {
+        if (!this.isNodeSelected(nodeId)) {
+            return;
+        }
+        let index = this.selectedNodes.indexOf(nodeId);
+        if (index >= 0) {
+            this.selectedNodes.splice(index, 1)
+        }
+        this.renderer.updateNodeSelection(nodeId, this.isNodeSelected(nodeId))
+    }
+
+    removeSelectedNodeKeepLatest() {
+        this.selectedNodes.splice(0, this.selectedNodes.length - 1);
+        this.nodes.forEach((node) => this.renderer.updateNodeSelection(node.id, this.isNodeSelected(node.id)));
+    }
+
+    isNodeSelected(nodeId: string) {
+        return this.selectedNodes.indexOf(nodeId) >= 0;
     }
 }

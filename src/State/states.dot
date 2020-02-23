@@ -13,4 +13,12 @@ digraph {
 
     "Idle" -> "Adjusting Focus" [ label = "Double Click" ]
     "Adjusting Focus" -> "Idle" [ label = "Focus adjustment finished" ]
+
+    "Idle" -> "Selecting Nodes" [ label = "Select Node" ]
+    "Selecting Nodes" -> "Idle" [ label = "Single Selection Return" ]
+
+    "Idle" -> "Selecting multiple Nodes" [ label = "Turn on multi selection" ]
+    "Selecting multiple Nodes" -> "Selecting multiple Nodes" [ label = "Select one more Node" ]
+    "Selecting multiple Nodes" -> "Selecting multiple Nodes" [ label = "Deselect one Node" ]
+    "Selecting multiple Nodes" -> "Idle" [ label = "Turn off multi selection" ]
 }

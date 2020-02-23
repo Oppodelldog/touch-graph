@@ -12,6 +12,8 @@ interface RenderInterface {
 
     updateNodePos(node: Node): void
 
+    updateNodeSelection(nodeId:string, selected:boolean): void
+
     updateLine(connectionId, fromPortId, toPortId, fromNode, toNode): void
 
     updateGrabLine(x1: number, y1: number, x2: number, y2: number): void
@@ -256,5 +258,17 @@ export class Renderer implements RenderInterface, ViewInterface {
 
     public removeEventHandler(id: string) {
         return this.viewEvents.removeEventHandler(id);
+    }
+
+    updateNodeSelection(nodeId:string, selected:boolean): void {
+        let div = document.getElementById(nodeId);
+        if (div) {
+            const classNameSelected = "node--selected";
+            const classNameUnselected = "node--unselected";
+            const className = (selected) ? classNameSelected : classNameUnselected;
+            div.classList.remove(classNameSelected, classNameUnselected);
+            div.classList.add(className)
+
+        }
     }
 }

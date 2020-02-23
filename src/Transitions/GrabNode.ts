@@ -84,7 +84,7 @@ export class ReleaseNode extends Transition {
     }
 
     onMouseUp(event) {
-        (this.state as NodeGrabbed).grabber.release();
+        (this.originState as NodeGrabbed).grabber.release();
         this.switchState();
         event.preventDefault();
     }

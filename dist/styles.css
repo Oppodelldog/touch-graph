@@ -63,6 +63,10 @@ body {
     cursor: pointer;
 }
 
+.node.node--selected {
+    border: 1px solid rgba(35, 164, 37, 0.68);
+}
+
 .title {
     display: block;
     color: white;
@@ -102,7 +106,7 @@ body {
 
 .ports-in .port-wrapper {
     flex-direction: row;
-    margin-right:5px;
+    margin-right: 5px;
 }
 
 .ports-in .port-caption {
@@ -111,7 +115,7 @@ body {
 
 .ports-out .port-wrapper {
     flex-direction: row-reverse;
-    margin-left:5px;
+    margin-left: 5px;
 }
 
 .ports-out .port-caption {
@@ -126,10 +130,10 @@ body {
 .connection {
     stroke: #7ee838cf;
     stroke-width: 4;
-    stroke-linecap:round;
+    stroke-linecap: round;
 }
 
-.connection--hovered{
+.connection--hovered {
     stroke: rgba(106, 230, 232, 0.89);
     stroke-width: 5;
 }

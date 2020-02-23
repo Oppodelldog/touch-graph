@@ -39,7 +39,7 @@ export class State implements Activateable {
 }
 
 export abstract class Transition implements Activateable {
-    state: State;
+    originState: State;
     targetState: State;
     private name: string;
 
@@ -48,7 +48,7 @@ export abstract class Transition implements Activateable {
     }
 
     switchState() {
-        this.state.switchState(this.targetState)
+        this.originState.switchState(this.targetState)
     }
 
     activate() {

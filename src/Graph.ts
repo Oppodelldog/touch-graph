@@ -12,6 +12,16 @@ import {GrabPort, PortGrabbed, ReleasePort} from "./Transitions/GrabPort";
 import {DiagramGrabbed, GrabDiagram, ReleaseDiagram} from "./Transitions/GrabDiagram";
 import {UseMousewheel, ZoomFinished, Zooming} from "./Transitions/Zoom";
 import {AdjustingFocus, DoubleClick, FocusAdjustmentFinished} from "./Transitions/FocusElement";
+import {
+    DeSelectNode,
+    SelectingNodes,
+    SelectNode,
+    SelectOneMoreNode,
+    SingleSelectionReturn,
+    TurnOffMultiNodeSelectionMode,
+    TurnOnMultiNodeSelectionMode
+} from "./Transitions/SelectNode";
+import {Idle} from "./Transitions/Idle";
 
 export enum PortDirection {
     Unknown = 0,
@@ -84,12 +94,11 @@ export class Graph implements GraphInterface {
     }
 
     private initStates(): void {
-        const canvasElement = this.controller.getCanvasElement();
-
-        let b = new Builder();
-        let context = b.build(
+        new Builder().build(
             (name: string): State => {
                 switch (name) {
+                    case 'Idle':
+                        return new Idle(name, this.controller);
                     case 'Node Grabbed':
                         return new NodeGrabbed(name, this.controller);
                     case 'Port Grabbed':
@@ -100,8 +109,12 @@ export class Graph implements GraphInterface {
                         return new Zooming(name, this.controller);
                     case 'Adjusting Focus':
                         return new AdjustingFocus(name, this.controller);
+                    case 'Selecting Nodes':
+                        return new SelectingNodes(name);
+                    case 'Selecting multiple Nodes':
+                        return new SelectingNodes(name);
                     default:
-                        return new State(name);
+                        throw new Error("undefined State: " + name);
                 }
             },
             (name: string): Transition => {
@@ -126,8 +139,20 @@ export class Graph implements GraphInterface {
                         return new DoubleClick(name, this.controller);
                     case 'Focus adjustment finished':
                         return new FocusAdjustmentFinished(name, this.controller);
+                    case 'Select Node':
+                        return new SelectNode(name, this.controller);
+                    case 'Single Selection Return':
+                        return new SingleSelectionReturn(name, this.controller);
+                    case 'Select one more Node':
+                        return new SelectOneMoreNode(name, this.controller);
+                    case 'Deselect one Node':
+                        return new DeSelectNode(name, this.controller);
+                    case 'Turn on multi selection':
+                        return new TurnOnMultiNodeSelectionMode(name, this.controller);
+                    case 'Turn off multi selection':
+                        return new TurnOffMultiNodeSelectionMode(name, this.controller);
                     default:
-                        throw new Error("unexpected Transition: " + name);
+                        throw new Error("undefined Transition: " + name);
                 }
             }
         );

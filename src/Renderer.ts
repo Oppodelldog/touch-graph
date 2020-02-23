@@ -12,7 +12,7 @@ interface RenderInterface {
 
     updateNodePos(node: Node): void
 
-    updateNodeSelection(nodeId:string, selected:boolean): void
+    updateNodeSelection(nodeId: string, selected: boolean): void
 
     updateLine(connectionId, fromPortId, toPortId, fromNode, toNode): void
 
@@ -260,7 +260,7 @@ export class Renderer implements RenderInterface, ViewInterface {
         return this.viewEvents.removeEventHandler(id);
     }
 
-    updateNodeSelection(nodeId:string, selected:boolean): void {
+    updateNodeSelection(nodeId: string, selected: boolean): void {
         let div = document.getElementById(nodeId);
         if (div) {
             const classNameSelected = "node--selected";
@@ -270,5 +270,17 @@ export class Renderer implements RenderInterface, ViewInterface {
             div.classList.add(className)
 
         }
+    }
+
+    removeNode(nodeId: string) {
+        let div = document.getElementById(nodeId);
+        if (div) {
+            div.parentElement.removeChild(div);
+        }
+    }
+
+    removeConnection(connectionId: string) {
+        const id = "p_" + connectionId;
+        this.svg.select("#" + id).remove();
     }
 }

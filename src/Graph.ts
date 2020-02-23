@@ -22,6 +22,7 @@ import {
     TurnOnMultiNodeSelectionMode
 } from "./Transitions/SelectNode";
 import {Idle} from "./Transitions/Idle";
+import {DeleteNodes, DeletingNodes, NodesDeleted} from "./Transitions/DeleteNodes";
 
 export enum PortDirection {
     Unknown = 0,
@@ -113,6 +114,8 @@ export class Graph implements GraphInterface {
                         return new SelectingNodes(name);
                     case 'Selecting multiple Nodes':
                         return new SelectingNodes(name);
+                    case 'Deleting Selected Nodes':
+                        return new DeletingNodes(name);
                     default:
                         throw new Error("undefined State: " + name);
                 }
@@ -151,6 +154,10 @@ export class Graph implements GraphInterface {
                         return new TurnOnMultiNodeSelectionMode(name, this.controller);
                     case 'Turn off multi selection':
                         return new TurnOffMultiNodeSelectionMode(name, this.controller);
+                    case 'Delete Nodes':
+                        return new DeleteNodes(name, this.controller);
+                    case 'Nodes Deleted':
+                        return new NodesDeleted(name, this.controller);
                     default:
                         throw new Error("undefined Transition: " + name);
                 }

@@ -9,7 +9,6 @@ import UUID from "./UUID";
 import {Renderer} from "./Renderer";
 import {EventCallback, EventType} from "./ViewEvents";
 
-
 export class Controller {
     public onValidateNewConnection = null;
     private connections: Connections;
@@ -240,5 +239,17 @@ export class Controller {
 
     isNodeSelected(nodeId: string) {
         return this.selectedNodes.indexOf(nodeId) >= 0;
+    }
+
+    deleteSelectedNodes() {
+        this.selectedNodes.forEach((nodeId) => {
+            this.nodes.remove(nodeId);
+            this.connections.getByNodeId(nodeId).forEach((connection) => {
+                this.connections.remove(connection.id);
+                this.renderer.removeConnection(connection.id);
+            });
+
+            this.renderer.removeNode(nodeId);
+        })
     }
 }

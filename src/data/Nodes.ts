@@ -54,4 +54,14 @@ export class Nodes {
     getAll(): Node[] {
         return this.nodes
     }
+
+    remove(nodeId: string) {
+        let node = this.getNodeById(nodeId);
+        if (node !== null) {
+            let index = this.nodes.indexOf(node);
+            this.nodes.splice(index, 1)
+        } else {
+            throw new Error("node not found:" + nodeId)
+        }
+    }
 }

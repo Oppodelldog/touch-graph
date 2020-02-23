@@ -21,4 +21,7 @@ digraph {
     "Selecting multiple Nodes" -> "Selecting multiple Nodes" [ label = "Select one more Node" ]
     "Selecting multiple Nodes" -> "Selecting multiple Nodes" [ label = "Deselect one Node" ]
     "Selecting multiple Nodes" -> "Idle" [ label = "Turn off multi selection" ]
+
+    "Idle" -> "Deleting Selected Nodes" [ label = "Delete Nodes" ]
+    "Deleting Selected Nodes" -> "Idle" [ label = "Nodes Deleted" ]
 }

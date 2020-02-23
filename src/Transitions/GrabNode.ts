@@ -5,7 +5,6 @@ import {Grabber} from "./Grabber";
 import Node from "../data/Node";
 import {EventCallback, EventType} from "../ViewEvents";
 
-
 export class NodeGrabbed extends State {
     public grabber: Grabber;
     private controller: Controller;

@@ -7,7 +7,7 @@ export interface ConfigItem {
 }
 
 export class Config {
-    load(): ConfigItem[] {
+    public load(): ConfigItem[] {
         let configItems = [] as ConfigItem[];
         const configString = statesDotFile;
         const regex = /(?<FromState>"*[a-zA-Z ]*"*)\s*->\s*(?<ToState>"*[a-zA-Z ]*"*)\s*\[\s*label\s*=\s*(?<Transition>"*[a-zA-Z ]*"*)\s*]/gm;

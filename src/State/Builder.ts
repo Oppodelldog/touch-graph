@@ -7,7 +7,7 @@ export type createStateCallback = (name: String) => State;
 export type createTransitionCallback = (name: String) => Transition;
 
 export class Builder {
-    build(createState: createStateCallback, createTransition: createTransitionCallback): Context {
+    public build(createState: createStateCallback, createTransition: createTransitionCallback): Context {
         let context = new Context();
         let config = new Config();
         let configItems = config.load();

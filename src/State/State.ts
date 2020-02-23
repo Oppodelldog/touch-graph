@@ -6,9 +6,12 @@ export interface Activateable {
 
 export class Context {
     state: State;
+    debug: boolean;
 
     switchState(s: State) {
-        console.log("switch state from", this.state.name, "to", s.name);
+        if (this.debug) {
+            console.log("switch state from", this.state.name, "to", s.name);
+        }
         this.state.deactivate();
         this.state = s;
         this.state.activate();

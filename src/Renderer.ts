@@ -3,7 +3,7 @@ import Node from "./data/Node"
 import {Position} from "./data/Position";
 import {EventCallback, EventType, ViewEvents} from "./ViewEvents";
 
-interface RenderInterface {
+export interface RenderInterface {
     renderNode(node): void
 
     updateCanvasPosition(x?: number, y?: number): void
@@ -19,17 +19,28 @@ interface RenderInterface {
     updateGrabLine(x1: number, y1: number, x2: number, y2: number): void
 
     removeGrabLine(): void
+
+    removeConnection(connectionId: string): void;
+
+    removeNode(nodeId: string): void;
 }
 
-interface ViewInterface {
+export interface ViewInterface {
     getHoveredNodeId(x: number, y: number): string
 
     getHoveredPortId(x: number, y: number): string
 
     isCanvasHovered(x: number, y: number): boolean
+
+    registerEventHandler(eventType: EventType, callback: EventCallback)
+
+    removeEventHandler(id: string)
+
+    onClickLine(f: (connectionId) => void): void;
 }
 
 export class Renderer implements RenderInterface, ViewInterface {
+
     private readonly canvas: HTMLDivElement;
     private readonly backgroundCanvas;
     private readonly svgCanvas;
@@ -40,8 +51,8 @@ export class Renderer implements RenderInterface, ViewInterface {
     private readonly canvasLayersTransforms: { scale: string; translate: string };
     private readonly viewEvents: ViewEvents;
     private portRadius = 7;
-    public onClickLine;
     private scale = 1;
+    private _onClickLine: (connectionId: any) => void = () => void {};
 
     constructor(canvas) {
         this.canvas = canvas;
@@ -57,6 +68,10 @@ export class Renderer implements RenderInterface, ViewInterface {
         this.canvasLayersTransforms = {translate: "translate(0,0)", scale: "scale(1)"};
 
         this.viewEvents = new ViewEvents(this.canvas, this);
+    }
+
+    public onClickLine(f: (connectionId: any) => void): void {
+        this._onClickLine = f;
     }
 
     private static addDivElement(id: string, type: string, canvasElement) {
@@ -209,9 +224,7 @@ export class Renderer implements RenderInterface, ViewInterface {
                 d3.select(this).attr("class", "connection");
             })
             .on("click", function () {
-                if (theRenderer.onClickLine) {
-                    theRenderer.onClickLine(connectionId);
-                }
+                theRenderer._onClickLine(connectionId);
                 d3.select(this).remove();
             })
             .attr("stroke-width", "2")

@@ -5,7 +5,7 @@ import {Connection} from "./data/Connection";
 import {Connections} from "./data/Connections";
 import {Diagram} from "./data/Diagram";
 import UUID from "./UUID";
-import {Renderer} from "./Renderer";
+import {Renderer, RenderInterface, ViewInterface} from "./Renderer";
 import {EventCallback, EventType} from "./ViewEvents";
 
 const canvasElementId = "touch-graph";
@@ -18,7 +18,8 @@ export class Controller {
 
     private readonly connections: Connections;
     private readonly nodes: Nodes;
-    private readonly renderer: Renderer;
+    private readonly renderer: RenderInterface;
+    private readonly view: ViewInterface;
     private readonly diagram: Diagram;
     private readonly selectedNodes: string[];
     private readonly canvasElement: HTMLElement;
@@ -32,10 +33,12 @@ export class Controller {
         this.diagram = new Diagram();
         this.nodes = new Nodes();
         this.connections = new Connections();
-        this.renderer = new Renderer(this.canvasElement);
-        this.renderer.onClickLine = (connectionId) => {
+        const renderer = new Renderer(this.canvasElement);
+        this.renderer = renderer;
+        this.view = renderer;
+        this.view.onClickLine((connectionId) => {
             this.connections.remove(connectionId);
-        };
+        });
         this.selectedNodes = [];
     }
 
@@ -50,11 +53,11 @@ export class Controller {
     }
 
     public registerEventHandler(eventType: EventType, callback: EventCallback): string {
-        return this.renderer.registerEventHandler(eventType, callback);
+        return this.view.registerEventHandler(eventType, callback);
     }
 
     public removeEventHandler(id: string) {
-        this.renderer.removeEventHandler(id);
+        this.view.removeEventHandler(id);
     }
 
     public getNumberOfPortConnections(portId): number {
@@ -137,7 +140,7 @@ export class Controller {
     }
 
     public center(x: any, y: any) {
-        let nodeId = this.renderer.getHoveredNodeId(x, y);
+        let nodeId = this.view.getHoveredNodeId(x, y);
         let node = this.nodes.getNodeById(nodeId);
         if (node !== null) {
             this.moveTo(node.x, node.y);
@@ -149,7 +152,7 @@ export class Controller {
     }
 
     public getHoveredPortId(x: number, y: number): string {
-        return this.renderer.getHoveredPortId(x, y);
+        return this.view.getHoveredPortId(x, y);
     }
 
     public updateGrabLine(x: number, y: number, x2: number, y2: number): void {
@@ -179,7 +182,7 @@ export class Controller {
     }
 
     public isCanvasHovered(x: number, y: number): boolean {
-        return this.renderer.isCanvasHovered(x, y);
+        return this.view.isCanvasHovered(x, y);
     }
 
     public dragStartDiagram(x: number, y: number): void {
@@ -187,7 +190,7 @@ export class Controller {
     }
 
     public getHoveredNodeId(x: number, y: number): string {
-        return this.renderer.getHoveredNodeId(x, y);
+        return this.view.getHoveredNodeId(x, y);
     }
 
     public getNodeById(nodeId: string): Node | null {

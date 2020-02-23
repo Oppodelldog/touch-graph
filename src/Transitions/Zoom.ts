@@ -12,13 +12,9 @@ export class Zooming extends State {
         this.controller = controller;
     }
 
-    activate() {
+    public activate() {
         this.controller.setScale(this.targetScale);
         super.activate();
-    }
-
-    deactivate() {
-        super.deactivate();
     }
 }
 
@@ -33,7 +29,7 @@ export class UseMousewheel extends Transition {
         this.wheelFunc = this.wheel.bind(this)
     }
 
-    wheel(event) {
+    private wheel(event) {
         let factor = (event.deltaY) > 0 ? 1 : -1;
         let currentScale = this.controller.getScale();
         let newScale = currentScale + (0.1 * factor);
@@ -47,11 +43,11 @@ export class UseMousewheel extends Transition {
         event.preventDefault();
     };
 
-    activate() {
+    public activate() {
         this.eventHandlerId = this.controller.registerEventHandler(EventType.Wheel, this.wheelFunc);
     }
 
-    deactivate() {
+    public deactivate() {
         this.controller.removeEventHandler(this.eventHandlerId);
     }
 }
@@ -64,10 +60,7 @@ export class ZoomFinished extends Transition {
         this.controller = controller;
     }
 
-    activate() {
+    public activate() {
         this.switchState();
-    }
-
-    deactivate() {
     }
 }

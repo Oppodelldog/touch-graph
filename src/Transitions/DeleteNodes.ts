@@ -16,17 +16,17 @@ export class DeleteNodes extends Transition {
         this.keyUpFunc = this.onKeyUp.bind(this)
     }
 
-    onKeyUp(event) {
+    private onKeyUp(event) {
         if (event.key == "Delete") {
             this.controller.deleteSelectedNodes()
         }
     }
 
-    activate() {
+    public activate() {
         this.eventHandlerId = this.controller.registerEventHandler(EventType.KeyUp, this.keyUpFunc)
     }
 
-    deactivate() {
+    public deactivate() {
         this.controller.removeEventHandler(this.eventHandlerId);
     }
 }
@@ -36,7 +36,7 @@ export class NodesDeleted extends Transition {
         super(name);
     }
 
-    activate() {
+    public activate() {
         this.switchState();
     }
 }

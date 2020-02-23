@@ -19,7 +19,7 @@ export class NodeGrabbed extends State {
         this.mouseMoveFunc = this.onMouseMove.bind(this)
     }
 
-    onMouseMove(event, touchInputPos: Position, diagramInputPos: Position) {
+    private onMouseMove(event, touchInputPos: Position, diagramInputPos: Position) {
         this.grabber.setObjectPos(diagramInputPos.x, diagramInputPos.y);
         const node = this.grabber.getObject() as Node;
         this.controller.updateNodePos(node);
@@ -27,12 +27,12 @@ export class NodeGrabbed extends State {
         event.preventDefault();
     }
 
-    activate() {
+    public activate() {
         super.activate();
         this.eventHandlerId = this.controller.registerEventHandler(EventType.TouchMove, this.mouseMoveFunc);
     }
 
-    deactivate() {
+    public  deactivate() {
         super.deactivate();
         this.controller.removeEventHandler(this.eventHandlerId);
     }
@@ -49,7 +49,7 @@ export class GrabNode extends Transition {
         this.mouseDownFunc = this.onMouseDown.bind(this)
     }
 
-    onMouseDown(event, touchInputPos: Position, diagramInputPos: Position) {
+   private onMouseDown(event, touchInputPos: Position, diagramInputPos: Position) {
         let hoveredNodeId = this.controller.getHoveredNodeId(touchInputPos.x, touchInputPos.y);
         const hoveredPortId = this.controller.getHoveredPortId(touchInputPos.x, touchInputPos.y);
         if (hoveredPortId !== "") {
@@ -63,11 +63,11 @@ export class GrabNode extends Transition {
         event.preventDefault();
     };
 
-    activate() {
+    public  activate() {
         this.eventHandlerId = this.controller.registerEventHandler(EventType.TouchStart, this.mouseDownFunc);
     }
 
-    deactivate() {
+    public  deactivate() {
         this.controller.removeEventHandler(this.eventHandlerId);
     }
 }
@@ -83,17 +83,17 @@ export class ReleaseNode extends Transition {
         this.mouseUpFunc = this.onMouseUp.bind(this);
     }
 
-    onMouseUp(event) {
+    private onMouseUp(event) {
         (this.originState as NodeGrabbed).grabber.release();
         this.switchState();
         event.preventDefault();
     }
 
-    activate() {
+    public activate() {
         this.eventHandlerId = this.controller.registerEventHandler(EventType.TouchEnd, this.mouseUpFunc);
     }
 
-    deactivate() {
+    public deactivate() {
         this.controller.removeEventHandler(this.eventHandlerId);
     }
 }

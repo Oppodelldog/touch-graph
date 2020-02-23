@@ -44,19 +44,19 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
         this.controller = new Controller();
     }
 
-    onValidateNewConnection(f: CallbackValidateNewConnection): void {
+    public onValidateNewConnection(f: CallbackValidateNewConnection): void {
         this.controller.onValidateNewConnection = (connection) => f(connection)
     }
 
-    onNewNode(f: CallbackNewNode): void {
+    public onNewNode(f: CallbackNewNode): void {
         this.controller.onNewNode = (node) => f(node)
     }
 
-    onRemoveNode(f: CallbackRemoveNode): void {
+    public onRemoveNode(f: CallbackRemoveNode): void {
         this.controller.onRemoveNode = (node) => f(node)
     }
 
-    onNewConnection(f: CallbackNewConnection): void {
+    public onNewConnection(f: CallbackNewConnection): void {
         this.controller.onNewConnection = (node) => f(node)
     }
 
@@ -172,5 +172,4 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
             }
         );
     }
-
 }

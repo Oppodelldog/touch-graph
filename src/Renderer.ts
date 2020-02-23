@@ -250,14 +250,14 @@ export class Renderer implements RenderInterface, ViewInterface {
         this.svg.select("#" + id).remove();
     }
 
-    getDiagramPos(viewX: any, viewY: any): Position {
+    public getDiagramPos(viewX: any, viewY: any): Position {
         const diagramCanvasRect = this.htmlCanvas.getBoundingClientRect();
         const diagramX = viewX - diagramCanvasRect.x;
         const diagramY = viewY - diagramCanvasRect.y;
         return {x: diagramX / this.scale, y: diagramY / this.scale} as Position;
     }
 
-    registerEventHandler(eventType: EventType, callback: EventCallback): string {
+    public registerEventHandler(eventType: EventType, callback: EventCallback): string {
         return this.viewEvents.registerEventHandler(eventType, callback);
     }
 
@@ -265,7 +265,7 @@ export class Renderer implements RenderInterface, ViewInterface {
         return this.viewEvents.removeEventHandler(id);
     }
 
-    updateNodeSelection(nodeId: string, selected: boolean): void {
+    public updateNodeSelection(nodeId: string, selected: boolean): void {
         let div = document.getElementById(nodeId);
         if (div) {
             const classNameSelected = "node--selected";
@@ -276,17 +276,15 @@ export class Renderer implements RenderInterface, ViewInterface {
         }
     }
 
-    removeNode(nodeId: string) {
+    public removeNode(nodeId: string) {
         let div = document.getElementById(nodeId);
         if (div) {
             div.parentElement.removeChild(div);
         }
     }
 
-    removeConnection(connectionId: string) {
+    public removeConnection(connectionId: string) {
         const id = "p_" + connectionId;
         this.svg.select("#" + id).remove();
     }
-
-
 }

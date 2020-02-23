@@ -79,7 +79,7 @@ export class DeSelectNode extends Transition {
         this.clickFunc = this.onClick.bind(this)
     }
 
-    onClick(event, touchInput: Position) {
+    private onClick(event, touchInput: Position) {
         let nodeId = this.controller.getHoveredNodeId(touchInput.x, touchInput.y);
         if (nodeId === "") {
             return;
@@ -91,11 +91,11 @@ export class DeSelectNode extends Transition {
         }
     }
 
-    activate() {
+    public activate() {
         this.eventHandlerId = this.controller.registerEventHandler(EventType.Click, this.clickFunc)
     }
 
-    deactivate() {
+    public deactivate() {
         this.controller.removeEventHandler(this.eventHandlerId);
     }
 }
@@ -108,7 +108,7 @@ export class SingleSelectionReturn extends Transition {
         this.controller = controller;
     }
 
-    activate() {
+    public     activate() {
         this.controller.removeSelectedNodeKeepLatest();
         this.switchState();
     }
@@ -125,17 +125,17 @@ export class TurnOnMultiNodeSelectionMode extends Transition {
         this.keyDownFunc = this.onKeyDownFunc.bind(this)
     }
 
-    onKeyDownFunc(event) {
+    private onKeyDownFunc(event) {
         if (event.key === "Control") {
             this.switchState();
         }
     }
 
-    activate() {
+    public activate() {
         this.eventHandlerId = this.controller.registerEventHandler(EventType.KeyDown, this.keyDownFunc)
     }
 
-    deactivate() {
+    public deactivate() {
         this.controller.removeEventHandler(this.eventHandlerId);
     }
 }
@@ -151,17 +151,17 @@ export class TurnOffMultiNodeSelectionMode extends Transition {
         this.keyUpFunc = this.onKeyUpFunc.bind(this)
     }
 
-    onKeyUpFunc(event) {
+    private onKeyUpFunc(event) {
         if (event.key === "Control") {
             this.switchState();
         }
     }
 
-    activate() {
+    public activate() {
         this.eventHandlerId = this.controller.registerEventHandler(EventType.KeyUp, this.keyUpFunc)
     }
 
-    deactivate() {
+    public deactivate() {
         this.controller.removeEventHandler(this.eventHandlerId);
     }
 }

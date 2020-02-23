@@ -8,7 +8,7 @@ export class Context {
     state: State;
     debug: boolean;
 
-    switchState(s: State) {
+    public switchState(s: State) {
         if (this.debug) {
             console.log("switch state from", this.state.name, "to", s.name);
         }
@@ -28,15 +28,15 @@ export class State implements Activateable {
         this.transitions = [] as Transition[];
     }
 
-    activate() {
+    public activate() {
         this.transitions.forEach((transition) => transition.activate())
     }
 
-    deactivate() {
+    public deactivate() {
         this.transitions.forEach((transition) => transition.deactivate())
     }
 
-    switchState(s: State) {
+    public switchState(s: State) {
         this.context.switchState(s)
     }
 }
@@ -50,13 +50,13 @@ export abstract class Transition implements Activateable {
         this.name = name;
     }
 
-    switchState() {
+    public switchState() {
         this.originState.switchState(this.targetState)
     }
 
-    activate() {
+    public activate() {
     }
 
-    deactivate() {
+    public deactivate() {
     }
 }

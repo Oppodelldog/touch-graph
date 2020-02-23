@@ -1,8 +1,8 @@
 import Node from "./data/Node";
-import {Connection} from "./data/Connection";
 import Nodes from "./data/Nodes";
-import Port from "./data/Port";
+import {Connection} from "./data/Connection";
 import {Connections} from "./data/Connections";
+import Port from "./data/Port";
 import {Diagram} from "./data/Diagram";
 import UUID from "./UUID";
 import {Renderer} from "./Renderer";
@@ -23,7 +23,6 @@ export class Controller {
     private readonly selectedNodes: string[];
     private readonly canvasElement: HTMLElement;
     private scale: number = 1;
-
 
     constructor() {
         this.canvasElement = document.getElementById(canvasElementId);
@@ -142,7 +141,7 @@ export class Controller {
         this.renderer.updateCanvasPosition()
     }
 
-    center(x: any, y: any) {
+    public center(x: any, y: any) {
         let nodeId = this.renderer.getHoveredNodeId(x, y);
         let node = this.nodes.getNodeById(nodeId);
         if (node !== null) {
@@ -155,77 +154,77 @@ export class Controller {
         this.renderer.diagramYOffset = this.diagram.yOffset;
     }
 
-    getScale(): number {
+    public getScale(): number {
         return this.scale;
     }
 
-    getHoveredPortId(x: number, y: number): string {
+    public getHoveredPortId(x: number, y: number): string {
         return this.renderer.getHoveredPortId(x, y);
     }
 
-    updateGrabLine(x: number, y: number, x2: number, y2: number): void {
+    public updateGrabLine(x: number, y: number, x2: number, y2: number): void {
         return this.renderer.updateGrabLine(x, y, x2, y2);
     }
 
-    getNodeFromPortId(portId: string): Node {
+    public getNodeFromPortId(portId: string): Node {
         return this.nodes.getNodeFromPortId(portId);
     }
 
-    removeGrabLine(): void {
+    public removeGrabLine(): void {
         this.renderer.removeGrabLine();
     }
 
-    dragStopDiagram(): void {
+    public dragStopDiagram(): void {
         this.diagram.dragStop()
     }
 
-    dragMoveDiagram(x: number, y: number): void {
+    public dragMoveDiagram(x: number, y: number): void {
         this.diagram.dragMove(x, y);
         this.updateCanvasPosition(this.diagram.xDrag, this.diagram.yDrag);
     }
 
-    updateCanvasPosition(x: number, y: number): void {
+    public updateCanvasPosition(x: number, y: number): void {
         this.renderer.updateCanvasPosition(x, y);
     }
 
-    isCanvasHovered(x: number, y: number): boolean {
+    public isCanvasHovered(x: number, y: number): boolean {
         return this.renderer.isCanvasHovered(x, y);
     }
 
-    dragStartDiagram(x: number, y: number): void {
+    public dragStartDiagram(x: number, y: number): void {
         this.diagram.dragStart(x, y);
     }
 
-    getHoveredNodeId(x: number, y: number): string {
+    public getHoveredNodeId(x: number, y: number): string {
         return this.renderer.getHoveredNodeId(x, y);
     }
 
-    getNodeById(nodeId: string): Node | null {
+    public getNodeById(nodeId: string): Node | null {
         return this.nodes.getNodeById(nodeId);
     }
 
-    updateNodePos(node: Node): void {
+    public updateNodePos(node: Node): void {
         this.renderer.updateNodePos(node);
     }
 
-    renderNodeConnections(node: Node) {
+    public renderNodeConnections(node: Node) {
         this.connections.getByNodeId(node.id).forEach((connection) => {
             this.renderConnection(connection);
         });
     }
 
-    renderAll() {
+    public renderAll() {
         this.renderNodes();
         this.updateNodes();
         this.updateLines();
     }
 
-    selectNode(nodeId: string) {
+    public selectNode(nodeId: string) {
         this.selectedNodes.push(nodeId);
         this.renderer.updateNodeSelection(nodeId, this.isNodeSelected(nodeId))
     }
 
-    deselectNode(nodeId: string) {
+    public deselectNode(nodeId: string) {
         if (!this.isNodeSelected(nodeId)) {
             return;
         }
@@ -236,16 +235,16 @@ export class Controller {
         this.renderer.updateNodeSelection(nodeId, this.isNodeSelected(nodeId))
     }
 
-    removeSelectedNodeKeepLatest() {
+    public removeSelectedNodeKeepLatest() {
         this.selectedNodes.splice(0, this.selectedNodes.length - 1);
         this.nodes.forEach((node) => this.renderer.updateNodeSelection(node.id, this.isNodeSelected(node.id)));
     }
 
-    isNodeSelected(nodeId: string) {
+    public isNodeSelected(nodeId: string) {
         return this.selectedNodes.indexOf(nodeId) >= 0;
     }
 
-    deleteSelectedNodes() {
+    public deleteSelectedNodes() {
         this.selectedNodes.forEach((nodeId) => {
             const node = this.getNodeById(nodeId);
             this.nodes.remove(nodeId);

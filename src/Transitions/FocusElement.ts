@@ -13,13 +13,9 @@ export class AdjustingFocus extends State {
         this.controller = controller;
     }
 
-    activate() {
+    public activate() {
         this.controller.center(this.targetPosX, this.targetPosY);
         super.activate();
-    }
-
-    deactivate() {
-        super.deactivate();
     }
 }
 
@@ -34,7 +30,7 @@ export class DoubleClick extends Transition {
         this.doubleClickFunc = this.onDoubleClick.bind(this)
     }
 
-    onDoubleClick(event, touchInputPos: Position) {
+    private onDoubleClick(event, touchInputPos: Position) {
         const targetState = this.targetState as AdjustingFocus;
         targetState.targetPosX = touchInputPos.x;
         targetState.targetPosY = touchInputPos.y;
@@ -42,11 +38,11 @@ export class DoubleClick extends Transition {
         event.preventDefault();
     };
 
-    activate() {
+    public activate() {
         this.eventHandlerId = this.controller.registerEventHandler(EventType.DoubleClick, this.doubleClickFunc);
     }
 
-    deactivate() {
+    public deactivate() {
         this.controller.removeEventHandler(this.eventHandlerId);
     }
 }
@@ -59,11 +55,8 @@ export class FocusAdjustmentFinished extends Transition {
         this.controller = controller;
     }
 
-    activate() {
+    public activate() {
         this.switchState();
-    }
-
-    deactivate() {
     }
 }
 

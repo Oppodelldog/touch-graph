@@ -77,7 +77,7 @@ export class ReleasePort extends Transition {
         this.mouseUpFunc = this.onMouseUp.bind(this);
     }
 
-    onMouseUp(event, touchInputPos: Position) {
+    private onMouseUp(event, touchInputPos: Position) {
         const grabber = (this.originState as PortGrabbed).grabber;
         let targetPortId = this.controller.getHoveredPortId(touchInputPos.x, touchInputPos.y);
         if (targetPortId) {
@@ -98,11 +98,11 @@ export class ReleasePort extends Transition {
         event.preventDefault();
     }
 
-    activate() {
+    public activate() {
         this.eventHandlerId = this.controller.registerEventHandler(EventType.TouchEnd, this.mouseUpFunc);
     }
 
-    deactivate() {
+    public  deactivate() {
         this.controller.removeEventHandler(this.eventHandlerId);
     }
 }

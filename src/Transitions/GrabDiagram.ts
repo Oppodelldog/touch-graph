@@ -18,17 +18,17 @@ export class DiagramGrabbed extends State {
         this.mouseMoveFunc = this.onMouseMove.bind(this)
     }
 
-    onMouseMove(event, touchInputPos: Position) {
+    private onMouseMove(event, touchInputPos: Position) {
         this.controller.dragMoveDiagram(touchInputPos.x, touchInputPos.y);
         event.preventDefault();
     }
 
-    activate() {
+    public activate() {
         super.activate();
         this.eventHandlerId = this.controller.registerEventHandler(EventType.TouchMove, this.mouseMoveFunc);
     }
 
-    deactivate() {
+    public deactivate() {
         super.deactivate();
         this.controller.removeEventHandler(this.eventHandlerId);
     }

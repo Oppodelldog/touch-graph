@@ -1,8 +1,8 @@
 import Node from "./data/Node";
 import Nodes from "./data/Nodes";
+import Port from "./data/Port";
 import {Connection} from "./data/Connection";
 import {Connections} from "./data/Connections";
-import Port from "./data/Port";
 import {Diagram} from "./data/Diagram";
 import UUID from "./UUID";
 import {Renderer} from "./Renderer";
@@ -133,7 +133,7 @@ export class Controller {
         this.diagram.xOffset += diagramCanvasRect.width / 2;
         this.diagram.yOffset += diagramCanvasRect.height / 2;
 
-        this.renderer.updateCanvasPosition(this.diagram.xOffset,this.diagram.yOffset)
+        this.renderer.updateCanvasPosition(this.diagram.xOffset, this.diagram.yOffset)
     }
 
     public center(x: any, y: any) {
@@ -166,7 +166,7 @@ export class Controller {
 
     public dragStopDiagram(): void {
         this.diagram.dragStop();
-        this.renderer.updateCanvasPosition(this.diagram.xOffset,this.diagram.yOffset)
+        this.renderer.updateCanvasPosition(this.diagram.xOffset, this.diagram.yOffset)
     }
 
     public dragMoveDiagram(x: number, y: number): void {

@@ -137,16 +137,8 @@ export class Renderer implements RenderInterface, ViewInterface {
         this.updateLayerTransforms();
     }
 
-    private portCenter(v: number): number {
+    private portPos(v: number): number {
         return v + this.portRadius + 1;
-    }
-
-    private portPosX(v: number): number {
-        return this.portCenter(v);
-    }
-
-    private portPosY(v: number): number {
-        return this.portCenter(v);
     }
 
     public updateNodePos(node: Node): void {
@@ -197,12 +189,12 @@ export class Renderer implements RenderInterface, ViewInterface {
         const portFrom = document.getElementById(fromPortId);
         const portTo = document.getElementById(toPortId);
 
-        let x1 = this.portPosX(portFrom.offsetLeft + fromNode.x);
-        let y1 = this.portPosY(portFrom.offsetTop + fromNode.y);
-        let x2 = this.portPosX(portTo.offsetLeft + toNode.x);
-        let y2 = this.portPosY(portTo.offsetTop + toNode.y);
+        let x1 = this.portPos(portFrom.offsetLeft + fromNode.x);
+        let y1 = this.portPos(portFrom.offsetTop + fromNode.y);
+        let x2 = this.portPos(portTo.offsetLeft + toNode.x);
+        let y2 = this.portPos(portTo.offsetTop + toNode.y);
 
-        const id = "p_" + connectionId;
+        const id = Renderer.getConnectionElementId(connectionId);
         let path = this.svg.select("#" + id);
         if (path.empty()) {
             path = this.svg.append("path").attr("id", id);
@@ -280,7 +272,11 @@ export class Renderer implements RenderInterface, ViewInterface {
     }
 
     public removeConnection(connectionId: string) {
-        const id = "p_" + connectionId;
+        const id = Renderer.getConnectionElementId(connectionId);
         this.svg.select("#" + id).remove();
+    }
+
+    private static getConnectionElementId(connectionId: string) {
+        return "p_" + connectionId;
     }
 }

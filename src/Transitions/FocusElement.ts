@@ -59,4 +59,3 @@ export class FocusAdjustmentFinished extends Transition {
         this.switchState();
     }
 }
-

@@ -16,17 +16,17 @@ export class Diagram {
         this.xDrag = 0;
     }
 
-    dragStart(x, y) {
+    public dragStart(x, y) {
         this.grabbed = true;
         this.grabbedAt = {x: x, y: y}
     }
 
-    dragMove(x, y) {
+    public dragMove(x, y) {
         this.xDrag = this.xOffset + (x - this.grabbedAt.x);
         this.yDrag = this.yOffset + (y - this.grabbedAt.y);
     }
 
-    dragStop() {
+    public dragStop() {
         this.grabbed = false;
         this.grabbedAt = {x: 0, y: 0};
         this.xOffset = this.xDrag;

@@ -21,23 +21,23 @@ export default class Node {
         this.customClass = "";
     }
 
-    hasPort(portId: string): boolean {
+    public hasPort(portId: string): boolean {
         return this.portsIn.concat(this.portsOut).filter((port) => port.id === portId).length !== 0;
     }
 
-    isInPort(portId: string): boolean {
+    public  isInPort(portId: string): boolean {
         return this.portsIn.filter((port) => port.id === portId).length === 1;
     }
 
-    isOutPort(portId: string): boolean {
+    public  isOutPort(portId: string): boolean {
         return this.portsOut.filter((port) => port.id === portId).length === 1;
     }
 
-    addInPort(port: Port): void {
+    public  addInPort(port: Port): void {
         this.portsIn.push(port);
     }
 
-    addOutPort(port: Port): void {
+    public  addOutPort(port: Port): void {
         this.portsOut.push(port);
     }
 }

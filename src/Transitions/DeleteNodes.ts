@@ -7,7 +7,7 @@ export class DeletingNodes extends State {
 
 export class DeleteNodes extends Transition {
     private controller: Controller;
-    private keyUpFunc: EventCallback;
+    private readonly keyUpFunc: EventCallback;
     private eventHandlerId: string;
 
     constructor(name: string, controller: Controller) {
@@ -32,9 +32,7 @@ export class DeleteNodes extends Transition {
 }
 
 export class NodesDeleted extends Transition {
-    private controller: Controller;
-
-    constructor(name: string, controller: Controller) {
+    constructor(name: string) {
         super(name);
     }
 

@@ -2,7 +2,7 @@ import {State, Transition} from "../State/State";
 import {Controller} from "../Controller";
 import {Position} from "../data/Position";
 import {Grabber} from "./Grabber";
-import {Node} from "../data/Node";
+import Node from "../data/Node";
 import {EventCallback, EventType} from "../ViewEvents";
 
 

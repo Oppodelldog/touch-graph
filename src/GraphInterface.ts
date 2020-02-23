@@ -1,10 +1,13 @@
-import {Node,} from "./data/Node";
-import {Connection,} from "./data/Connection";
-import {Nodes,} from "./data/Nodes";
-import {Port} from "./data/Port";
+import Node from "./data/Node";
+import {Connection} from "./data/Connection";
+import Nodes from "./data/Nodes";
+import Port from "./data/Port";
+import {CallbackValidateNewConnection} from "./Graph";
 
 
 export interface GraphInterface {
+
+    onValidateNewConnection(f: CallbackValidateNewConnection): void
 
     getNodes(): Nodes
 

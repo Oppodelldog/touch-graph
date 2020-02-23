@@ -1,7 +1,7 @@
 import {PortDirection} from "../Graph";
-import {Node} from "./Node"
+import Node from "./Node"
 
-export class Nodes {
+export default class Nodes {
     private readonly nodes: Node[];
 
     constructor() {

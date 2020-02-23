@@ -1,7 +1,6 @@
 import {State, Transition} from "../State/State";
 import {Controller} from "../Controller";
 import {EventCallback, EventType} from "../ViewEvents";
-import {Position} from "../data/Position";
 
 export class Zooming extends State {
     private controller: Controller;
@@ -34,7 +33,7 @@ export class UseMousewheel extends Transition {
         this.wheelFunc = this.wheel.bind(this)
     }
 
-    wheel(event, touchInputPos: Position, diagramInputPos: Position) {
+    wheel(event) {
         let factor = (event.deltaY) > 0 ? 1 : -1;
         let currentScale = this.controller.getScale();
         let newScale = currentScale + (0.1 * factor);

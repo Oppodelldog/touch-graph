@@ -1,7 +1,7 @@
-import {Node,} from "./data/Node";
-import {Connection,} from "./data/Connection";
-import {Nodes,} from "./data/Nodes";
-import {Port} from "./data/Port";
+import Node from "./data/Node";
+import {Connection} from "./data/Connection";
+import Nodes from "./data/Nodes";
+import Port from "./data/Port";
 import {Position} from "./data/Position"
 import {Connections} from "./data/Connections";
 import {Diagram} from "./data/Diagram";
@@ -132,10 +132,6 @@ export class Controller {
 
         this.syncOffset();
         this.renderer.updateCanvasPosition()
-    }
-
-    public getDiagramPos(viewX, viewY): Position {
-        return this.renderer.getDiagramPos(viewX, viewY);
     }
 
     center(x: any, y: any) {

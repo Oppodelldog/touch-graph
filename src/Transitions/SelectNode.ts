@@ -17,7 +17,7 @@ export class SelectNode extends Transition {
         this.clickFunc = this.onClick.bind(this)
     }
 
-    onClick(event, touchInput: Position, diagramInput: Position) {
+    onClick(event, touchInput: Position) {
         let nodeId = this.controller.getHoveredNodeId(touchInput.x, touchInput.y);
         if (nodeId === "") {
             return;
@@ -47,7 +47,7 @@ export class SelectOneMoreNode extends Transition {
         this.clickFunc = this.onClick.bind(this)
     }
 
-    onClick(event, touchInput: Position, diagramInput: Position) {
+    onClick(event, touchInput: Position) {
         let nodeId = this.controller.getHoveredNodeId(touchInput.x, touchInput.y);
         if (nodeId === "") {
             return;
@@ -79,7 +79,7 @@ export class DeSelectNode extends Transition {
         this.clickFunc = this.onClick.bind(this)
     }
 
-    onClick(event, touchInput: Position, diagramInput: Position) {
+    onClick(event, touchInput: Position) {
         let nodeId = this.controller.getHoveredNodeId(touchInput.x, touchInput.y);
         if (nodeId === "") {
             return;
@@ -116,7 +116,7 @@ export class SingleSelectionReturn extends Transition {
 
 export class TurnOnMultiNodeSelectionMode extends Transition {
     private controller: Controller;
-    private keyDownFunc: EventCallback;
+    private readonly keyDownFunc: EventCallback;
     private eventHandlerId: string;
 
     constructor(name: string, controller: Controller) {
@@ -142,7 +142,7 @@ export class TurnOnMultiNodeSelectionMode extends Transition {
 
 export class TurnOffMultiNodeSelectionMode extends Transition {
     private controller: Controller;
-    private keyUpFunc: EventCallback;
+    private readonly keyUpFunc: EventCallback;
     private eventHandlerId: string;
 
     constructor(name: string, controller: Controller) {

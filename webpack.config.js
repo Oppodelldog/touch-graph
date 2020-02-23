@@ -1,5 +1,7 @@
+// noinspection JSUnresolvedFunction
 const path = require('path');
 
+// noinspection JSUnresolvedVariable
 module.exports = {
     mode: 'development',
     devtool: 'inline-source-map',
@@ -13,7 +15,7 @@ module.exports = {
         contentBase: './dist',
     },
     resolve: {
-        extensions: [".ts",".js"]
+        extensions: [".ts", ".js"]
     },
     module: {
         rules: [

@@ -16,10 +16,6 @@ export class Diagram {
         this.xDrag = 0;
     }
 
-    isGrabbed() {
-        return this.grabbed;
-    }
-
     dragStart(x, y) {
         this.grabbed = true;
         this.grabbedAt = {x: x, y: y}

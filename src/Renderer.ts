@@ -1,5 +1,5 @@
 import d3 = require("d3");
-import {Node} from "./data/Node"
+import Node from "./data/Node"
 import {Position} from "./data/Position";
 import {EventCallback, EventType, ViewEvents} from "./ViewEvents";
 
@@ -31,7 +31,7 @@ interface ViewInterface {
 
 export class Renderer implements RenderInterface, ViewInterface {
     private nodeElements = [];
-    private canvas: HTMLDivElement;
+    private readonly canvas: HTMLDivElement;
     public diagramXOffset = 0;
     public diagramYOffset = 0;
     private portRadius = 7;
@@ -137,7 +137,7 @@ export class Renderer implements RenderInterface, ViewInterface {
 
     public setScale(scale: number): void {
         this.scale = scale;
-        this.canvasLayers.forEach((layer) => this.canvasLayersTransforms.scale = `scale(${scale})`);
+        this.canvasLayersTransforms.scale = `scale(${scale})`;
         this.updateLayerTransforms();
     }
 
@@ -214,13 +214,13 @@ export class Renderer implements RenderInterface, ViewInterface {
 
         const theRenderer = this;
         path.attr("class", "connection")
-            .on("mouseover", function (d) {
+            .on("mouseover", function () {
                 d3.select(this).attr("class", "connection connection--hovered");
             })
-            .on("mouseout", function (d) {
+            .on("mouseout", function () {
                 d3.select(this).attr("class", "connection");
             })
-            .on("click", function (d) {
+            .on("click", function () {
                 if (theRenderer.onClickLine) {
                     theRenderer.onClickLine(connectionId);
                 }

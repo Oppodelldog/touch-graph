@@ -34,7 +34,7 @@ export class DoubleClick extends Transition {
         this.doubleClickFunc = this.onDoubleClick.bind(this)
     }
 
-    onDoubleClick(event, touchInputPos: Position, diagramInputPos: Position) {
+    onDoubleClick(event, touchInputPos: Position) {
         const targetState = this.targetState as AdjustingFocus;
         targetState.targetPosX = touchInputPos.x;
         targetState.targetPosY = touchInputPos.y;

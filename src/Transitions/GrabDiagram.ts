@@ -18,7 +18,7 @@ export class DiagramGrabbed extends State {
         this.mouseMoveFunc = this.onMouseMove.bind(this)
     }
 
-    onMouseMove(event, touchInputPos: Position, diagramInputPos: Position) {
+    onMouseMove(event, touchInputPos: Position) {
         this.controller.dragMoveDiagram(touchInputPos.x, touchInputPos.y);
         event.preventDefault();
     }
@@ -45,7 +45,7 @@ export class GrabDiagram extends Transition {
         this.mouseDownFunc = this.onMouseDown.bind(this)
     }
 
-    onMouseDown(event, touchInputPos: Position, diagramInputPos: Position) {
+    onMouseDown(event, touchInputPos: Position) {
         if (!this.controller.isCanvasHovered(touchInputPos.x, touchInputPos.y)) {
             return false;
         }
@@ -75,7 +75,7 @@ export class ReleaseDiagram extends Transition {
         this.mouseUpFunc = this.onMouseUp.bind(this);
     }
 
-    onMouseUp(event, touchInputPos: Position, diagramInputPos: Position) {
+    onMouseUp(event) {
         this.controller.dragStopDiagram();
         this.controller.syncOffset();
         (this.originState as DiagramGrabbed).isGrabbed = false;

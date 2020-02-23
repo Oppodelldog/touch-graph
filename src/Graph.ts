@@ -1,8 +1,7 @@
-import {Node} from "./data/Node";
+import Node from "./data/Node";
 import {Connection} from "./data/Connection";
-import {Nodes} from "./data/Nodes";
-import {Port} from "./data/Port";
-import {Position} from "./data/Position"
+import Nodes from "./data/Nodes";
+import Port from "./data/Port";
 import {Controller} from "./Controller";
 import {GraphInterface} from "./GraphInterface";
 import {Builder} from "./State/Builder";
@@ -30,7 +29,7 @@ export enum PortDirection {
     Output = 2
 }
 
-type CallbackValidateNewConnection = (connection: Connection) => void;
+export type CallbackValidateNewConnection = (connection: Connection) => void;
 
 export class Graph implements GraphInterface {
 
@@ -84,14 +83,6 @@ export class Graph implements GraphInterface {
     public start(): void {
         this.initStates();
         this.controller.renderAll();
-    }
-
-    private getDiagramPos(viewX, viewY): Position {
-        return this.controller.getDiagramPos(viewX, viewY)
-    }
-
-    private doubleClick(x, y): void {
-        this.controller.center(x, y)
     }
 
     private initStates(): void {
@@ -157,7 +148,7 @@ export class Graph implements GraphInterface {
                     case 'Delete Nodes':
                         return new DeleteNodes(name, this.controller);
                     case 'Nodes Deleted':
-                        return new NodesDeleted(name, this.controller);
+                        return new NodesDeleted(name);
                     default:
                         throw new Error("undefined Transition: " + name);
                 }

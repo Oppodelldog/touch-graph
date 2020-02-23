@@ -1,4 +1,4 @@
-export class Port {
+export default class Port {
     public id: string;
     public name: string;
 

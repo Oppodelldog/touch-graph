@@ -1,6 +1,6 @@
-import {Port} from "./Port";
+import Port from "./Port";
 
-export class Node {
+export default class Node {
     public x: number;
     public y: number;
     public id: string;
@@ -23,15 +23,6 @@ export class Node {
 
     hasPort(portId: string): boolean {
         return this.portsIn.concat(this.portsOut).filter((port) => port.id === portId).length !== 0;
-    }
-
-    getPort(portId: string): Port | null {
-        let ports = this.portsIn.concat(this.portsOut).filter((port) => port.id === portId);
-        if (ports.length === 1) {
-            return ports[0];
-        }
-
-        return null;
     }
 
     isInPort(portId: string): boolean {

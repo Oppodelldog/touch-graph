@@ -11,7 +11,7 @@ export class Builder {
         let context = new Context();
         let config = new Config();
         let configItems = config.load();
-        let idle: State;
+        let idle: State = undefined;
         let tmpStates = [] as State[];
         let tmpTransitions = [] as Transition[];
         configItems.forEach((configItem) => {
@@ -47,6 +47,9 @@ export class Builder {
             }
         });
 
+        if (idle === undefined) {
+            throw new Error("Idle state must be defined");
+        }
         context.state = idle;
         context.state.activate();
 

@@ -18,17 +18,18 @@ export class Controller {
     private readonly renderer: Renderer;
     private readonly diagram: Diagram;
     private readonly selectedNodes: string[];
+    private readonly canvasElement: HTMLElement;
     private scale: number = 1;
 
     constructor() {
-        const canvasElement = document.getElementById(canvasElementId);
-        if (canvasElement == null) {
+        this.canvasElement = document.getElementById(canvasElementId);
+        if (this.canvasElement == null) {
             throw new Error(`need a div tag with id='${canvasElementId}'`);
         }
         this.diagram = new Diagram();
         this.nodes = new Nodes();
         this.connections = new Connections();
-        this.renderer = new Renderer(canvasElement);
+        this.renderer = new Renderer(this.canvasElement);
         this.renderer.onClickLine = (connectionId) => {
             this.connections.remove(connectionId);
         };
@@ -123,7 +124,7 @@ export class Controller {
     }
 
     public moveTo(x, y): void {
-        const diagramCanvasRect = document.getElementById("canvas").getBoundingClientRect();
+        const diagramCanvasRect = this.canvasElement.getBoundingClientRect();
         this.diagram.xOffset = -x * this.scale;
         this.diagram.yOffset = -y * this.scale;
         this.diagram.xOffset += diagramCanvasRect.width / 2;

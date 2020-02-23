@@ -6,7 +6,7 @@ body {
     font-size: 14px;
 }
 
-#canvas, .node {
+#touch-graph, .node {
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
     -khtml-user-select: none; /* Konqueror HTML */
@@ -16,7 +16,7 @@ body {
     /* Non-prefixed version, currently supported by Chrome, Opera and Firefox */
 }
 
-#canvas {
+#touch-graph {
     position: relative;
     width: 100%;
     height: 100%;

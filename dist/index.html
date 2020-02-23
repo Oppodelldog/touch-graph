@@ -99,6 +99,16 @@
 
     });
 
+    graph.onNewNode(function (node) {
+        console.log("new node created: " + node.id);
+    });
+    graph.onRemoveNode(function (node) {
+        console.log("node removed: " + node.id);
+    });
+    graph.onNewConnection(function (connection) {
+        console.log("new connection created: " + connection.id);
+    });
+
     // connect event listeners and render
     graph.start();
 

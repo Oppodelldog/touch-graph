@@ -2,7 +2,6 @@ import Node from "./data/Node";
 import {Connection} from "./data/Connection";
 import Nodes from "./data/Nodes";
 import Port from "./data/Port";
-import {Position} from "./data/Position"
 import {Connections} from "./data/Connections";
 import {Diagram} from "./data/Diagram";
 import UUID from "./UUID";
@@ -12,7 +11,11 @@ import {EventCallback, EventType} from "./ViewEvents";
 const canvasElementId = "touch-graph";
 
 export class Controller {
-    public onValidateNewConnection: Function | null = null;
+    public onValidateNewConnection: (connection: Connection) => boolean = () => true;
+    public onNewNode: (node: Node) => void = () => void {};
+    public onRemoveNode: (node: Node) => void = () => void {};
+    public onNewConnection: (connection: Connection) => void = () => void {};
+
     private readonly connections: Connections;
     private readonly nodes: Nodes;
     private readonly renderer: Renderer;
@@ -20,6 +23,7 @@ export class Controller {
     private readonly selectedNodes: string[];
     private readonly canvasElement: HTMLElement;
     private scale: number = 1;
+
 
     constructor() {
         this.canvasElement = document.getElementById(canvasElementId);
@@ -59,7 +63,7 @@ export class Controller {
     }
 
     public addConnection(connection: Connection): boolean {
-        if (this.onValidateNewConnection && !this.onValidateNewConnection(connection)) {
+        if (!this.onValidateNewConnection(connection)) {
             return false;
         }
 
@@ -70,6 +74,9 @@ export class Controller {
         }
 
         this.connections.push(connection);
+
+        this.onNewConnection(connection);
+
         return true;
     }
 
@@ -100,6 +107,7 @@ export class Controller {
 
     addNode(node: Node) {
         this.nodes.push(node);
+        this.onNewNode(node);
     }
 
     public renderNodes(): void {
@@ -239,13 +247,14 @@ export class Controller {
 
     deleteSelectedNodes() {
         this.selectedNodes.forEach((nodeId) => {
+            const node = this.getNodeById(nodeId);
             this.nodes.remove(nodeId);
             this.connections.getByNodeId(nodeId).forEach((connection) => {
                 this.connections.remove(connection.id);
                 this.renderer.removeConnection(connection.id);
             });
-
             this.renderer.removeNode(nodeId);
+            this.onRemoveNode(node);
         })
     }
 }

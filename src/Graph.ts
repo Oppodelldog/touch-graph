@@ -3,7 +3,14 @@ import {Connection} from "./data/Connection";
 import Nodes from "./data/Nodes";
 import Port from "./data/Port";
 import {Controller} from "./Controller";
-import {GraphInterface} from "./GraphInterface";
+import {
+    CallbackNewConnection,
+    CallbackNewNode,
+    CallbackRemoveNode,
+    CallbackValidateNewConnection,
+    GraphCallbackInterface,
+    GraphInterface
+} from "./GraphInterface";
 import {Builder} from "./State/Builder";
 import {State, Transition} from "./State/State";
 import {GrabNode, NodeGrabbed, ReleaseNode} from "./Transitions/GrabNode";
@@ -29,10 +36,8 @@ export enum PortDirection {
     Output = 2
 }
 
-export type CallbackValidateNewConnection = (connection: Connection) => void;
 
-export class Graph implements GraphInterface {
-
+export class Graph implements GraphInterface, GraphCallbackInterface {
     private readonly controller: Controller;
 
     constructor() {
@@ -41,6 +46,18 @@ export class Graph implements GraphInterface {
 
     onValidateNewConnection(f: CallbackValidateNewConnection): void {
         this.controller.onValidateNewConnection = (connection) => f(connection)
+    }
+
+    onNewNode(f: CallbackNewNode): void {
+        this.controller.onNewNode = (node) => f(node)
+    }
+
+    onRemoveNode(f: CallbackRemoveNode): void {
+        this.controller.onRemoveNode = (node) => f(node)
+    }
+
+    onNewConnection(f: CallbackNewConnection): void {
+        this.controller.onNewConnection = (node) => f(node)
     }
 
     public getNodes(): Nodes {
@@ -155,4 +172,5 @@ export class Graph implements GraphInterface {
             }
         );
     }
+
 }

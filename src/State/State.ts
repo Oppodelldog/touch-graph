@@ -1,11 +1,10 @@
-export interface Activate {
+export interface Activateable {
     activate()
 
     deactivate()
 }
 
 export class Context {
-
     state: State;
 
     switchState(s: State) {
@@ -16,7 +15,7 @@ export class Context {
     }
 }
 
-export class State implements Activate {
+export class State implements Activateable {
     context: Context;
     transitions: Transition[];
     public name: string;
@@ -39,7 +38,7 @@ export class State implements Activate {
     }
 }
 
-export abstract class Transition implements Activate {
+export abstract class Transition implements Activateable {
     state: State;
     targetState: State;
     private name: string;

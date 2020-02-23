@@ -1,20 +1,14 @@
 import {State, Transition} from "../State/State";
-
-
-interface ControllerInterface {
-    getCanvasElement()
-
-    getScale()
-
-    setScale(v: number)
-}
+import {Controller} from "../Controller";
+import {EventCallback, EventType} from "../ViewEvents";
+import {Position} from "../data/Position";
 
 export class Zooming extends State {
-    private controller: ControllerInterface;
+    private controller: Controller;
     public currentScale: number;
     public targetScale: any;
 
-    constructor(name: string, controller: ControllerInterface) {
+    constructor(name: string, controller: Controller) {
         super(name);
         this.controller = controller;
     }
@@ -30,16 +24,17 @@ export class Zooming extends State {
 }
 
 export class UseMousewheel extends Transition {
-    private controller: ControllerInterface;
-    private readonly wheelFunc: Function;
+    private controller: Controller;
+    private readonly wheelFunc: EventCallback;
+    private eventHandlerId: string;
 
-    constructor(name: string, controller: ControllerInterface) {
+    constructor(name: string, controller: Controller) {
         super(name);
         this.controller = controller;
         this.wheelFunc = this.wheel.bind(this)
     }
 
-    wheel(event) {
+    wheel(event, touchInputPos: Position, diagramInputPos: Position) {
         let factor = (event.deltaY) > 0 ? 1 : -1;
         let currentScale = this.controller.getScale();
         let newScale = currentScale + (0.1 * factor);
@@ -54,17 +49,20 @@ export class UseMousewheel extends Transition {
     };
 
     activate() {
-        this.controller.getCanvasElement().addEventListener("wheel", this.wheelFunc);
+        this.eventHandlerId = this.controller.registerEventHandler(EventType.Wheel, this.wheelFunc);
     }
 
     deactivate() {
-        this.controller.getCanvasElement().removeEventListener("wheel", this.wheelFunc);
+        this.controller.removeEventHandler(this.eventHandlerId);
     }
 }
 
 export class ZoomFinished extends Transition {
-    constructor(name: string) {
+    private controller: Controller;
+
+    constructor(name: string, controller: Controller) {
         super(name);
+        this.controller = controller;
     }
 
     activate() {

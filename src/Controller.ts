@@ -3,9 +3,11 @@ import {Connection,} from "./data/Connection";
 import {Nodes,} from "./data/Nodes";
 import {Port} from "./data/Port";
 import {Position} from "./data/Position"
-import {Renderer} from "./Renderer";
 import {Connections} from "./data/Connections";
 import {Diagram} from "./data/Diagram";
+import UUID from "./UUID";
+import {Renderer} from "./Renderer";
+import {EventCallback, EventType} from "./ViewEvents";
 
 export class Controller {
     public onValidateNewConnection = null;
@@ -41,6 +43,14 @@ export class Controller {
         return this.nodes;
     }
 
+    public registerEventHandler(eventType: EventType, callback: EventCallback): string {
+        return this.renderer.registerEventHandler(eventType, callback);
+    }
+
+    public removeEventHandler(id: string) {
+        this.renderer.removeEventHandler(id);
+    }
+
     public getNumberOfPortConnections(portId): number {
         return this.connections.getByPortId(portId).length;
     }
@@ -62,35 +72,27 @@ export class Controller {
 
     public createNode(): Node {
         const node = new Node();
-        node.id = this.newId();
+        node.id = UUID.NewId();
 
         return node;
     }
 
     public createPort(): Port {
         const port = new Port();
-        port.id = this.newId();
+        port.id = UUID.NewId();
 
         return port;
     }
 
     public createConnection(nodeA, portA, nodeB, portB): Connection {
         const connection = new Connection();
-        connection.id = this.newId();
+        connection.id = UUID.NewId();
         connection.from.nodeId = nodeA;
         connection.from.portId = portA;
         connection.to.nodeId = nodeB;
         connection.to.portId = portB;
 
         return connection;
-    }
-
-    public newId(): string {
-        // noinspection SpellCheckingInspection
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
     }
 
     addNode(node: Node) {
@@ -130,10 +132,7 @@ export class Controller {
     }
 
     public getDiagramPos(viewX, viewY): Position {
-        const diagramCanvasRect = document.getElementById("html-canvas").getBoundingClientRect();
-        const diagramX = viewX - diagramCanvasRect.x;
-        const diagramY = viewY - diagramCanvasRect.y;
-        return {x: diagramX / this.scale, y: diagramY / this.scale} as Position;
+        return this.renderer.getDiagramPos(viewX, viewY);
     }
 
     center(x: any, y: any) {

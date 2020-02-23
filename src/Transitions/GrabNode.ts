@@ -3,11 +3,14 @@ import {Controller} from "../Controller";
 import {Position} from "../data/Position";
 import {Grabber} from "./Grabber";
 import {Node} from "../data/Node";
+import {EventCallback, EventType} from "../ViewEvents";
+
 
 export class NodeGrabbed extends State {
     public grabber: Grabber;
     private controller: Controller;
-    private readonly mouseMoveFunc: Function;
+    private readonly mouseMoveFunc: EventCallback;
+    private eventHandlerId: string;
 
     constructor(name: string, controller: Controller) {
         super(name);
@@ -16,11 +19,8 @@ export class NodeGrabbed extends State {
         this.mouseMoveFunc = this.onMouseMove.bind(this)
     }
 
-    onMouseMove(event) {
-        const x = event.clientX;
-        const y = event.clientY;
-        const diagramPos = this.controller.getDiagramPos(x, y);
-        this.grabber.setObjectPos(diagramPos.x, diagramPos.y);
+    onMouseMove(event, touchInputPos: Position, diagramInputPos: Position) {
+        this.grabber.setObjectPos(diagramInputPos.x, diagramInputPos.y);
         const node = this.grabber.getObject() as Node;
         this.controller.updateNodePos(node);
         this.controller.renderNodeConnections(node);
@@ -29,18 +29,19 @@ export class NodeGrabbed extends State {
 
     activate() {
         super.activate();
-        this.controller.getCanvasElement().addEventListener("mousemove", this.mouseMoveFunc);
+        this.eventHandlerId = this.controller.registerEventHandler(EventType.TouchMove, this.mouseMoveFunc);
     }
 
     deactivate() {
         super.deactivate();
-        this.controller.getCanvasElement().removeEventListener("mousemove", this.mouseMoveFunc);
+        this.controller.removeEventHandler(this.eventHandlerId);
     }
 }
 
 export class GrabNode extends Transition {
     private controller: Controller;
-    private readonly mouseDownFunc: Function;
+    private readonly mouseDownFunc: EventCallback;
+    private eventHandlerId: string;
 
     constructor(name: string, controller: Controller) {
         super(name);
@@ -48,34 +49,33 @@ export class GrabNode extends Transition {
         this.mouseDownFunc = this.onMouseDown.bind(this)
     }
 
-    onMouseDown(event) {
-        const mousePos = {x: event.clientX, y: event.clientY} as Position;
-        const diagramPos = this.controller.getDiagramPos(event.clientX, event.clientY);
-        let hoveredNodeId = this.controller.getHoveredNodeId(mousePos.x, mousePos.y);
-        const hoveredPortId = this.controller.getHoveredPortId(mousePos.x, mousePos.y);
+    onMouseDown(event, touchInputPos: Position, diagramInputPos: Position) {
+        let hoveredNodeId = this.controller.getHoveredNodeId(touchInputPos.x, touchInputPos.y);
+        const hoveredPortId = this.controller.getHoveredPortId(touchInputPos.x, touchInputPos.y);
         if (hoveredPortId !== "") {
             return;
         }
         const node = this.controller.getNodeById(hoveredNodeId);
         if (node !== null) {
-            (this.targetState as NodeGrabbed).grabber.grab(node.id, node, diagramPos.x, diagramPos.y);
+            (this.targetState as NodeGrabbed).grabber.grab(node.id, node, diagramInputPos.x, diagramInputPos.y);
             this.switchState();
         }
         event.preventDefault();
     };
 
     activate() {
-        this.controller.getCanvasElement().addEventListener("mousedown", this.mouseDownFunc);
+        this.eventHandlerId = this.controller.registerEventHandler(EventType.TouchStart, this.mouseDownFunc);
     }
 
     deactivate() {
-        this.controller.getCanvasElement().removeEventListener("mousedown", this.mouseDownFunc);
+        this.controller.removeEventHandler(this.eventHandlerId);
     }
 }
 
 export class ReleaseNode extends Transition {
     private controller: Controller;
-    private readonly mouseUpFunc: Function;
+    private readonly mouseUpFunc: EventCallback;
+    private eventHandlerId: string;
 
     constructor(name: string, controller: Controller) {
         super(name);
@@ -90,10 +90,10 @@ export class ReleaseNode extends Transition {
     }
 
     activate() {
-        this.controller.getCanvasElement().addEventListener("mouseup", this.mouseUpFunc);
+        this.eventHandlerId = this.controller.registerEventHandler(EventType.TouchEnd, this.mouseUpFunc);
     }
 
     deactivate() {
-        this.controller.getCanvasElement().removeEventListener("mouseup", this.mouseUpFunc);
+        this.controller.removeEventHandler(this.eventHandlerId);
     }
 }

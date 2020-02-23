@@ -1,5 +1,7 @@
 import d3 = require("d3");
 import {Node} from "./data/Node"
+import {Position} from "./data/Position";
+import {EventCallback, EventType, ViewEvents} from "./ViewEvents";
 
 interface RenderInterface {
     renderNode(node): void
@@ -27,7 +29,7 @@ interface ViewInterface {
 
 export class Renderer implements RenderInterface, ViewInterface {
     private nodeElements = [];
-    private canvas;
+    private canvas: HTMLDivElement;
     public diagramXOffset = 0;
     public diagramYOffset = 0;
     private portRadius = 7;
@@ -39,8 +41,10 @@ export class Renderer implements RenderInterface, ViewInterface {
     public onClickLine;
     private scale = 1;
     private canvasLayersTransforms: { scale: string; translate: string };
+    private viewEvents: ViewEvents;
 
     constructor(canvas) {
+
         this.canvas = canvas;
 
         this.backgroundCanvas = document.getElementById("background-canvas");
@@ -53,7 +57,10 @@ export class Renderer implements RenderInterface, ViewInterface {
 
         this.canvasLayers = [this.backgroundCanvas, this.svgCanvas, this.htmlCanvas];
         this.canvasLayersTransforms = {translate: "translate(0,0)", scale: "scale(1)"};
+
+        this.viewEvents = new ViewEvents(this.canvas, this);
     }
+
 
     public renderNode(node): void {
         let div = document.getElementById("#" + node.id);
@@ -63,7 +70,6 @@ export class Renderer implements RenderInterface, ViewInterface {
         div = document.createElement("div");
         div.className = "node " + node.customClass;
         div.id = node.id;
-
 
         const title = document.createElement("div");
         title.className = "title";
@@ -76,31 +82,22 @@ export class Renderer implements RenderInterface, ViewInterface {
 
         const portInContainer = document.createElement("div");
         portInContainer.className = "ports-in";
-        const portInElements = [];
-
-        node.portsIn.forEach((port) => {
-            let portWrapper = document.createElement("div");
-            portWrapper.className = "port-wrapper";
-            let portElement = document.createElement("div");
-            portElement.className = "port";
-            portElement.id = port.id;
-            portWrapper.appendChild(portElement);
-            if (port.caption !== "") {
-                const label = document.createElement("span");
-                label.innerHTML = port.caption;
-                label.className = "port-caption";
-                portWrapper.appendChild(label);
-            }
-            portInElements.push(portWrapper);
-        });
-        portInElements.forEach((e) => portInContainer.appendChild(e));
+        this.createNodePorts(node.portsIn).forEach((e) => portInContainer.appendChild(e));
         body.appendChild(portInContainer);
 
         const portOutContainer = document.createElement("div");
         portOutContainer.className = "ports-out";
-        const portOutElements = [];
+        this.createNodePorts(node.portsOut).forEach((e) => portOutContainer.appendChild(e));
+        body.appendChild(portOutContainer);
 
-        node.portsOut.forEach((port) => {
+        this.nodeElements.push(div);
+        this.htmlCanvas.appendChild(div);
+    }
+
+    private createNodePorts(ports) {
+        let portElements = [];
+
+        ports.forEach((port) => {
             let portWrapper = document.createElement("div");
             portWrapper.className = "port-wrapper";
             let portElement = document.createElement("div");
@@ -113,13 +110,9 @@ export class Renderer implements RenderInterface, ViewInterface {
                 label.className = "port-caption";
                 portWrapper.appendChild(label);
             }
-            portOutElements.push(portWrapper);
+            portElements.push(portWrapper);
         });
-        portOutElements.forEach((e) => portOutContainer.appendChild(e));
-        body.appendChild(portOutContainer);
-
-        this.nodeElements.push(div);
-        this.htmlCanvas.appendChild(div);
+        return portElements;
     }
 
     private updateLayerTransforms(): void {
@@ -248,5 +241,20 @@ export class Renderer implements RenderInterface, ViewInterface {
     public removeGrabLine(): void {
         const id = "grab-line";
         this.svg.select("#" + id).remove();
+    }
+
+    getDiagramPos(viewX: any, viewY: any): Position {
+        const diagramCanvasRect = this.htmlCanvas.getBoundingClientRect();
+        const diagramX = viewX - diagramCanvasRect.x;
+        const diagramY = viewY - diagramCanvasRect.y;
+        return {x: diagramX / this.scale, y: diagramY / this.scale} as Position;
+    }
+
+    registerEventHandler(eventType: EventType, callback: EventCallback): string {
+        return this.viewEvents.registerEventHandler(eventType, callback);
+    }
+
+    public removeEventHandler(id: string) {
+        return this.viewEvents.removeEventHandler(id);
     }
 }

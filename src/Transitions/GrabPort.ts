@@ -2,11 +2,13 @@ import {State, Transition} from "../State/State";
 import {Position} from "../data/Position";
 import {Grabber} from "./Grabber";
 import {Controller} from "../Controller";
+import {EventCallback, EventType} from "../ViewEvents";
 
 export class PortGrabbed extends State {
     public grabber: Grabber;
     private controller: Controller;
-    private readonly mouseMoveFunc: Function;
+    private readonly mouseMoveFunc: EventCallback;
+    private eventHandlerId: string;
 
     constructor(name: string, controller: Controller) {
         super(name);
@@ -15,30 +17,28 @@ export class PortGrabbed extends State {
         this.mouseMoveFunc = this.onMouseMove.bind(this)
     }
 
-    onMouseMove(event) {
-        const x = event.clientX;
-        const y = event.clientY;
-        const diagramPos = this.controller.getDiagramPos(x, y);
+    onMouseMove(event, touchInputPos: Position, diagramInputPos: Position) {
         let x1 = this.grabber.x;
         let y1 = this.grabber.y;
-        this.controller.updateGrabLine(x1, y1, diagramPos.x, diagramPos.y);
+        this.controller.updateGrabLine(x1, y1, diagramInputPos.x, diagramInputPos.y);
         event.preventDefault();
     }
 
     activate() {
         super.activate();
-        this.controller.getCanvasElement().addEventListener("mousemove", this.mouseMoveFunc);
+        this.eventHandlerId = this.controller.registerEventHandler(EventType.TouchMove, this.mouseMoveFunc);
     }
 
     deactivate() {
         super.deactivate();
-        this.controller.getCanvasElement().removeEventListener("mousemove", this.mouseMoveFunc);
+        this.controller.removeEventHandler(this.eventHandlerId);
     }
 }
 
 export class GrabPort extends Transition {
     private controller: Controller;
-    private readonly mouseDownFunc: Function;
+    private readonly mouseDownFunc: EventCallback;
+    private eventHandlerId: string;
 
     constructor(name: string, controller: Controller) {
         super(name);
@@ -46,31 +46,30 @@ export class GrabPort extends Transition {
         this.mouseDownFunc = this.onMouseDown.bind(this)
     }
 
-    onMouseDown(event) {
-        const mousePos = {x: event.clientX, y: event.clientY} as Position;
-        const diagramPos = this.controller.getDiagramPos(event.clientX, event.clientY);
-        const hoveredPortId = this.controller.getHoveredPortId(mousePos.x, mousePos.y);
+    onMouseDown(event, touchInputPos: Position, diagramInputPos: Position) {
+        const hoveredPortId = this.controller.getHoveredPortId(touchInputPos.x, touchInputPos.y);
         if (hoveredPortId === "") {
             return false;
         }
-        (this.targetState as PortGrabbed).grabber.grab(hoveredPortId, null, diagramPos.x, diagramPos.y);
-        this.controller.updateGrabLine(diagramPos.x, diagramPos.y, diagramPos.x, diagramPos.y);
+        (this.targetState as PortGrabbed).grabber.grab(hoveredPortId, null, diagramInputPos.x, diagramInputPos.y);
+        this.controller.updateGrabLine(diagramInputPos.x, diagramInputPos.y, diagramInputPos.x, diagramInputPos.y);
         this.switchState();
         event.preventDefault();
     };
 
     activate() {
-        this.controller.getCanvasElement().addEventListener("mousedown", this.mouseDownFunc);
+        this.eventHandlerId = this.controller.registerEventHandler(EventType.TouchStart, this.mouseDownFunc);
     }
 
     deactivate() {
-        this.controller.getCanvasElement().removeEventListener("mousedown", this.mouseDownFunc);
+        this.controller.removeEventHandler(this.eventHandlerId);
     }
 }
 
 export class ReleasePort extends Transition {
     private controller: Controller;
-    private readonly mouseUpFunc: Function;
+    private readonly mouseUpFunc: EventCallback;
+    private eventHandlerId: string;
 
     constructor(name: string, controller: Controller) {
         super(name);
@@ -78,10 +77,9 @@ export class ReleasePort extends Transition {
         this.mouseUpFunc = this.onMouseUp.bind(this);
     }
 
-    onMouseUp(event) {
+    onMouseUp(event, touchInputPos: Position, diagramInputPos: Position) {
         const grabber = (this.state as PortGrabbed).grabber;
-        const mousePos = {x: event.clientX, y: event.clientY} as Position;
-        let targetPortId = this.controller.getHoveredPortId(mousePos.x, mousePos.y);
+        let targetPortId = this.controller.getHoveredPortId(touchInputPos.x, touchInputPos.y);
         if (targetPortId) {
 
             let grabbedPortId = grabber.name;
@@ -101,10 +99,10 @@ export class ReleasePort extends Transition {
     }
 
     activate() {
-        this.controller.getCanvasElement().addEventListener("mouseup", this.mouseUpFunc);
+        this.eventHandlerId = this.controller.registerEventHandler(EventType.TouchEnd, this.mouseUpFunc);
     }
 
     deactivate() {
-        this.controller.getCanvasElement().removeEventListener("mouseup", this.mouseUpFunc);
+        this.controller.removeEventHandler(this.eventHandlerId);
     }
 }

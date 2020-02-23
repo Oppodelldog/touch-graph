@@ -71,7 +71,7 @@ export class Graph implements GraphInterface {
     }
 
     public start(): void {
-        this.registerEvents();
+        this.initStates();
         this.controller.renderAll();
     }
 
@@ -83,10 +83,8 @@ export class Graph implements GraphInterface {
         this.controller.center(x, y)
     }
 
-    private registerEvents(): void {
-        const theApp = this;
+    private initStates(): void {
         const canvasElement = this.controller.getCanvasElement();
-        const theController = this.controller;
 
         let b = new Builder();
         let context = b.build(
@@ -123,39 +121,15 @@ export class Graph implements GraphInterface {
                     case 'Use Mousewheel':
                         return new UseMousewheel(name, this.controller);
                     case 'Zoom finished':
-                        return new ZoomFinished(name);
+                        return new ZoomFinished(name, this.controller);
                     case 'Double Click':
                         return new DoubleClick(name, this.controller);
                     case 'Focus adjustment finished':
-                        return new FocusAdjustmentFinished(name);
+                        return new FocusAdjustmentFinished(name, this.controller);
                     default:
                         throw new Error("unexpected Transition: " + name);
                 }
             }
         );
-
-        if ('ontouchstart' in window || navigator.msMaxTouchPoints) {
-            // Touch device
-            canvasElement.addEventListener("touchstart", function (event) {
-            });
-            canvasElement.addEventListener("touchmove", function (event) {
-            });
-            canvasElement.addEventListener("touchend", function (event) {
-            });
-            canvasElement.addEventListener("touchcancel", function (event) {
-            });
-        } else {
-        }
-    }
-
-    private static getTouchEndEventTouch(event) {
-        let touch = null;
-        if (event.touches.length > 0) {
-            touch = event.touches[0];
-        }
-        if (event.changedTouches.length > 0) {
-            touch = event.changedTouches[0];
-        }
-        return touch;
     }
 }

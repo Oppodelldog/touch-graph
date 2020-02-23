@@ -1,21 +1,18 @@
 import {State, Transition} from "../State/State";
-
-
-interface ControllerInterface {
-    getCanvasElement()
-
-    center(x: number, y: number)
-}
+import {Controller} from "../Controller";
+import {EventCallback, EventType} from "../ViewEvents";
+import {Position} from "../data/Position";
 
 export class AdjustingFocus extends State {
-    private controller: ControllerInterface;
+    private controller: Controller;
     targetPosX: number;
     targetPosY: number;
 
-    constructor(name: string, controller: ControllerInterface) {
+    constructor(name: string, controller: Controller) {
         super(name);
         this.controller = controller;
     }
+
     activate() {
         this.controller.center(this.targetPosX, this.targetPosY);
         super.activate();
@@ -27,35 +24,39 @@ export class AdjustingFocus extends State {
 }
 
 export class DoubleClick extends Transition {
-    private controller: ControllerInterface;
-    private readonly doubleClickFunc: Function;
+    private controller: Controller;
+    private readonly doubleClickFunc: EventCallback;
+    private eventHandlerId: string;
 
-    constructor(name: string, controller: ControllerInterface) {
+    constructor(name: string, controller: Controller) {
         super(name);
         this.controller = controller;
         this.doubleClickFunc = this.onDoubleClick.bind(this)
     }
 
-    onDoubleClick(event) {
+    onDoubleClick(event, touchInputPos: Position, diagramInputPos: Position) {
         const targetState = this.targetState as AdjustingFocus;
-        targetState.targetPosX = event.clientX;
-        targetState.targetPosY = event.clientY;
+        targetState.targetPosX = touchInputPos.x;
+        targetState.targetPosY = touchInputPos.y
         this.switchState();
         event.preventDefault();
     };
 
     activate() {
-        this.controller.getCanvasElement().addEventListener("dblclick", this.doubleClickFunc);
+        this.eventHandlerId = this.controller.registerEventHandler(EventType.DoubleClick, this.doubleClickFunc);
     }
 
     deactivate() {
-        this.controller.getCanvasElement().removeEventListener("dblclick", this.doubleClickFunc);
+        this.controller.removeEventHandler(this.eventHandlerId);
     }
 }
 
 export class FocusAdjustmentFinished extends Transition {
-    constructor(name: string) {
+    private controller: Controller;
+
+    constructor(name: string, controller: Controller) {
         super(name);
+        this.controller = controller;
     }
 
     activate() {
@@ -65,3 +66,4 @@ export class FocusAdjustmentFinished extends Transition {
     deactivate() {
     }
 }
+

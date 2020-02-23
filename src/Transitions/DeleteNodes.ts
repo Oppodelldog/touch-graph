@@ -3,7 +3,6 @@ import {Controller} from "../Controller";
 import {EventCallback, EventType} from "../ViewEvents";
 
 export class DeletingNodes extends State {
-
 }
 
 export class DeleteNodes extends Transition {
@@ -37,15 +36,10 @@ export class NodesDeleted extends Transition {
 
     constructor(name: string, controller: Controller) {
         super(name);
-        this.controller = controller;
     }
 
     activate() {
         this.switchState();
-    }
-
-    deactivate() {
-
     }
 }
 

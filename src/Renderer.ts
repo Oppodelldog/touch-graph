@@ -46,12 +46,10 @@ export class Renderer implements RenderInterface, ViewInterface {
     private viewEvents: ViewEvents;
 
     constructor(canvas) {
-
         this.canvas = canvas;
 
-        this.backgroundCanvas = document.getElementById("background-canvas");
-
-        this.htmlCanvas = document.getElementById("html-canvas");
+        this.backgroundCanvas = Renderer.addDivElement("background-canvas", "div", this.canvas);
+        this.htmlCanvas = Renderer.addDivElement("html-canvas", "div", this.canvas);
 
         this.svg = d3.select(canvas).append('svg');
         this.svg.attr("id", "svg-canvas");
@@ -63,6 +61,13 @@ export class Renderer implements RenderInterface, ViewInterface {
         this.viewEvents = new ViewEvents(this.canvas, this);
     }
 
+    private static addDivElement(id: string, type: string, canvasElement) {
+        let el = document.createElement(type);
+        el.id = id;
+        canvasElement.appendChild(el);
+
+        return el;
+    }
 
     public renderNode(node): void {
         let div = document.getElementById("#" + node.id);
@@ -268,7 +273,6 @@ export class Renderer implements RenderInterface, ViewInterface {
             const className = (selected) ? classNameSelected : classNameUnselected;
             div.classList.remove(classNameSelected, classNameUnselected);
             div.classList.add(className)
-
         }
     }
 
@@ -283,4 +287,6 @@ export class Renderer implements RenderInterface, ViewInterface {
         const id = "p_" + connectionId;
         this.svg.select("#" + id).remove();
     }
+
+
 }

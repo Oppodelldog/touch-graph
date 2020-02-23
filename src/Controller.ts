@@ -9,30 +9,30 @@ import UUID from "./UUID";
 import {Renderer} from "./Renderer";
 import {EventCallback, EventType} from "./ViewEvents";
 
+const canvasElementId = "touch-graph";
+
 export class Controller {
-    public onValidateNewConnection = null;
-    private connections: Connections;
+    public onValidateNewConnection: Function | null = null;
+    private readonly connections: Connections;
     private readonly nodes: Nodes;
-    private readonly canvasElement;
-    private renderer: Renderer;
-    private diagram: Diagram;
-    private scale = 1;
-    private selectedNodes: string[];
+    private readonly renderer: Renderer;
+    private readonly diagram: Diagram;
+    private readonly selectedNodes: string[];
+    private scale: number = 1;
 
     constructor() {
-        this.canvasElement = document.getElementById("canvas");
+        const canvasElement = document.getElementById(canvasElementId);
+        if (canvasElement == null) {
+            throw new Error(`need a div tag with id='${canvasElementId}'`);
+        }
         this.diagram = new Diagram();
         this.nodes = new Nodes();
         this.connections = new Connections();
-        this.renderer = new Renderer(this.canvasElement);
+        this.renderer = new Renderer(canvasElement);
         this.renderer.onClickLine = (connectionId) => {
             this.connections.remove(connectionId);
         };
         this.selectedNodes = [];
-    }
-
-    public getCanvasElement() {
-        return this.canvasElement;
     }
 
     public renderConnection(connection: Connection): void {
@@ -171,7 +171,6 @@ export class Controller {
     }
 
     dragStopDiagram(): void {
-
         this.diagram.dragStop()
     }
 

@@ -8,7 +8,7 @@ export default class Nodes {
         this.nodes = new Array<Node>();
     }
 
-    public getNodeById(nodeId): Node | null {
+    public getById(nodeId): Node | null {
         let nodes = this.nodes.filter((node) => node.id === nodeId);
         if (nodes.length === 1) {
             return nodes[0];
@@ -56,7 +56,7 @@ export default class Nodes {
     }
 
     public remove(nodeId: string) {
-        let node = this.getNodeById(nodeId);
+        let node = this.getById(nodeId);
         if (node !== null) {
             let index = this.nodes.indexOf(node);
             this.nodes.splice(index, 1)

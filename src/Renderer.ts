@@ -6,9 +6,9 @@ import {EventCallback, EventType, ViewEvents} from "./ViewEvents";
 export interface RenderInterface {
     renderNode(node): void
 
-    updateCanvasPosition(x?: number, y?: number): void
+    removeConnection(connectionId: string): void;
 
-    setScale(scale: number): void
+    removeNode(nodeId: string): void;
 
     updateNodePos(node: Node): void
 
@@ -16,13 +16,13 @@ export interface RenderInterface {
 
     updateLine(connectionId, fromPortId, toPortId, fromNode, toNode): void
 
+    updateCanvasPosition(x?: number, y?: number): void
+
+    setScale(scale: number): void
+
     updateGrabLine(x1: number, y1: number, x2: number, y2: number): void
 
     removeGrabLine(): void
-
-    removeConnection(connectionId: string): void;
-
-    removeNode(nodeId: string): void;
 }
 
 export interface ViewInterface {

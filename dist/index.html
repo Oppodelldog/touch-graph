@@ -79,7 +79,6 @@
         const isOppositePortDirection = (graph.getNodes().getPortDirection(connection.from.portId) !== graph.getNodes().getPortDirection(connection.to.portId));
         const isZeroConnections = 0 === (graph.getNumberOfPortConnections(connection.from.portId) + graph.getNumberOfPortConnections(connection.to.portId));
 
-
         if (!isZeroConnections) {
             console.log("ports must be empty");
             return false;
@@ -105,8 +104,32 @@
     graph.onRemoveNode(function (node) {
         console.log("node removed: " + node.id);
     });
+    graph.onMoveNode(function (node) {
+        console.log("node moved: " + node.x + "," + node.y);
+    });
+    graph.onMoveCanvas(function (pos) {
+        console.log("canvas moved: " + pos.X + "," + pos.Y);
+    });
+    graph.onScaleChanged(function (scale) {
+        console.log("scale changed: " + scale);
+    });
+    graph.onDragConnectionLine(function (line) {
+        console.log("connection line moved: ", line);
+    });
+    graph.onRemoveConnectionLine(function () {
+        console.log("remove connection line ");
+    });
+    graph.onNodeSelectionChanged(function (change) {
+        console.log("node selection changed: ", change);
+    });
     graph.onNewConnection(function (connection) {
         console.log("new connection created: " + connection.id);
+    });
+    graph.onRemoveConnection(function (connection) {
+        console.log("connection removed: " + connection.id);
+    });
+    graph.onUpdateConnection(function (connection) {
+        console.log("connection updated: " + connection.id);
     });
 
     // connect event listeners and render

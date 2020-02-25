@@ -7,6 +7,15 @@ export class Connections {
         this.connections = new Array<Connection>();
     }
 
+    getById(connectionId: string): Connection {
+        const connections = this.connections.filter((connection) => connection.id === connectionId);
+        if (connections.length === 1) {
+            return connections[0];
+        }
+
+        throw new Error("Connection not found: " + connectionId);
+    }
+
     public getByPortId(portId: string): Connection[] {
         return this.connections.filter((connection) => connection.from.portId === portId || connection.to.portId === portId)
     }

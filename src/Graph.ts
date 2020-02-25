@@ -3,14 +3,7 @@ import {Connection} from "./data/Connection";
 import Nodes from "./data/Nodes";
 import Port from "./data/Port";
 import {Controller} from "./Controller";
-import {
-    CallbackNewConnection,
-    CallbackNewNode,
-    CallbackRemoveNode,
-    CallbackValidateNewConnection,
-    GraphCallbackInterface,
-    GraphInterface
-} from "./GraphInterface";
+import {CallbackValidateNewConnection, GraphCallbackInterface, GraphInterface} from "./GraphInterface";
 import {Builder} from "./State/Builder";
 import {State, Transition} from "./State/State";
 import {GrabNode, NodeGrabbed, ReleaseNode} from "./Transitions/GrabNode";
@@ -48,16 +41,47 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
         this.controller.onValidateNewConnection = (connection) => f(connection)
     }
 
-    public onNewNode(f: CallbackNewNode): void {
-        this.controller.onNewNode = (node) => f(node)
+    public onNewNode(f: (node: Node) => void): void {
+        this.controller.onNewNode.subscribe(f)
     }
 
-    public onRemoveNode(f: CallbackRemoveNode): void {
-        this.controller.onRemoveNode = (node) => f(node)
+    public onRemoveNode(f: (node: Node) => void): void {
+        this.controller.onRemoveNode.subscribe(f)
     }
 
-    public onNewConnection(f: CallbackNewConnection): void {
-        this.controller.onNewConnection = (node) => f(node)
+    public onMoveNode(f: (node: Node) => void): void {
+        this.controller.onMoveNode.subscribe(f)
+    }
+
+    public onMoveCanvas(f: (pos: { X: number, Y: number }) => void): void {
+        this.controller.onMoveCanvas.subscribe(f)
+    }
+
+    public onScaleChanged(f: (scale: number) => void): void {
+        this.controller.onScaleChanged.subscribe(f)
+    }
+
+    public onDragConnectionLine(f: ({X1: x, Y1: y, X2: x2, Y2: y2}) => void): void {
+        this.controller.onDragConnectionLine.subscribe(f)
+    }
+
+    public onRemoveConnectionLine(f: () => void): void {
+        this.controller.onRemoveConnectionLine.subscribe(f)
+    }
+
+    public onNodeSelectionChanged(f: ({Node: Node, Selected: boolean}) => void): void {
+        this.controller.onNodeSelectionChanged.subscribe(f);
+    }
+
+    public onNewConnection(f: (connection: Connection) => void): void {
+        this.controller.onNewConnection.subscribe(f);
+    }
+
+    public onRemoveConnection(f: (connection: Connection) => void): void {
+        this.controller.onRemoveConnection.subscribe(f);
+    }
+    public onUpdateConnection(f: (connection: Connection) => void): void {
+        this.controller.onUpdateConnection.subscribe(f);
     }
 
     public getNodes(): Nodes {
@@ -99,7 +123,6 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
 
     public start(): void {
         this.initStates();
-        this.controller.renderAll();
     }
 
     private initStates(): void {

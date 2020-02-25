@@ -4,18 +4,31 @@ import Nodes from "./data/Nodes";
 import Port from "./data/Port";
 
 export type CallbackValidateNewConnection = (connection: Connection) => boolean;
-export type CallbackNewNode = (node: Node) => void;
-export type CallbackRemoveNode = (node: Node) => void;
-export type CallbackNewConnection = (connection: Connection) => void;
 
 export interface GraphCallbackInterface {
     onValidateNewConnection(f: CallbackValidateNewConnection): void
 
-    onNewNode(f: CallbackNewNode): void
+    onNewNode(f: (node: Node) => void): void
 
-    onRemoveNode(f: CallbackRemoveNode): void
+    onRemoveNode(f: (node: Node) => void): void
 
-    onNewConnection(f: CallbackNewConnection): void
+    onMoveNode(f: (node: Node) => void): void
+
+    onMoveCanvas(f: (pos: { X: number, Y: number }) => void): void
+
+    onScaleChanged(f: (scale: number) => void): void
+
+    onDragConnectionLine(f: ({X1: x, Y1: y, X2: x2, Y2: y2}) => void): void
+
+    onRemoveConnectionLine(f: () => void): void
+
+    onUpdateConnection(f: (connection: Connection) => void): void
+
+    onNodeSelectionChanged(f: ({Node: Node, Selected: boolean}) => void): void
+
+    onNewConnection(f: (connection: Connection) => void): void
+
+    onRemoveConnection(f: (connection: Connection) => void): void
 }
 
 export interface GraphInterface {

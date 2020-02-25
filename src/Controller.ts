@@ -7,14 +7,26 @@ import {Diagram} from "./data/Diagram";
 import UUID from "./UUID";
 import {Renderer, RenderInterface, ViewInterface} from "./Renderer";
 import {EventCallback, EventType} from "./ViewEvents";
+import {Observer} from "./Observer";
 
 const canvasElementId = "touch-graph";
 
-export class Controller {
+export abstract class ObservableController {
+    public readonly onNewNode: Observer<Node> = new Observer<Node>();
+    public readonly onRemoveNode: Observer<Node> = new Observer<Node>();
+    public readonly onMoveNode: Observer<Node> = new Observer<Node>();
+    public readonly onNodeSelectionChanged: Observer<{ Node: Node, Selected: boolean }> = new Observer<{ Node: Node, Selected: boolean }>();
+    public readonly onNewConnection: Observer<Connection> = new Observer<Connection>();
+    public readonly onRemoveConnection: Observer<Connection> = new Observer<Connection>();
+    public readonly onUpdateConnection: Observer<Connection> = new Observer<Connection>();
+    public readonly onMoveCanvas: Observer<{ X: number, Y: number }> = new Observer<{ X: number, Y: number }>();
+    public readonly onScaleChanged: Observer<number> = new Observer<number>();
+    public readonly onDragConnectionLine: Observer<{ X1: number, Y1: number, X2: number, Y2: number }> = new Observer<{ X1: number, Y1: number, X2: number, Y2: number }>();
+    public readonly onRemoveConnectionLine: Observer<void> = new Observer<void>();
+}
+
+export class Controller extends ObservableController {
     public onValidateNewConnection: (connection: Connection) => boolean = () => true;
-    public onNewNode: (node: Node) => void = () => void {};
-    public onRemoveNode: (node: Node) => void = () => void {};
-    public onNewConnection: (connection: Connection) => void = () => void {};
 
     private readonly connections: Connections;
     private readonly nodes: Nodes;
@@ -26,6 +38,7 @@ export class Controller {
     private scale: number = 1;
 
     constructor() {
+        super()
         this.canvasElement = document.getElementById(canvasElementId);
         if (this.canvasElement == null) {
             throw new Error(`need a div tag with id='${canvasElementId}'`);
@@ -35,17 +48,38 @@ export class Controller {
         this.connections = new Connections();
         const renderer = new Renderer(this.canvasElement);
         this.renderer = renderer;
+        this.bindRenderer(this.renderer);
         this.view = renderer;
         this.view.onClickLine((connectionId) => {
-            this.connections.remove(connectionId);
+            this.removeConnection(connectionId);
         });
         this.selectedNodes = [];
     }
 
-    public renderConnection(connection: Connection): void {
-        let fromNode = this.nodes.getNodeById(connection.from.nodeId);
-        let toNode = this.nodes.getNodeById(connection.to.nodeId);
-        this.renderer.updateLine(connection.id, connection.from.portId, connection.to.portId, fromNode, toNode);
+    private bindRenderer(renderer: RenderInterface) {
+        this.onNewNode.subscribe(renderer.renderNode.bind(this.renderer));
+        this.onMoveNode.subscribe((node: Node) => renderer.updateNodePos(node));
+        this.onRemoveNode.subscribe((node: Node) => renderer.removeNode(node.id));
+        this.onNewConnection.subscribe((c: Connection) => {
+            const fromNode = this.nodes.getById(c.from.nodeId);
+            const toNode = this.nodes.getById(c.to.nodeId);
+            renderer.updateLine(c.id, c.from.portId, c.to.portId, fromNode, toNode)
+        });
+        this.onUpdateConnection.subscribe((c: Connection) => {
+            const fromNode = this.nodes.getById(c.from.nodeId);
+            const toNode = this.nodes.getById(c.to.nodeId);
+            renderer.updateLine(c.id, c.from.portId, c.to.portId, fromNode, toNode)
+        });
+        this.onRemoveConnection.subscribe((c: Connection) => renderer.removeConnection(c.id));
+        this.onScaleChanged.subscribe((scale: number) => renderer.setScale(scale));
+        this.onDragConnectionLine.subscribe((line: { X1: number, Y1: number, X2: number, Y2: number }) => renderer.updateGrabLine(line.X1, line.Y1, line.X2, line.Y2));
+        this.onRemoveConnectionLine.subscribe(() => renderer.removeGrabLine());
+        this.onMoveCanvas.subscribe((pos: { X: number, Y: number }) => renderer.updateCanvasPosition(pos.X, pos.Y));
+        this.onNodeSelectionChanged.subscribe((change: { Node: Node, Selected: boolean }) => renderer.updateNodeSelection(change.Node.id, change.Selected));
+    }
+
+    public updateConnection(connection: Connection): void {
+        this.onUpdateConnection.notify(connection);
     }
 
     public getNodes(): Nodes {
@@ -76,8 +110,7 @@ export class Controller {
         }
 
         this.connections.push(connection);
-
-        this.onNewConnection(connection);
+        this.onNewConnection.notify(connection);
 
         return true;
     }
@@ -109,24 +142,12 @@ export class Controller {
 
     addNode(node: Node) {
         this.nodes.push(node);
-        this.onNewNode(node);
-    }
-
-    public renderNodes(): void {
-        this.nodes.forEach((node) => this.renderer.renderNode(node));
-    }
-
-    public updateConnection(): void {
-        this.connections.forEach((connection) => {
-            let fromNode = this.nodes.getNodeById(connection.from.nodeId);
-            let toNode = this.nodes.getNodeById(connection.to.nodeId);
-            this.renderer.updateLine(connection.id, connection.from.portId, connection.to.portId, fromNode, toNode)
-        });
+        this.onNewNode.notify(node);
     }
 
     public setScale(scale): void {
         this.scale = scale;
-        this.renderer.setScale(this.scale);
+        this.onScaleChanged.notify(this.scale);
     }
 
     public moveTo(x, y): void {
@@ -136,12 +157,12 @@ export class Controller {
         this.diagram.xOffset += diagramCanvasRect.width / 2;
         this.diagram.yOffset += diagramCanvasRect.height / 2;
 
-        this.renderer.updateCanvasPosition(this.diagram.xOffset, this.diagram.yOffset)
+        this.updateCanvasPosition(this.diagram.xOffset, this.diagram.yOffset)
     }
 
     public center(x: any, y: any) {
         let nodeId = this.view.getHoveredNodeId(x, y);
-        let node = this.nodes.getNodeById(nodeId);
+        let node = this.nodes.getById(nodeId);
         if (node !== null) {
             this.moveTo(node.x, node.y);
         }
@@ -156,7 +177,7 @@ export class Controller {
     }
 
     public updateGrabLine(x: number, y: number, x2: number, y2: number): void {
-        return this.renderer.updateGrabLine(x, y, x2, y2);
+        this.onDragConnectionLine.notify({X1: x, Y1: y, X2: x2, Y2: y2});
     }
 
     public getNodeFromPortId(portId: string): Node {
@@ -164,12 +185,12 @@ export class Controller {
     }
 
     public removeGrabLine(): void {
-        this.renderer.removeGrabLine();
+        this.onRemoveConnectionLine.notify()
     }
 
     public dragStopDiagram(): void {
         this.diagram.dragStop();
-        this.renderer.updateCanvasPosition(this.diagram.xOffset, this.diagram.yOffset)
+        this.updateCanvasPosition(this.diagram.xOffset, this.diagram.yOffset)
     }
 
     public dragMoveDiagram(x: number, y: number): void {
@@ -177,8 +198,8 @@ export class Controller {
         this.updateCanvasPosition(this.diagram.xDrag, this.diagram.yDrag);
     }
 
-    public updateCanvasPosition(x: number, y: number): void {
-        this.renderer.updateCanvasPosition(x, y);
+    private updateCanvasPosition(x: number, y: number): void {
+        this.onMoveCanvas.notify({X: x, Y: y});
     }
 
     public isCanvasHovered(x: number, y: number): boolean {
@@ -194,27 +215,30 @@ export class Controller {
     }
 
     public getNodeById(nodeId: string): Node | null {
-        return this.nodes.getNodeById(nodeId);
+        return this.nodes.getById(nodeId);
     }
 
     public updateNodePos(node: Node): void {
-        this.renderer.updateNodePos(node);
+        this.onMoveNode.notify(node);
     }
 
     public renderNodeConnections(node: Node) {
         this.connections.getByNodeId(node.id).forEach((connection) => {
-            this.renderConnection(connection);
+            this.updateConnection(connection);
         });
-    }
-
-    public renderAll() {
-        this.renderNodes();
-        this.updateConnection();
     }
 
     public selectNode(nodeId: string) {
         this.selectedNodes.push(nodeId);
-        this.renderer.updateNodeSelection(nodeId, this.isNodeSelected(nodeId))
+        this.updateNodeSelection(nodeId);
+    }
+
+    private updateNodeSelection(nodeId: string) {
+        const node = this.nodes.getById(nodeId);
+        if (node === null) {
+            return;
+        }
+        this.onNodeSelectionChanged.notify({Node: node, Selected: this.isNodeSelected(nodeId)})
     }
 
     public deselectNode(nodeId: string) {
@@ -225,28 +249,34 @@ export class Controller {
         if (index >= 0) {
             this.selectedNodes.splice(index, 1)
         }
-        this.renderer.updateNodeSelection(nodeId, this.isNodeSelected(nodeId))
+
+        this.updateNodeSelection(nodeId);
     }
 
     public removeSelectedNodeKeepLatest() {
-        this.selectedNodes.splice(0, this.selectedNodes.length - 1);
-        this.nodes.forEach((node) => this.renderer.updateNodeSelection(node.id, this.isNodeSelected(node.id)));
+        this.selectedNodes.splice(0, this.selectedNodes.length - 1).forEach((removedNodeIds) => this.updateNodeSelection(removedNodeIds));
     }
 
     public isNodeSelected(nodeId: string) {
         return this.selectedNodes.indexOf(nodeId) >= 0;
     }
 
+    private removeConnection(connectionId: string) {
+        const removedConnection = this.connections.getById(connectionId);
+        this.connections.remove(connectionId);
+        this.onRemoveConnection.notify(removedConnection)
+    }
+
     public deleteSelectedNodes() {
-        this.selectedNodes.forEach((nodeId) => {
-            const node = this.getNodeById(nodeId);
-            this.nodes.remove(nodeId);
-            this.connections.getByNodeId(nodeId).forEach((connection) => {
-                this.connections.remove(connection.id);
-                this.renderer.removeConnection(connection.id);
-            });
-            this.renderer.removeNode(nodeId);
-            this.onRemoveNode(node);
-        })
+        this.selectedNodes.forEach((nodeId) => this.removeNode(nodeId))
+    }
+
+    private removeNode(nodeId: string) {
+        const node = this.getNodeById(nodeId);
+        this.nodes.remove(nodeId);
+        this.connections.getByNodeId(nodeId).forEach((connection) => {
+            this.removeConnection(connection.id);
+        });
+        this.onRemoveNode.notify(node);
     }
 }

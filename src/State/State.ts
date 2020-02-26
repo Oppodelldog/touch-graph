@@ -6,7 +6,7 @@ export interface Activateable {
 
 export class Context {
     state: State;
-    debug: boolean;
+    debug: boolean = true;
 
     public switchState(s: State) {
         if (this.debug) {

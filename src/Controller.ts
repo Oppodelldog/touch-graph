@@ -5,23 +5,27 @@ import {Connection} from "./data/Connection";
 import {Connections} from "./data/Connections";
 import {Diagram} from "./data/Diagram";
 import UUID from "./UUID";
-import {Renderer, RenderInterface, ViewInterface} from "./Renderer";
+import {ViewInterface} from "./Renderer";
 import {EventCallback, EventType} from "./ViewEvents";
 import {Observer} from "./Observer";
 
-const canvasElementId = "touch-graph";
+export class ConnectionUpdate {
+    public connection: Connection;
+    public fromNode: Node;
+    public toNode: Node;
+}
 
 export abstract class ObservableController {
     public readonly onNewNode: Observer<Node> = new Observer<Node>();
     public readonly onRemoveNode: Observer<Node> = new Observer<Node>();
     public readonly onMoveNode: Observer<Node> = new Observer<Node>();
-    public readonly onNodeSelectionChanged: Observer<{ Node: Node, Selected: boolean }> = new Observer<{ Node: Node, Selected: boolean }>();
-    public readonly onNewConnection: Observer<Connection> = new Observer<Connection>();
+    public readonly onNodeSelectionChanged: Observer<{ node: Node, selected: boolean }> = new Observer<{ node: Node, selected: boolean }>();
+    public readonly onNewConnection: Observer<ConnectionUpdate> = new Observer<ConnectionUpdate>();
+    public readonly onUpdateConnection: Observer<ConnectionUpdate> = new Observer<ConnectionUpdate>();
     public readonly onRemoveConnection: Observer<Connection> = new Observer<Connection>();
-    public readonly onUpdateConnection: Observer<Connection> = new Observer<Connection>();
-    public readonly onMoveCanvas: Observer<{ X: number, Y: number }> = new Observer<{ X: number, Y: number }>();
+    public readonly onMoveCanvas: Observer<{ x: number, y: number }> = new Observer<{ x: number, y: number }>();
     public readonly onScaleChanged: Observer<number> = new Observer<number>();
-    public readonly onDragConnectionLine: Observer<{ X1: number, Y1: number, X2: number, Y2: number }> = new Observer<{ X1: number, Y1: number, X2: number, Y2: number }>();
+    public readonly onDragConnectionLine: Observer<{ x1: number, y1: number, x2: number, y2: number }> = new Observer<{ x1: number, y1: number, x2: number, y2: number }>();
     public readonly onRemoveConnectionLine: Observer<void> = new Observer<void>();
 }
 
@@ -30,56 +34,34 @@ export class Controller extends ObservableController {
 
     private readonly connections: Connections;
     private readonly nodes: Nodes;
-    private readonly renderer: RenderInterface;
     private readonly view: ViewInterface;
     private readonly diagram: Diagram;
     private readonly selectedNodes: string[];
-    private readonly canvasElement: HTMLElement;
     private scale: number = 1;
 
-    constructor() {
-        super()
-        this.canvasElement = document.getElementById(canvasElementId);
-        if (this.canvasElement == null) {
-            throw new Error(`need a div tag with id='${canvasElementId}'`);
-        }
+    constructor(view: ViewInterface) {
+        super();
         this.diagram = new Diagram();
         this.nodes = new Nodes();
         this.connections = new Connections();
-        const renderer = new Renderer(this.canvasElement);
-        this.renderer = renderer;
-        this.bindRenderer(this.renderer);
-        this.view = renderer;
+        this.view = view;
         this.view.onClickLine((connectionId) => {
             this.removeConnection(connectionId);
         });
         this.selectedNodes = [];
     }
 
-    private bindRenderer(renderer: RenderInterface) {
-        this.onNewNode.subscribe(renderer.renderNode.bind(this.renderer));
-        this.onMoveNode.subscribe((node: Node) => renderer.updateNodePos(node));
-        this.onRemoveNode.subscribe((node: Node) => renderer.removeNode(node.id));
-        this.onNewConnection.subscribe((c: Connection) => {
-            const fromNode = this.nodes.getById(c.from.nodeId);
-            const toNode = this.nodes.getById(c.to.nodeId);
-            renderer.updateLine(c.id, c.from.portId, c.to.portId, fromNode, toNode)
-        });
-        this.onUpdateConnection.subscribe((c: Connection) => {
-            const fromNode = this.nodes.getById(c.from.nodeId);
-            const toNode = this.nodes.getById(c.to.nodeId);
-            renderer.updateLine(c.id, c.from.portId, c.to.portId, fromNode, toNode)
-        });
-        this.onRemoveConnection.subscribe((c: Connection) => renderer.removeConnection(c.id));
-        this.onScaleChanged.subscribe((scale: number) => renderer.setScale(scale));
-        this.onDragConnectionLine.subscribe((line: { X1: number, Y1: number, X2: number, Y2: number }) => renderer.updateGrabLine(line.X1, line.Y1, line.X2, line.Y2));
-        this.onRemoveConnectionLine.subscribe(() => renderer.removeGrabLine());
-        this.onMoveCanvas.subscribe((pos: { X: number, Y: number }) => renderer.updateCanvasPosition(pos.X, pos.Y));
-        this.onNodeSelectionChanged.subscribe((change: { Node: Node, Selected: boolean }) => renderer.updateNodeSelection(change.Node.id, change.Selected));
+    private newConnectionUpdate(connection: Connection): ConnectionUpdate {
+        const update = new ConnectionUpdate();
+
+        update.connection = connection;
+        update.fromNode = this.getNodeById(connection.from.nodeId);
+        update.toNode = this.getNodeById(connection.to.nodeId);
+        return update;
     }
 
     public updateConnection(connection: Connection): void {
-        this.onUpdateConnection.notify(connection);
+        this.onUpdateConnection.notify(this.newConnectionUpdate(connection));
     }
 
     public getNodes(): Nodes {
@@ -110,7 +92,7 @@ export class Controller extends ObservableController {
         }
 
         this.connections.push(connection);
-        this.onNewConnection.notify(connection);
+        this.onNewConnection.notify(this.newConnectionUpdate(connection));
 
         return true;
     }
@@ -151,7 +133,7 @@ export class Controller extends ObservableController {
     }
 
     public moveTo(x, y): void {
-        const diagramCanvasRect = this.canvasElement.getBoundingClientRect();
+        const diagramCanvasRect = this.view.getCanvasRect();
         this.diagram.xOffset = -x * this.scale;
         this.diagram.yOffset = -y * this.scale;
         this.diagram.xOffset += diagramCanvasRect.width / 2;
@@ -177,7 +159,7 @@ export class Controller extends ObservableController {
     }
 
     public updateGrabLine(x: number, y: number, x2: number, y2: number): void {
-        this.onDragConnectionLine.notify({X1: x, Y1: y, X2: x2, Y2: y2});
+        this.onDragConnectionLine.notify({x1: x, y1: y, x2: x2, y2: y2});
     }
 
     public getNodeFromPortId(portId: string): Node {
@@ -199,7 +181,7 @@ export class Controller extends ObservableController {
     }
 
     private updateCanvasPosition(x: number, y: number): void {
-        this.onMoveCanvas.notify({X: x, Y: y});
+        this.onMoveCanvas.notify({x: x, y: y});
     }
 
     public isCanvasHovered(x: number, y: number): boolean {
@@ -238,7 +220,7 @@ export class Controller extends ObservableController {
         if (node === null) {
             return;
         }
-        this.onNodeSelectionChanged.notify({Node: node, Selected: this.isNodeSelected(nodeId)})
+        this.onNodeSelectionChanged.notify({node: node, selected: this.isNodeSelected(nodeId)})
     }
 
     public deselectNode(nodeId: string) {

@@ -22,6 +22,9 @@ import {
 } from "./Transitions/SelectNode";
 import {Idle} from "./Transitions/Idle";
 import {DeleteNodes, DeletingNodes, NodesDeleted} from "./Transitions/DeleteNodes";
+import {Renderer} from "./Renderer";
+
+const canvasElementId = "touch-graph";
 
 export enum PortDirection {
     Unknown = 0,
@@ -29,12 +32,20 @@ export enum PortDirection {
     Output = 2
 }
 
-
 export class Graph implements GraphInterface, GraphCallbackInterface {
     private readonly controller: Controller;
+    private renderer: Renderer;
+    private canvasElement: HTMLElement;
 
     constructor() {
-        this.controller = new Controller();
+        this.canvasElement = document.getElementById(canvasElementId);
+        if (this.canvasElement == null) {
+            throw new Error(`need a div tag with id='${canvasElementId}'`);
+        }
+
+        this.renderer = new Renderer(this.canvasElement);
+        this.controller = new Controller(this.renderer);
+        this.renderer.bind(this.controller);
     }
 
     public onValidateNewConnection(f: CallbackValidateNewConnection): void {
@@ -80,6 +91,7 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
     public onRemoveConnection(f: (connection: Connection) => void): void {
         this.controller.onRemoveConnection.subscribe(f);
     }
+
     public onUpdateConnection(f: (connection: Connection) => void): void {
         this.controller.onUpdateConnection.subscribe(f);
     }

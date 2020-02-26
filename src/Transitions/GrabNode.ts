@@ -6,8 +6,8 @@ import Node from "../data/Node";
 import {EventCallback, EventType} from "../ViewEvents";
 
 export class NodeGrabbed extends State {
-    public grabber: Grabber;
-    private controller: Controller;
+    public readonly grabber: Grabber;
+    private readonly controller: Controller;
     private readonly mouseMoveFunc: EventCallback;
     private eventHandlerId: string;
 
@@ -31,7 +31,7 @@ export class NodeGrabbed extends State {
         this.eventHandlerId = this.controller.registerEventHandler(EventType.TouchMove, this.mouseMoveFunc);
     }
 
-    public  deactivate() {
+    public deactivate() {
         super.deactivate();
         this.controller.removeEventHandler(this.eventHandlerId);
     }
@@ -48,7 +48,7 @@ export class GrabNode extends Transition {
         this.mouseDownFunc = this.onMouseDown.bind(this)
     }
 
-   private onMouseDown(event, touchInputPos: Position, diagramInputPos: Position) {
+    private onMouseDown(event, touchInputPos: Position, diagramInputPos: Position) {
         let hoveredNodeId = this.controller.getHoveredNodeId(touchInputPos.x, touchInputPos.y);
         const hoveredPortId = this.controller.getHoveredPortId(touchInputPos.x, touchInputPos.y);
         if (hoveredPortId !== "") {
@@ -62,11 +62,11 @@ export class GrabNode extends Transition {
         event.preventDefault();
     };
 
-    public  activate() {
+    public activate() {
         this.eventHandlerId = this.controller.registerEventHandler(EventType.TouchStart, this.mouseDownFunc);
     }
 
-    public  deactivate() {
+    public deactivate() {
         this.controller.removeEventHandler(this.eventHandlerId);
     }
 }

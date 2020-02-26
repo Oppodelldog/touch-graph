@@ -2,6 +2,7 @@ import Node from "./data/Node";
 import {Connection} from "./data/Connection";
 import Nodes from "./data/Nodes";
 import Port from "./data/Port";
+import {ConnectionUpdate} from "./Controller";
 
 export type CallbackValidateNewConnection = (connection: Connection) => boolean;
 
@@ -9,6 +10,8 @@ export interface GraphCallbackInterface {
     onValidateNewConnection(f: CallbackValidateNewConnection): void
 
     onNewNode(f: (node: Node) => void): void
+
+    onNodeSelectionChanged(f: ({Node: Node, Selected: boolean}) => void): void
 
     onRemoveNode(f: (node: Node) => void): void
 
@@ -22,11 +25,9 @@ export interface GraphCallbackInterface {
 
     onRemoveConnectionLine(f: () => void): void
 
-    onUpdateConnection(f: (connection: Connection) => void): void
+    onUpdateConnection(f: (connectionUpdate: ConnectionUpdate) => void): void
 
-    onNodeSelectionChanged(f: ({Node: Node, Selected: boolean}) => void): void
-
-    onNewConnection(f: (connection: Connection) => void): void
+    onNewConnection(f: (connectionUpdate: ConnectionUpdate) => void): void
 
     onRemoveConnection(f: (connection: Connection) => void): void
 }
@@ -48,6 +49,4 @@ export interface GraphInterface {
     setScale(scale): void
 
     moveTo(x, y): void
-
-    start(): void
 }

@@ -1,5 +1,10 @@
-import {PortDirection} from "../Graph";
 import Node from "./Node"
+
+export enum PortDirection {
+    Unknown = 0,
+    Input = 1,
+    Output = 2
+}
 
 export default class Nodes {
     private readonly nodes: Node[];

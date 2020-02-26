@@ -41,10 +41,10 @@ export class Controller extends ObservableController {
 
     constructor(view: ViewInterface) {
         super();
+        this.view = view;
         this.diagram = new Diagram();
         this.nodes = new Nodes();
         this.connections = new Connections();
-        this.view = view;
         this.view.onClickLine((connectionId) => {
             this.removeConnection(connectionId);
         });
@@ -92,7 +92,7 @@ export class Controller extends ObservableController {
         }
 
         this.connections.push(connection);
-        this.onNewConnection.notify(this.newConnectionUpdate(connection));
+        this.updateConnection(connection);
 
         return true;
     }

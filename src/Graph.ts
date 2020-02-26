@@ -2,50 +2,20 @@ import Node from "./data/Node";
 import {Connection} from "./data/Connection";
 import Nodes from "./data/Nodes";
 import Port from "./data/Port";
-import {Controller} from "./Controller";
+import {ConnectionUpdate, Controller, ObservableController} from "./Controller";
 import {CallbackValidateNewConnection, GraphCallbackInterface, GraphInterface} from "./GraphInterface";
-import {Builder} from "./State/Builder";
-import {State, Transition} from "./State/State";
-import {GrabNode, NodeGrabbed, ReleaseNode} from "./Transitions/GrabNode";
-import {GrabPort, PortGrabbed, ReleasePort} from "./Transitions/GrabPort";
-import {DiagramGrabbed, GrabDiagram, ReleaseDiagram} from "./Transitions/GrabDiagram";
-import {UseMousewheel, ZoomFinished, Zooming} from "./Transitions/Zoom";
-import {AdjustingFocus, DoubleClick, FocusAdjustmentFinished} from "./Transitions/FocusElement";
-import {
-    DeSelectNode,
-    SelectingNodes,
-    SelectNode,
-    SelectOneMoreNode,
-    SingleSelectionReturn,
-    TurnOffMultiNodeSelectionMode,
-    TurnOnMultiNodeSelectionMode
-} from "./Transitions/SelectNode";
-import {Idle} from "./Transitions/Idle";
-import {DeleteNodes, DeletingNodes, NodesDeleted} from "./Transitions/DeleteNodes";
-import {Renderer} from "./Renderer";
-
-const canvasElementId = "touch-graph";
-
-export enum PortDirection {
-    Unknown = 0,
-    Input = 1,
-    Output = 2
-}
+import {Renderer, ViewInterface} from "./Renderer";
+import {AppStates} from "./AppStates";
 
 export class Graph implements GraphInterface, GraphCallbackInterface {
     private readonly controller: Controller;
-    private renderer: Renderer;
-    private canvasElement: HTMLElement;
+    private readonly renderer: Renderer;
 
     constructor() {
-        this.canvasElement = document.getElementById(canvasElementId);
-        if (this.canvasElement == null) {
-            throw new Error(`need a div tag with id='${canvasElementId}'`);
-        }
-
-        this.renderer = new Renderer(this.canvasElement);
-        this.controller = new Controller(this.renderer);
-        this.renderer.bind(this.controller);
+        this.renderer = new Renderer();
+        this.controller = new Controller(this.renderer as ViewInterface);
+        this.renderer.bind(this.controller as ObservableController);
+        this.initStates();
     }
 
     public onValidateNewConnection(f: CallbackValidateNewConnection): void {
@@ -84,16 +54,16 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
         this.controller.onNodeSelectionChanged.subscribe(f);
     }
 
-    public onNewConnection(f: (connection: Connection) => void): void {
+    public onNewConnection(f: (connection: ConnectionUpdate) => void): void {
         this.controller.onNewConnection.subscribe(f);
+    }
+
+    public onUpdateConnection(f: (connection: ConnectionUpdate) => void): void {
+        this.controller.onUpdateConnection.subscribe(f);
     }
 
     public onRemoveConnection(f: (connection: Connection) => void): void {
         this.controller.onRemoveConnection.subscribe(f);
-    }
-
-    public onUpdateConnection(f: (connection: Connection) => void): void {
-        this.controller.onUpdateConnection.subscribe(f);
     }
 
     public getNodes(): Nodes {
@@ -133,78 +103,7 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
         this.controller.moveTo(x, y)
     }
 
-    public start(): void {
-        this.initStates();
-    }
-
     private initStates(): void {
-        new Builder().build(
-            (name: string): State => {
-                switch (name) {
-                    case 'Idle':
-                        return new Idle(name, this.controller);
-                    case 'Node Grabbed':
-                        return new NodeGrabbed(name, this.controller);
-                    case 'Port Grabbed':
-                        return new PortGrabbed(name, this.controller);
-                    case 'Diagram Grabbed':
-                        return new DiagramGrabbed(name, this.controller);
-                    case 'Zooming':
-                        return new Zooming(name, this.controller);
-                    case 'Adjusting Focus':
-                        return new AdjustingFocus(name, this.controller);
-                    case 'Selecting Nodes':
-                        return new SelectingNodes(name);
-                    case 'Selecting multiple Nodes':
-                        return new SelectingNodes(name);
-                    case 'Deleting Selected Nodes':
-                        return new DeletingNodes(name);
-                    default:
-                        throw new Error("undefined State: " + name);
-                }
-            },
-            (name: string): Transition => {
-                switch (name) {
-                    case 'Grab Node':
-                        return new GrabNode(name, this.controller);
-                    case 'Release Node':
-                        return new ReleaseNode(name, this.controller);
-                    case 'Grab Port':
-                        return new GrabPort(name, this.controller);
-                    case 'Release Port':
-                        return new ReleasePort(name, this.controller);
-                    case 'Grab Diagram':
-                        return new GrabDiagram(name, this.controller);
-                    case 'Release Diagram':
-                        return new ReleaseDiagram(name, this.controller);
-                    case 'Use Mousewheel':
-                        return new UseMousewheel(name, this.controller);
-                    case 'Zoom finished':
-                        return new ZoomFinished(name, this.controller);
-                    case 'Double Click':
-                        return new DoubleClick(name, this.controller);
-                    case 'Focus adjustment finished':
-                        return new FocusAdjustmentFinished(name, this.controller);
-                    case 'Select Node':
-                        return new SelectNode(name, this.controller);
-                    case 'Single Selection Return':
-                        return new SingleSelectionReturn(name, this.controller);
-                    case 'Select one more Node':
-                        return new SelectOneMoreNode(name, this.controller);
-                    case 'Deselect one Node':
-                        return new DeSelectNode(name, this.controller);
-                    case 'Turn on multi selection':
-                        return new TurnOnMultiNodeSelectionMode(name, this.controller);
-                    case 'Turn off multi selection':
-                        return new TurnOffMultiNodeSelectionMode(name, this.controller);
-                    case 'Delete Nodes':
-                        return new DeleteNodes(name, this.controller);
-                    case 'Nodes Deleted':
-                        return new NodesDeleted(name);
-                    default:
-                        throw new Error("undefined Transition: " + name);
-                }
-            }
-        );
+        AppStates.init(this.controller);
     }
 }

@@ -5,6 +5,8 @@ import {EventCallback, EventType, ViewEvents} from "./ViewEvents";
 import {ConnectionUpdate, ObservableController} from "./Controller";
 import {Connection} from "./data/Connection";
 
+const canvasElementId = "touch-graph";
+
 export interface RenderInterface {
     renderNode(node): void
 
@@ -44,26 +46,29 @@ export interface ViewInterface {
 }
 
 export class Renderer implements RenderInterface, ViewInterface {
-    private readonly canvas: HTMLDivElement;
-    private readonly backgroundCanvas;
-    private readonly svgCanvas;
-    private readonly htmlCanvas;
-    private readonly nodeElements = [];
-    private readonly canvasLayers;
+    private readonly canvas: HTMLElement;
+    private readonly backgroundCanvas: HTMLElement;
+    private readonly svgCanvas: HTMLElement;
+    private readonly htmlCanvas: HTMLElement;
+    private readonly nodeElements: HTMLElement[] = [] as HTMLElement[];
+    private readonly canvasLayers: HTMLElement[] = [] as HTMLElement[];
     private readonly svg;
     private readonly canvasLayersTransforms: { scale: string; translate: string };
     private readonly viewEvents: ViewEvents;
-    private portRadius = 7;
-    private scale = 1;
+    private portRadius: number = 7;
+    private scale: number = 1;
     private _onClickLine: (connectionId: any) => void = () => void {};
 
-    constructor(canvas) {
-        this.canvas = canvas;
+    constructor() {
+        this.canvas = document.getElementById(canvasElementId);
+        if (this.canvas == null) {
+            throw new Error(`need a div tag with id='${canvasElementId}'`);
+        }
 
         this.backgroundCanvas = Renderer.addDivElement("background-canvas", "div", this.canvas);
         this.htmlCanvas = Renderer.addDivElement("html-canvas", "div", this.canvas);
 
-        this.svg = d3.select(canvas).append('svg');
+        this.svg = d3.select(this.canvas).append('svg');
         this.svg.attr("id", "svg-canvas");
         this.svgCanvas = document.getElementById("svg-canvas");
 
@@ -71,6 +76,20 @@ export class Renderer implements RenderInterface, ViewInterface {
         this.canvasLayersTransforms = {translate: "translate(0,0)", scale: "scale(1)"};
 
         this.viewEvents = new ViewEvents(this.canvas, this);
+    }
+
+    public bind(controller: ObservableController) {
+        controller.onNewNode.subscribe(this.renderNode.bind(this));
+        controller.onMoveNode.subscribe((node: Node) => this.updateNodePos(node));
+        controller.onRemoveNode.subscribe((node: Node) => this.removeNode(node.id));
+        controller.onNewConnection.subscribe((update: ConnectionUpdate) => this.updateLine(update));
+        controller.onUpdateConnection.subscribe((update: ConnectionUpdate) => this.updateLine(update));
+        controller.onRemoveConnection.subscribe((c: Connection) => this.removeConnection(c.id));
+        controller.onScaleChanged.subscribe((scale: number) => this.setScale(scale));
+        controller.onDragConnectionLine.subscribe((line: { x1: number, y1: number, x2: number, y2: number }) => this.updateGrabLine(line.x1, line.y1, line.x2, line.y2));
+        controller.onRemoveConnectionLine.subscribe(() => this.removeGrabLine());
+        controller.onMoveCanvas.subscribe((pos: { x: number, y: number }) => this.updateCanvasPosition(pos.x, pos.y));
+        controller.onNodeSelectionChanged.subscribe((change: { node: Node, selected: boolean }) => this.updateNodeSelection(change.node.id, change.selected));
     }
 
     public getCanvasRect(): DOMRect {
@@ -300,17 +319,4 @@ export class Renderer implements RenderInterface, ViewInterface {
         return "p_" + connectionId;
     }
 
-    bind(controller: ObservableController) {
-        controller.onNewNode.subscribe(this.renderNode.bind(this));
-        controller.onMoveNode.subscribe((node: Node) => this.updateNodePos(node));
-        controller.onRemoveNode.subscribe((node: Node) => this.removeNode(node.id));
-        controller.onNewConnection.subscribe((update: ConnectionUpdate) => this.updateLine(update));
-        controller.onUpdateConnection.subscribe((update: ConnectionUpdate) => this.updateLine(update));
-        controller.onRemoveConnection.subscribe((c: Connection) => this.removeConnection(c.id));
-        controller.onScaleChanged.subscribe((scale: number) => this.setScale(scale));
-        controller.onDragConnectionLine.subscribe((line: { x1: number, y1: number, x2: number, y2: number }) => this.updateGrabLine(line.x1, line.y1, line.x2, line.y2));
-        controller.onRemoveConnectionLine.subscribe(() => this.removeGrabLine());
-        controller.onMoveCanvas.subscribe((pos: { x: number, y: number }) => this.updateCanvasPosition(pos.x, pos.y));
-        controller.onNodeSelectionChanged.subscribe((change: { node: Node, selected: boolean }) => this.updateNodeSelection(change.node.id, change.selected));
-    }
 }

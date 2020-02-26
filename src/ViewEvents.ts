@@ -26,10 +26,10 @@ type EventNamesByType = {
 
 export class ViewEvents {
     private eventCallbacks: EventCallbackRegistration[] = [] as EventCallbackRegistration[];
-    private readonly canvas: HTMLDivElement;
+    private readonly canvas: HTMLElement;
     private renderer: Renderer;
 
-    constructor(canvas: HTMLDivElement, renderer: Renderer) {
+    constructor(canvas: HTMLElement, renderer: Renderer) {
         this.canvas = canvas;
         this.renderer = renderer;
     }

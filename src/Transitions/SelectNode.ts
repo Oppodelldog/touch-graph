@@ -108,7 +108,7 @@ export class SingleSelectionReturn extends Transition {
         this.controller = controller;
     }
 
-    public     activate() {
+    public activate() {
         this.controller.removeSelectedNodeKeepLatest();
         this.switchState();
     }

@@ -101,7 +101,7 @@ export class ReleasePort extends Transition {
         this.eventHandlerId = this.controller.registerEventHandler(EventType.TouchEnd, this.mouseUpFunc);
     }
 
-    public  deactivate() {
+    public deactivate() {
         this.controller.removeEventHandler(this.eventHandlerId);
     }
 }

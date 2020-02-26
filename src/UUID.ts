@@ -1,5 +1,4 @@
-
-export default class UUID{
+export default class UUID {
     public static NewId(): string {
         // noinspection SpellCheckingInspection
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {

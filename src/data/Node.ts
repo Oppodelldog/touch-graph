@@ -25,19 +25,19 @@ export default class Node {
         return this.portsIn.concat(this.portsOut).filter((port) => port.id === portId).length !== 0;
     }
 
-    public  isInPort(portId: string): boolean {
+    public isInPort(portId: string): boolean {
         return this.portsIn.filter((port) => port.id === portId).length === 1;
     }
 
-    public  isOutPort(portId: string): boolean {
+    public isOutPort(portId: string): boolean {
         return this.portsOut.filter((port) => port.id === portId).length === 1;
     }
 
-    public  addInPort(port: Port): void {
+    public addInPort(port: Port): void {
         this.portsIn.push(port);
     }
 
-    public  addOutPort(port: Port): void {
+    public addOutPort(port: Port): void {
         this.portsOut.push(port);
     }
 }

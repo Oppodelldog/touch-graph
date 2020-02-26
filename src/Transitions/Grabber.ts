@@ -6,7 +6,7 @@ export class Grabber {
     public x: number;
     public y: number;
 
-    public  setObjectPos(x: number, y: number) {
+    public setObjectPos(x: number, y: number) {
         if (this.grabbedObject !== null) {
             this.grabbedObject.x = x - this.x;
             this.grabbedObject.y = y - this.y;

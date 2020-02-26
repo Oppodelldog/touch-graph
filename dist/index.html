@@ -95,7 +95,6 @@
         }
 
         return true;
-
     });
 
     graph.onNewNode(function (node) {
@@ -122,18 +121,15 @@
     graph.onNodeSelectionChanged(function (change) {
         console.log("node selection changed: ", change);
     });
-    graph.onNewConnection(function (connection) {
-        console.log("new connection created: " + connection.id);
+    graph.onNewConnection(function (connectionUpdate) {
+        console.log("new connection created: " + connectionUpdate.connection.id);
     });
     graph.onRemoveConnection(function (connection) {
         console.log("connection removed: " + connection.id);
     });
-    graph.onUpdateConnection(function (connection) {
-        console.log("connection updated: " + connection.id);
+    graph.onUpdateConnection(function (connectionUpdate) {
+        console.log("connection updated: ",connectionUpdate);
     });
-
-    // connect event listeners and render
-    graph.start();
 
 </script>
 </body>

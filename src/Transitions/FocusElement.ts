@@ -1,16 +1,14 @@
-import {State, Transition} from "../State/State";
+import {State, Transition} from "../Flow/State";
 import {Controller} from "../Controller";
 import {EventCallback, EventType} from "../ViewEvents";
 import {Position} from "../data/Position";
 
 export class AdjustingFocus extends State {
-    private controller: Controller;
     targetPosX: number;
     targetPosY: number;
 
     constructor(name: string, controller: Controller) {
-        super(name);
-        this.controller = controller;
+        super(name,controller);
     }
 
     public activate() {
@@ -20,13 +18,10 @@ export class AdjustingFocus extends State {
 }
 
 export class DoubleClick extends Transition {
-    private controller: Controller;
     private readonly doubleClickFunc: EventCallback;
-    private eventHandlerId: string;
 
     constructor(name: string, controller: Controller) {
-        super(name);
-        this.controller = controller;
+        super(name,controller);
         this.doubleClickFunc = this.onDoubleClick.bind(this)
     }
 
@@ -39,20 +34,15 @@ export class DoubleClick extends Transition {
     };
 
     public activate() {
-        this.eventHandlerId = this.controller.registerEventHandler(EventType.DoubleClick, this.doubleClickFunc);
-    }
-
-    public deactivate() {
-        this.controller.removeEventHandler(this.eventHandlerId);
+        super.activate();
+        this.registerEventHandler(EventType.DoubleClick, this.doubleClickFunc)
     }
 }
 
 export class FocusAdjustmentFinished extends Transition {
-    private controller: Controller;
 
     constructor(name: string, controller: Controller) {
-        super(name);
-        this.controller = controller;
+        super(name,controller);
     }
 
     public activate() {

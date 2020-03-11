@@ -119,6 +119,10 @@ export class ViewEvents {
     }
 
     public removeEventHandler(id: string) {
+        const eventCallback = this.eventCallbacks[id];
+        if (eventCallback === undefined) {
+            throw new Error("could not find event callback for id:" + id);
+        }
         let eventName = this.eventCallbacks[id].EventName;
         let callback = this.eventCallbacks[id].Callback;
         let eventTarget = this.getEventTarget(eventName);

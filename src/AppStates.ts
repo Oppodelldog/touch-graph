@@ -1,5 +1,5 @@
-import {Builder} from "./State/Builder";
-import {State, Transition} from "./State/State";
+import {Builder} from "./Flow/Builder";
+import {State, Transition} from "./Flow/State";
 import {Idle} from "./Transitions/Idle";
 import {GrabNode, NodeGrabbed, ReleaseNode} from "./Transitions/GrabNode";
 import {GrabPort, PortGrabbed, ReleasePort} from "./Transitions/GrabPort";
@@ -36,11 +36,11 @@ export class AppStates {
                     case 'Adjusting Focus':
                         return new AdjustingFocus(name, controller);
                     case 'Selecting Nodes':
-                        return new SelectingNodes(name);
+                        return new SelectingNodes(name, controller);
                     case 'Selecting multiple Nodes':
-                        return new SelectingNodes(name);
+                        return new SelectingNodes(name, controller);
                     case 'Deleting Selected Nodes':
-                        return new DeletingNodes(name);
+                        return new DeletingNodes(name, controller);
                     default:
                         throw new Error("undefined State: " + name);
                 }
@@ -82,7 +82,7 @@ export class AppStates {
                     case 'Delete Nodes':
                         return new DeleteNodes(name, controller);
                     case 'Nodes Deleted':
-                        return new NodesDeleted(name);
+                        return new NodesDeleted(name, controller);
                     default:
                         throw new Error("undefined Transition: " + name);
                 }

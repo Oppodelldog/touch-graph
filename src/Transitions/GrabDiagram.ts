@@ -1,4 +1,4 @@
-import {State, Transition} from "../State/State";
+import {State, Transition} from "../Flow/State";
 import {Position} from "../data/Position";
 import {Grabber} from "./Grabber";
 import {Controller} from "../Controller";
@@ -6,14 +6,11 @@ import {EventCallback, EventType} from "../ViewEvents";
 
 export class DiagramGrabbed extends State {
     public grabber: Grabber;
-    private controller: Controller;
     private readonly mouseMoveFunc: EventCallback;
     public isGrabbed: boolean = false;
-    private eventHandlerId: string;
 
     constructor(name: string, controller: Controller) {
-        super(name);
-        this.controller = controller;
+        super(name,controller);
         this.grabber = new Grabber();
         this.mouseMoveFunc = this.onMouseMove.bind(this)
     }
@@ -25,27 +22,21 @@ export class DiagramGrabbed extends State {
 
     public activate() {
         super.activate();
-        this.eventHandlerId = this.controller.registerEventHandler(EventType.TouchMove, this.mouseMoveFunc);
-    }
-
-    public deactivate() {
-        super.deactivate();
-        this.controller.removeEventHandler(this.eventHandlerId);
+        this.registerEventHandler(EventType.TouchMove, this.mouseMoveFunc);
     }
 }
 
 export class GrabDiagram extends Transition {
-    private controller: Controller;
     private readonly mouseDownFunc: EventCallback;
-    private eventHandlerId: string;
 
     constructor(name: string, controller: Controller) {
-        super(name);
-        this.controller = controller;
+        super(name,controller);
         this.mouseDownFunc = this.onMouseDown.bind(this)
     }
 
     onMouseDown(event, touchInputPos: Position) {
+        console.log("sasas");
+        // TODO: View logic from controller
         if (!this.controller.isCanvasHovered(touchInputPos.x, touchInputPos.y)) {
             return false;
         }
@@ -56,22 +47,16 @@ export class GrabDiagram extends Transition {
     };
 
     activate() {
-        this.eventHandlerId = this.controller.registerEventHandler(EventType.TouchStart, this.mouseDownFunc);
-    }
-
-    deactivate() {
-        this.controller.removeEventHandler(this.eventHandlerId);
+        super.activate();
+        this.registerEventHandler(EventType.TouchStart, this.mouseDownFunc);
     }
 }
 
 export class ReleaseDiagram extends Transition {
-    private controller: Controller;
     private readonly mouseUpFunc: EventCallback;
-    private eventHandlerId: string;
 
     constructor(name: string, controller: Controller) {
-        super(name);
-        this.controller = controller;
+        super(name,controller);
         this.mouseUpFunc = this.onMouseUp.bind(this);
     }
 
@@ -83,10 +68,7 @@ export class ReleaseDiagram extends Transition {
     }
 
     public activate() {
-        this.eventHandlerId = this.controller.registerEventHandler(EventType.TouchEnd, this.mouseUpFunc);
-    }
-
-    public deactivate() {
-        this.controller.removeEventHandler(this.eventHandlerId);
+        super.activate();
+        this.registerEventHandler(EventType.TouchEnd, this.mouseUpFunc);
     }
 }

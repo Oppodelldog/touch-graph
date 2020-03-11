@@ -133,12 +133,9 @@ export class Controller extends ObservableController {
     }
 
     public moveTo(x, y): void {
-        const diagramCanvasRect = this.view.getCanvasRect();
-        this.diagram.xOffset = -x * this.scale;
-        this.diagram.yOffset = -y * this.scale;
-        this.diagram.xOffset += diagramCanvasRect.width / 2;
-        this.diagram.yOffset += diagramCanvasRect.height / 2;
-
+        const offset = this.view.getOffsetForCenteredPosition(x,y,this.diagram.xOffset,this.diagram.yOffset);
+        this.diagram.xOffset = offset.x;
+        this.diagram.yOffset = offset.y;
         this.updateCanvasPosition(this.diagram.xOffset, this.diagram.yOffset)
     }
 
@@ -202,6 +199,7 @@ export class Controller extends ObservableController {
 
     public updateNodePos(node: Node): void {
         this.onMoveNode.notify(node);
+        this.renderNodeConnections(node);
     }
 
     public renderNodeConnections(node: Node) {
@@ -211,6 +209,7 @@ export class Controller extends ObservableController {
     }
 
     public selectNode(nodeId: string) {
+        console.log("select node: " + nodeId);
         this.selectedNodes.push(nodeId);
         this.updateNodeSelection(nodeId);
     }
@@ -224,6 +223,7 @@ export class Controller extends ObservableController {
     }
 
     public deselectNode(nodeId: string) {
+        console.log("de select node: "+nodeId);
         if (!this.isNodeSelected(nodeId)) {
             return;
         }

@@ -17,7 +17,7 @@ export interface GraphCallbackInterface {
 
     onMoveNode(f: (node: Node) => void): void
 
-    onMoveCanvas(f: (pos: { X: number, Y: number }) => void): void
+    onMoveCanvas(f: (pos: { x: number, y: number }) => void): void
 
     onScaleChanged(f: (scale: number) => void): void
 

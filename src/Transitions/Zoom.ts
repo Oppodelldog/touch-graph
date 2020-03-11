@@ -1,15 +1,13 @@
-import {State, Transition} from "../State/State";
+import {State, Transition} from "../Flow/State";
 import {Controller} from "../Controller";
 import {EventCallback, EventType} from "../ViewEvents";
 
 export class Zooming extends State {
-    private controller: Controller;
     public currentScale: number;
     public targetScale: any;
 
     constructor(name: string, controller: Controller) {
-        super(name);
-        this.controller = controller;
+        super(name, controller);
     }
 
     public activate() {
@@ -19,13 +17,10 @@ export class Zooming extends State {
 }
 
 export class UseMousewheel extends Transition {
-    private controller: Controller;
     private readonly wheelFunc: EventCallback;
-    private eventHandlerId: string;
 
     constructor(name: string, controller: Controller) {
-        super(name);
-        this.controller = controller;
+        super(name, controller);
         this.wheelFunc = this.wheel.bind(this)
     }
 
@@ -44,22 +39,12 @@ export class UseMousewheel extends Transition {
     };
 
     public activate() {
-        this.eventHandlerId = this.controller.registerEventHandler(EventType.Wheel, this.wheelFunc);
-    }
-
-    public deactivate() {
-        this.controller.removeEventHandler(this.eventHandlerId);
+        super.activate();
+        this.registerEventHandler(EventType.Wheel, this.wheelFunc);
     }
 }
 
 export class ZoomFinished extends Transition {
-    private controller: Controller;
-
-    constructor(name: string, controller: Controller) {
-        super(name);
-        this.controller = controller;
-    }
-
     public activate() {
         this.switchState();
     }

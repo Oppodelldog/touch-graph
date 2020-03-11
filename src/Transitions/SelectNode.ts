@@ -1,4 +1,4 @@
-import {State, Transition} from "../State/State";
+import {State, Transition} from "../Flow/State";
 import {Controller} from "../Controller";
 import {Position} from "../data/Position"
 import {EventCallback, EventType} from "../ViewEvents";
@@ -7,17 +7,15 @@ export class SelectingNodes extends State {
 }
 
 export class SelectNode extends Transition {
-    private controller: Controller;
     private readonly clickFunc: EventCallback;
-    private eventHandlerId: string;
 
     constructor(name: string, controller: Controller) {
-        super(name);
-        this.controller = controller;
+        super(name,controller);
         this.clickFunc = this.onClick.bind(this)
     }
 
     onClick(event, touchInput: Position) {
+        // TODO: View logic from controller
         let nodeId = this.controller.getHoveredNodeId(touchInput.x, touchInput.y);
         if (nodeId === "") {
             return;
@@ -28,26 +26,22 @@ export class SelectNode extends Transition {
     }
 
     activate() {
-        this.eventHandlerId = this.controller.registerEventHandler(EventType.Click, this.clickFunc);
-    }
-
-    deactivate() {
-        this.controller.removeEventHandler(this.eventHandlerId);
+        super.activate();
+        this.registerEventHandler(EventType.Click, this.clickFunc);
     }
 }
 
 export class SelectOneMoreNode extends Transition {
-    private controller: Controller;
     private readonly clickFunc: EventCallback;
-    private eventHandlerId: string;
 
     constructor(name: string, controller: Controller) {
-        super(name);
-        this.controller = controller;
+        super(name,controller);
         this.clickFunc = this.onClick.bind(this)
     }
 
     onClick(event, touchInput: Position) {
+        console.log("SelectOneMoreNode")
+        // TODO: View logic from controller
         let nodeId = this.controller.getHoveredNodeId(touchInput.x, touchInput.y);
         if (nodeId === "") {
             return;
@@ -56,30 +50,28 @@ export class SelectOneMoreNode extends Transition {
             this.controller.selectNode(nodeId);
             this.switchState();
             event.preventDefault();
+            event.stopImmediatePropagation();
         }
     }
 
     activate() {
-        this.eventHandlerId = this.controller.registerEventHandler(EventType.Click, this.clickFunc);
-    }
-
-    deactivate() {
-        this.controller.removeEventHandler(this.eventHandlerId);
+        super.activate();
+        this.registerEventHandler(EventType.Click, this.clickFunc);
     }
 }
 
 export class DeSelectNode extends Transition {
-    private controller: Controller;
     private readonly clickFunc: EventCallback;
-    private eventHandlerId: string;
 
     constructor(name: string, controller: Controller) {
-        super(name);
+        super(name,controller);
         this.controller = controller;
         this.clickFunc = this.onClick.bind(this)
     }
 
     private onClick(event, touchInput: Position) {
+        console.log("DeSelectNode")
+        // TODO: View logic from controller
         let nodeId = this.controller.getHoveredNodeId(touchInput.x, touchInput.y);
         if (nodeId === "") {
             return;
@@ -88,40 +80,33 @@ export class DeSelectNode extends Transition {
             this.controller.deselectNode(nodeId);
             this.switchState();
             event.preventDefault();
+            event.stopImmediatePropagation();
         }
     }
 
     public activate() {
-        this.eventHandlerId = this.controller.registerEventHandler(EventType.Click, this.clickFunc)
-    }
-
-    public deactivate() {
-        this.controller.removeEventHandler(this.eventHandlerId);
+        super.activate();
+        this.controller.registerEventHandler(EventType.Click, this.clickFunc)
     }
 }
 
 export class SingleSelectionReturn extends Transition {
-    private controller: Controller;
-
     constructor(name: string, controller: Controller) {
-        super(name);
-        this.controller = controller;
+        super(name,controller);
     }
 
     public activate() {
+        super.activate();
         this.controller.removeSelectedNodeKeepLatest();
         this.switchState();
     }
 }
 
 export class TurnOnMultiNodeSelectionMode extends Transition {
-    private controller: Controller;
     private readonly keyDownFunc: EventCallback;
-    private eventHandlerId: string;
 
     constructor(name: string, controller: Controller) {
-        super(name);
-        this.controller = controller;
+        super(name,controller);
         this.keyDownFunc = this.onKeyDownFunc.bind(this)
     }
 
@@ -132,22 +117,16 @@ export class TurnOnMultiNodeSelectionMode extends Transition {
     }
 
     public activate() {
-        this.eventHandlerId = this.controller.registerEventHandler(EventType.KeyDown, this.keyDownFunc)
-    }
-
-    public deactivate() {
-        this.controller.removeEventHandler(this.eventHandlerId);
+        super.activate();
+        this.registerEventHandler(EventType.KeyDown, this.keyDownFunc)
     }
 }
 
 export class TurnOffMultiNodeSelectionMode extends Transition {
-    private controller: Controller;
     private readonly keyUpFunc: EventCallback;
-    private eventHandlerId: string;
 
     constructor(name: string, controller: Controller) {
-        super(name);
-        this.controller = controller;
+        super(name,controller);
         this.keyUpFunc = this.onKeyUpFunc.bind(this)
     }
 
@@ -158,10 +137,7 @@ export class TurnOffMultiNodeSelectionMode extends Transition {
     }
 
     public activate() {
-        this.eventHandlerId = this.controller.registerEventHandler(EventType.KeyUp, this.keyUpFunc)
-    }
-
-    public deactivate() {
-        this.controller.removeEventHandler(this.eventHandlerId);
+        super.activate();
+        this.registerEventHandler(EventType.KeyUp, this.keyUpFunc)
     }
 }

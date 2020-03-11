@@ -42,10 +42,11 @@ export interface ViewInterface {
 
     onClickLine(f: (connectionId) => void): void;
 
-    getCanvasRect(): DOMRect;
+    getOffsetForCenteredPosition(x: any, y: any, xOffset: number, yOffset: number): { x: number, y: number };
 }
 
 export class Renderer implements RenderInterface, ViewInterface {
+
     private readonly canvas: HTMLElement;
     private readonly backgroundCanvas: HTMLElement;
     private readonly svgCanvas: HTMLElement;
@@ -92,7 +93,7 @@ export class Renderer implements RenderInterface, ViewInterface {
         controller.onNodeSelectionChanged.subscribe((change: { node: Node, selected: boolean }) => this.updateNodeSelection(change.node.id, change.selected));
     }
 
-    public getCanvasRect(): DOMRect {
+    private getCanvasRect(): DOMRect {
         return this.canvas.getBoundingClientRect();
     }
 
@@ -187,6 +188,16 @@ export class Renderer implements RenderInterface, ViewInterface {
         if (div) {
             div.style.transform = "translate(" + node.x + "px, " + node.y + "px)";
         }
+    }
+
+    getOffsetForCenteredPosition(x: any, y: any, xOffset: number, yOffset: number): { x: number; y: number; } {
+        const diagramCanvasRect = this.getCanvasRect();
+        xOffset = -x * this.scale;
+        yOffset = -y * this.scale;
+        xOffset += diagramCanvasRect.width / 2;
+        yOffset += diagramCanvasRect.height / 2;
+
+        return {x: xOffset, y: yOffset};
     }
 
     public getHoveredNodeId(x: number, y: number): string {

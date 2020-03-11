@@ -1,4 +1,4 @@
-import {State, Transition} from "../State/State";
+import {State, Transition} from "../Flow/State";
 import {Controller} from "../Controller";
 import {Position} from "../data/Position";
 import {Grabber} from "./Grabber";
@@ -7,13 +7,10 @@ import {EventCallback, EventType} from "../ViewEvents";
 
 export class NodeGrabbed extends State {
     public readonly grabber: Grabber;
-    private readonly controller: Controller;
     private readonly mouseMoveFunc: EventCallback;
-    private eventHandlerId: string;
 
     constructor(name: string, controller: Controller) {
-        super(name);
-        this.controller = controller;
+        super(name,controller);
         this.grabber = new Grabber();
         this.mouseMoveFunc = this.onMouseMove.bind(this)
     }
@@ -22,29 +19,20 @@ export class NodeGrabbed extends State {
         this.grabber.setObjectPos(diagramInputPos.x, diagramInputPos.y);
         const node = this.grabber.getObject() as Node;
         this.controller.updateNodePos(node);
-        this.controller.renderNodeConnections(node);
         event.preventDefault();
     }
 
     public activate() {
         super.activate();
-        this.eventHandlerId = this.controller.registerEventHandler(EventType.TouchMove, this.mouseMoveFunc);
-    }
-
-    public deactivate() {
-        super.deactivate();
-        this.controller.removeEventHandler(this.eventHandlerId);
+        this.registerEventHandler(EventType.TouchMove, this.mouseMoveFunc);
     }
 }
 
 export class GrabNode extends Transition {
-    private controller: Controller;
     private readonly mouseDownFunc: EventCallback;
-    private eventHandlerId: string;
 
     constructor(name: string, controller: Controller) {
-        super(name);
-        this.controller = controller;
+        super(name,controller);
         this.mouseDownFunc = this.onMouseDown.bind(this)
     }
 
@@ -54,6 +42,7 @@ export class GrabNode extends Transition {
         if (hoveredPortId !== "") {
             return;
         }
+        // TODO: View logic from controller
         const node = this.controller.getNodeById(hoveredNodeId);
         if (node !== null) {
             (this.targetState as NodeGrabbed).grabber.grab(node.id, node, diagramInputPos.x, diagramInputPos.y);
@@ -63,22 +52,16 @@ export class GrabNode extends Transition {
     };
 
     public activate() {
-        this.eventHandlerId = this.controller.registerEventHandler(EventType.TouchStart, this.mouseDownFunc);
-    }
-
-    public deactivate() {
-        this.controller.removeEventHandler(this.eventHandlerId);
+        super.activate();
+        this.registerEventHandler(EventType.TouchStart, this.mouseDownFunc);
     }
 }
 
 export class ReleaseNode extends Transition {
-    private controller: Controller;
     private readonly mouseUpFunc: EventCallback;
-    private eventHandlerId: string;
 
     constructor(name: string, controller: Controller) {
-        super(name);
-        this.controller = controller;
+        super(name,controller);
         this.mouseUpFunc = this.onMouseUp.bind(this);
     }
 
@@ -89,10 +72,7 @@ export class ReleaseNode extends Transition {
     }
 
     public activate() {
-        this.eventHandlerId = this.controller.registerEventHandler(EventType.TouchEnd, this.mouseUpFunc);
-    }
-
-    public deactivate() {
-        this.controller.removeEventHandler(this.eventHandlerId);
+        super.activate();
+        this.registerEventHandler(EventType.TouchEnd, this.mouseUpFunc);
     }
 }

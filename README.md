@@ -18,7 +18,7 @@ visually and programmatically.
 ![states.dot as png](src/Flow/output.png)
 Graphic was created with **dot** under linux.
 ```bash
-dot -Tpng input.dot > output.png
+dot -Tpng states.dot > output.png
 ```
 
 hinti: 

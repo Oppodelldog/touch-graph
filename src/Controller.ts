@@ -133,7 +133,7 @@ export class Controller extends ObservableController {
     }
 
     public moveTo(x, y): void {
-        const offset = this.view.getOffsetForCenteredPosition(x,y,this.diagram.xOffset,this.diagram.yOffset);
+        const offset = this.view.getOffsetForCenteredPosition(x, y, this.diagram.xOffset, this.diagram.yOffset);
         this.diagram.xOffset = offset.x;
         this.diagram.yOffset = offset.y;
         this.updateCanvasPosition(this.diagram.xOffset, this.diagram.yOffset)
@@ -193,6 +193,10 @@ export class Controller extends ObservableController {
         return this.view.getHoveredNodeId(x, y);
     }
 
+    public isNodeHovered(x: number, y: number): boolean {
+        return this.view.getHoveredNodeId(x, y) !== "";
+    }
+
     public getNodeById(nodeId: string): Node | null {
         return this.nodes.getById(nodeId);
     }
@@ -223,7 +227,7 @@ export class Controller extends ObservableController {
     }
 
     public deselectNode(nodeId: string) {
-        console.log("de select node: "+nodeId);
+        console.log("de select node: " + nodeId);
         if (!this.isNodeSelected(nodeId)) {
             return;
         }

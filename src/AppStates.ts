@@ -1,9 +1,6 @@
 import {Builder} from "./Flow/Builder";
 import {State, Transition} from "./Flow/State";
 import {Idle} from "./Transitions/Idle";
-import {GrabNode, NodeGrabbed, ReleaseNode} from "./Transitions/GrabNode";
-import {GrabPort, PortGrabbed, ReleasePort} from "./Transitions/GrabPort";
-import {DiagramGrabbed, GrabDiagram, ReleaseDiagram} from "./Transitions/GrabDiagram";
 import {UseMousewheel, ZoomFinished, Zooming} from "./Transitions/Zoom";
 import {AdjustingFocus, DoubleClick, FocusAdjustmentFinished} from "./Transitions/FocusElement";
 import {
@@ -17,6 +14,16 @@ import {
 } from "./Transitions/SelectNode";
 import {DeleteNodes, DeletingNodes, NodesDeleted} from "./Transitions/DeleteNodes";
 import {Controller} from "./Controller";
+import {
+    MoveDiagram,
+    MoveNode, MovePort, MultiTouchEnd, MultiTouchMove,
+    PinchZoom, ReleaseDiagram, ReleaseNode, ReleasePort,
+    Touched, TouchEnd,
+    TouchMoveOnDiagram,
+    TouchMoveOnNode, TouchMoveOnPort,
+    TouchStart
+} from "./Transitions/Touch";
+
 
 export class AppStates {
     public static init(controller: Controller): void {
@@ -25,12 +32,17 @@ export class AppStates {
                 switch (name) {
                     case 'Idle':
                         return new Idle(name, controller);
-                    case 'Node Grabbed':
-                        return new NodeGrabbed(name, controller);
-                    case 'Port Grabbed':
-                        return new PortGrabbed(name, controller);
-                    case 'Diagram Grabbed':
-                        return new DiagramGrabbed(name, controller);
+                    case 'Touched':
+                        return new Touched(name, controller);
+                    case 'Move Diagram':
+                        return new MoveDiagram(name, controller);
+                    case 'Move Node':
+                        return new MoveNode(name, controller);
+                    case 'Move Port':
+                        return new MovePort(name, controller);
+                    case 'Pinch Zoom':
+                        return new PinchZoom(name, controller);
+
                     case 'Zooming':
                         return new Zooming(name, controller);
                     case 'Adjusting Focus':
@@ -47,16 +59,25 @@ export class AppStates {
             },
             (name: string): Transition => {
                 switch (name) {
-                    case 'Grab Node':
-                        return new GrabNode(name, controller);
+                    case 'Touch Start':
+                        return new TouchStart(name, controller);
+                    case 'Touch Move on Diagram':
+                        return new TouchMoveOnDiagram(name, controller);
+                    case 'Touch Move on Node':
+                        return new TouchMoveOnNode(name, controller);
+                    case 'Touch Move on Port':
+                        return new TouchMoveOnPort(name, controller);
+                    case 'Multi Touch Move':
+                        return new MultiTouchMove(name, controller);
+                    case 'Multi Touch End':
+                        return new MultiTouchEnd(name, controller);
+                    case 'Touch End':
+                        return new TouchEnd(name, controller);
+
                     case 'Release Node':
                         return new ReleaseNode(name, controller);
-                    case 'Grab Port':
-                        return new GrabPort(name, controller);
                     case 'Release Port':
                         return new ReleasePort(name, controller);
-                    case 'Grab Diagram':
-                        return new GrabDiagram(name, controller);
                     case 'Release Diagram':
                         return new ReleaseDiagram(name, controller);
                     case 'Use Mousewheel':

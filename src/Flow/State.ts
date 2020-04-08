@@ -13,7 +13,7 @@ export class Context {
 
     public switchState(s: State) {
         if (this.debug) {
-            console.log("switch state from", this.state.name, "to", s.name);
+            console.log("switch state || ", this.state.name, " >> ", s.name);
         }
         this.state.deactivate();
         this.state = s;

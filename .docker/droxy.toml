@@ -18,3 +18,21 @@
         ports = [
             "8080:8080"
         ]
+
+  [[command]]
+        name = "node"
+        uniqueNames=true
+        isInteractive   = true
+        requireEnvVars  = true
+        removeContainer = true
+        workDir         = "${PWD}"
+        entryPoint = "node"
+        image = "node:12.4.0"
+        envvars         = [
+          "PWD=${PWD}",
+          "HOME=${HOME}"
+        ]
+        volumes         = [
+            "${PWD}:${PWD}",
+            "${HOME}:${HOME}"
+        ]

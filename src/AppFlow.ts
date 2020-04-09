@@ -1,8 +1,8 @@
 import {Builder} from "./Flow/Builder";
 import {State, Transition} from "./Flow/State";
-import {Idle} from "./Transitions/Idle";
-import {UseMousewheel, ZoomFinished, Zooming} from "./Transitions/Zoom";
-import {AdjustingFocus, DoubleClick, FocusAdjustmentFinished} from "./Transitions/FocusElement";
+import {Idle} from "./AppFlow/Idle";
+import {UseMousewheel, ZoomFinished, MouseZooming} from "./AppFlow/Zoom";
+import {AdjustingFocus, DoubleClick, FocusAdjustmentFinished} from "./AppFlow/FocusElement";
 import {
     DeSelectNode,
     SelectingNodes,
@@ -11,8 +11,8 @@ import {
     SingleSelectionReturn,
     TurnOffMultiNodeSelectionMode,
     TurnOnMultiNodeSelectionMode
-} from "./Transitions/SelectNode";
-import {DeleteNodes, DeletingNodes, NodesDeleted} from "./Transitions/DeleteNodes";
+} from "./AppFlow/SelectNode";
+import {DeleteNodes, DeletingNodes, NodesDeleted} from "./AppFlow/DeleteNodes";
 import {Controller} from "./Controller";
 import {
     MoveDiagram,
@@ -22,10 +22,9 @@ import {
     TouchMoveOnDiagram,
     TouchMoveOnNode, TouchMoveOnPort,
     TouchStart
-} from "./Transitions/Touch";
+} from "./AppFlow/Touch";
 
-
-export class AppStates {
+export class AppFlow {
     public static init(controller: Controller): void {
         new Builder().build(
             (name: string): State => {
@@ -42,9 +41,8 @@ export class AppStates {
                         return new MovePort(name, controller);
                     case 'Pinch Zoom':
                         return new PinchZoom(name, controller);
-
-                    case 'Zooming':
-                        return new Zooming(name, controller);
+                    case 'Mouse Zooming':
+                        return new MouseZooming(name, controller);
                     case 'Adjusting Focus':
                         return new AdjustingFocus(name, controller);
                     case 'Selecting Nodes':
@@ -71,7 +69,6 @@ export class AppStates {
                         return new DoubleTouchMove(name, controller);
                     case 'Touch End':
                         return new TouchEnd(name, controller);
-
                     case 'Release Node':
                         return new ReleaseNode(name, controller);
                     case 'Release Port':

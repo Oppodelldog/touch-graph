@@ -2,7 +2,7 @@ import {State, Transition} from "../Flow/State";
 import {Controller} from "../Controller";
 import {EventCallback, EventType} from "../ViewEvents";
 
-export class Zooming extends State {
+export class MouseZooming extends State {
     public currentScale: number;
     public targetScale: any;
 
@@ -31,7 +31,7 @@ export class UseMousewheel extends Transition {
         if (newScale < 0.1) {
             newScale = 0.1;
         }
-        const targetState = this.targetState as Zooming;
+        const targetState = this.targetState as MouseZooming;
         targetState.currentScale = currentScale;
         targetState.targetScale = newScale;
         this.switchState();

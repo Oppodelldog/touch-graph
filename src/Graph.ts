@@ -5,7 +5,7 @@ import Port from "./data/Port";
 import {ConnectionUpdate, Controller, ObservableController} from "./Controller";
 import {CallbackValidateNewConnection, GraphCallbackInterface, GraphInterface} from "./GraphInterface";
 import {Renderer, ViewInterface} from "./Renderer";
-import {AppStates} from "./AppStates";
+import {AppFlow} from "./AppFlow";
 
 export class Graph implements GraphInterface, GraphCallbackInterface {
     private readonly controller: Controller;
@@ -104,6 +104,6 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
     }
 
     private initStates(): void {
-        AppStates.init(this.controller);
+        AppFlow.init(this.controller);
     }
 }

@@ -128,7 +128,11 @@ export class Controller extends ObservableController {
     }
 
     public setScale(scale): void {
+        const minScale = 0.01;
         this.scale = scale;
+        if(this.scale<minScale){
+            this.scale=minScale;
+        }
         this.onScaleChanged.notify(this.scale);
     }
 
@@ -227,7 +231,6 @@ export class Controller extends ObservableController {
     }
 
     public deselectNode(nodeId: string) {
-        console.log("de select node: " + nodeId);
         if (!this.isNodeSelected(nodeId)) {
             return;
         }

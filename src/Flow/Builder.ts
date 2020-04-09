@@ -13,7 +13,7 @@ export class Builder {
         let configItems = config.load();
         let idle: State = undefined;
         let tmpStates = [] as State[];
-        let tmpTransitions = [] as Transition[];
+        //let tmpTransitions = [] as Transition[];
         configItems.forEach((configItem) => {
             let from: State;
             let to: State;
@@ -32,12 +32,14 @@ export class Builder {
                 to.context = context;
                 tmpStates[configItem.StateTo] = to;
             }
-            if (tmpTransitions[configItem.Transition] !== undefined) {
+            /*if (tmpTransitions[configItem.Transition] !== undefined) {
                 transition = tmpTransitions[configItem.Transition];
             } else {
+
+             */
                 transition = createTransition(configItem.Transition);
-                tmpTransitions[configItem.Transition] = transition;
-            }
+              //  tmpTransitions[configItem.Transition] = transition;
+            //}
             transition.targetState = to;
             from.transitions.push(transition);
             transition.originState = from;

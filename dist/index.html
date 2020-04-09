@@ -3,6 +3,7 @@
 
     <title>Touch-Graph Scratch</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
 </head>
 <body>
 <div id="touch-graph">
@@ -96,39 +97,43 @@
 
         return true;
     });
+    
+    function log(s){
+        //console.log(s)
+    }
 
     graph.onNewNode(function (node) {
-        console.log("new node created: " + node.id);
+        log("new node created: " + node.id);
     });
     graph.onRemoveNode(function (node) {
-        console.log("node removed: " + node.id);
+        log("node removed: " + node.id);
     });
     graph.onMoveNode(function (node) {
-        console.log("node moved: " + node.x + "," + node.y);
+        log("node moved: " + node.x + "," + node.y);
     });
     graph.onMoveCanvas(function (pos) {
-        console.log("canvas moved: " + pos.x + "," + pos.y);
+        log("canvas moved: " + pos.x + "," + pos.y);
     });
     graph.onScaleChanged(function (scale) {
-        console.log("scale changed: " + scale);
+        log("scale changed: " + scale);
     });
     graph.onDragConnectionLine(function (line) {
-        console.log("connection line moved: ", line);
+        log("connection line moved: ", line);
     });
     graph.onRemoveConnectionLine(function () {
-        console.log("remove connection line ");
+        log("remove connection line ");
     });
     graph.onNodeSelectionChanged(function (change) {
-        console.log("node selection changed: ", change);
+        log("node selection changed: ", change);
     });
     graph.onNewConnection(function (connectionUpdate) {
-        console.log("new connection created: " + connectionUpdate.connection.id);
+        log("new connection created: " + connectionUpdate.connection.id);
     });
     graph.onRemoveConnection(function (connection) {
-        console.log("connection removed: " + connection.id);
+        log("connection removed: " + connection.id);
     });
     graph.onUpdateConnection(function (connectionUpdate) {
-        console.log("connection updated: ",connectionUpdate);
+        log("connection updated: ",connectionUpdate);
     });
 
 </script>

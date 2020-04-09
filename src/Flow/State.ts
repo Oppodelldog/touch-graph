@@ -13,8 +13,9 @@ export class Context {
 
     public switchState(s: State) {
         if (this.debug) {
-            console.log("switch state || ", this.state.name, " >> ", s.name);
+            console.log("Switch State:", this.state.name, " >> ", s.name);
         }
+
         this.state.deactivate();
         this.state = s;
         this.state.activate();
@@ -54,6 +55,7 @@ abstract class AbstractTransition implements Activateable {
     }
 
     public switchState() {
+        console.log("Transition:", this.constructor.name)
         this.originState.switchState(this.targetState)
     }
 
@@ -102,7 +104,6 @@ export class Transition extends AbstractTransition {
 
     deactivate() {
         super.deactivate();
-
         if (this.eventHandlerId !== "" && this.eventHandlerId !== undefined) {
             this.controller.removeEventHandler(this.eventHandlerId);
         }

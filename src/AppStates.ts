@@ -16,7 +16,7 @@ import {DeleteNodes, DeletingNodes, NodesDeleted} from "./Transitions/DeleteNode
 import {Controller} from "./Controller";
 import {
     MoveDiagram,
-    MoveNode, MovePort, MultiTouchEnd, MultiTouchMove,
+    MoveNode, MovePort, DoubleTouchMove,
     PinchZoom, ReleaseDiagram, ReleaseNode, ReleasePort,
     Touched, TouchEnd,
     TouchMoveOnDiagram,
@@ -67,10 +67,8 @@ export class AppStates {
                         return new TouchMoveOnNode(name, controller);
                     case 'Touch Move on Port':
                         return new TouchMoveOnPort(name, controller);
-                    case 'Multi Touch Move':
-                        return new MultiTouchMove(name, controller);
-                    case 'Multi Touch End':
-                        return new MultiTouchEnd(name, controller);
+                    case 'Double Touch Move':
+                        return new DoubleTouchMove(name, controller);
                     case 'Touch End':
                         return new TouchEnd(name, controller);
 

@@ -45,7 +45,6 @@ export class MoveNode extends State {
         this.mouseMoveFunc = this.onMouseMove.bind(this)
     }
 
-
     private onMouseMove(event, touchInputPos: Position, diagramInputPos: Position) {
         this.grabber.setObjectPos(diagramInputPos.x, diagramInputPos.y);
         const node = this.grabber.getObject() as Node;
@@ -83,17 +82,56 @@ export class MovePort extends State {
     }
 }
 
+class PinchPosition {
+    Pos1: Position;
+    Pos2: Position;
+}
 
 export class PinchZoom extends State {
+    private readonly touchMoveFunc: EventCallback;
+    private originalDistance: number = null;
+    private originalScale: number;
+
     constructor(name: string, controller: Controller) {
         super(name, controller);
+        this.touchMoveFunc = this.onTouchMove.bind(this)
+    }
+
+    getDistance(x1, y1, x2, y2): number {
+        const a = x1 - x2;
+        const b = y1 - y2;
+
+        return Math.sqrt(a * a + b * b);
+    }
+
+    onTouchMove(event, touchInputPos: Position, diagramInputPos: Position) {
+
+        let touch1 = event.touches[0];
+        let touch2 = event.touches[1];
+        if (this.originalDistance === null) {
+            this.originalDistance = this.getDistance(touch1.clientX, touch1.clientY, touch2.clientX, touch2.clientY)
+            this.originalScale = this.controller.getScale();
+        } else {
+            let newDistance = this.getDistance(touch1.clientX, touch1.clientY, touch2.clientX, touch2.clientY)
+            let change = this.originalDistance - newDistance;
+
+            this.controller.setScale(this.originalScale - change / 1000)
+        }
+    }
+
+    deactivate() {
+        super.deactivate();
+        this.originalDistance = null;
+    }
+
+    activate() {
+        super.activate();
+        this.registerEventHandler(EventType.TouchMove, this.touchMoveFunc)
     }
 }
 
-
 export class TouchStart extends Transition {
     private readonly touchStartFunc: EventCallback;
-
 
     constructor(name: string, controller: Controller) {
         super(name, controller);
@@ -113,12 +151,57 @@ export class TouchStart extends Transition {
 }
 
 
-export class TouchMoveOnDiagram extends Transition {
-    private readonly touchMoveFunc: EventCallback;
+export abstract class SingleTouchMoveAbstract extends Transition {
+    private readonly checkSingleTouchMoveFunc: EventCallback;
+
+    protected constructor(name: string, controller: Controller) {
+        super(name, controller);
+        this.checkSingleTouchMoveFunc = this.onCheckSingleTouch.bind(this)
+    }
+
+    onCheckSingleTouch(event, touchInputPos: Position, diagramInputPos: Position) {
+        if (event.targetTouches === undefined || event.targetTouches.length === 1) {
+            this.onTouchMove(event, touchInputPos, diagramInputPos);
+        }
+    }
+
+    abstract onTouchMove(event, touchInputPos: Position, diagramInputPos: Position);
+
+    activate() {
+        super.activate();
+        this.registerEventHandler(EventType.TouchMove, this.checkSingleTouchMoveFunc);
+    }
+}
+
+export abstract class MultiTouchMoveAbstract extends Transition {
+    private readonly checkMultiTouchMoveFunc: EventCallback;
+    private readonly numberOfTouches: Number;
+
+    protected constructor(name: string, controller: Controller, numberOfTouches: Number) {
+        super(name, controller);
+        this.numberOfTouches = numberOfTouches;
+        this.checkMultiTouchMoveFunc = this.onCheckMultiTouch.bind(this)
+    }
+
+    onCheckMultiTouch(event, touchInputPos: Position, diagramInputPos: Position) {
+        if (event.touches != undefined && event.touches.length >= this.numberOfTouches) {
+            this.onTouchMove(event, touchInputPos, diagramInputPos);
+        }
+    }
+
+    abstract onTouchMove(event, touchInputPos: Position, diagramInputPos: Position);
+
+    activate() {
+        super.activate();
+        this.registerEventHandler(EventType.TouchMove, this.checkMultiTouchMoveFunc);
+    }
+
+}
+
+export class TouchMoveOnDiagram extends SingleTouchMoveAbstract {
 
     constructor(name: string, controller: Controller) {
         super(name, controller);
-        this.touchMoveFunc = this.onTouchMove.bind(this)
     }
 
     onTouchMove(event, touchInputPos: Position) {
@@ -130,59 +213,39 @@ export class TouchMoveOnDiagram extends Transition {
         }
         let startPos = (this.originState as Touched).touchStartPosition;
         this.controller.dragStartDiagram(startPos.x, startPos.y);
-        (this.targetState as MoveDiagram).isGrabbed = true;
+        (this.targetState as MoveDiagram).grabber.grab("diagram", null, startPos.x, startPos.y);
         this.switchState();
         event.preventDefault();
     };
-
-    activate() {
-        super.activate();
-        this.registerEventHandler(EventType.TouchMove, this.touchMoveFunc);
-    }
 }
 
 
-export class TouchMoveOnNode extends Transition {
-    private readonly touchMoveFunc: EventCallback;
-
+export class TouchMoveOnNode extends SingleTouchMoveAbstract {
     constructor(name: string, controller: Controller) {
         super(name, controller);
-        this.touchMoveFunc = this.onTouchMove.bind(this)
     }
 
     onTouchMove(event, touchInputPos: Position, diagramInputPos: Position) {
         let hoveredNodeId = this.controller.getHoveredNodeId(touchInputPos.x, touchInputPos.y);
         const hoveredPortId = this.controller.getHoveredPortId(touchInputPos.x, touchInputPos.y);
-        console.log(hoveredPortId)
         if (hoveredPortId !== "") {
             return;
         }
-        console.log("touch move on Node");
-        // TODO: View logic from controller
         const node = this.controller.getNodeById(hoveredNodeId);
         if (node !== null) {
             (this.targetState as MoveNode).grabber.grab(node.id, node, diagramInputPos.x, diagramInputPos.y);
             this.switchState();
         }
     };
-
-    activate() {
-        super.activate();
-        this.registerEventHandler(EventType.TouchMove, this.touchMoveFunc);
-    }
 }
 
 
-export class TouchMoveOnPort extends Transition {
-    private readonly touchMoveFunc: EventCallback;
-
+export class TouchMoveOnPort extends SingleTouchMoveAbstract {
     constructor(name: string, controller: Controller) {
         super(name, controller);
-        this.touchMoveFunc = this.onTouchMove.bind(this)
     }
 
     onTouchMove(event, touchInputPos: Position, diagramInputPos: Position) {
-
         const hoveredPortId = this.controller.getHoveredPortId(touchInputPos.x, touchInputPos.y);
         if (hoveredPortId === "") {
             return false;
@@ -192,30 +255,17 @@ export class TouchMoveOnPort extends Transition {
         this.switchState();
         event.preventDefault();
     };
-
-    activate() {
-        super.activate();
-        this.registerEventHandler(EventType.TouchMove, this.touchMoveFunc);
-    }
 }
 
-export class MultiTouchMove extends Transition {
-    private readonly mouseDownFunc: EventCallback;
+export class DoubleTouchMove extends MultiTouchMoveAbstract {
 
     constructor(name: string, controller: Controller) {
-        super(name, controller);
-        this.mouseDownFunc = this.onMouseDown.bind(this)
+        super(name, controller, 2);
     }
 
-    onMouseDown(event, touchInputPos: Position) {
-        console.log(event.targetTouches);
+    onTouchMove(event, touchInputPos: Position, diagramInputPos: Position) {
         this.switchState();
         event.preventDefault();
-    };
-
-    activate() {
-        super.activate();
-        this.registerEventHandler(EventType.TouchStart, this.mouseDownFunc);
     }
 }
 
@@ -262,7 +312,7 @@ export class ReleaseNode extends Transition {
     private readonly mouseUpFunc: EventCallback;
 
     constructor(name: string, controller: Controller) {
-        super(name,controller);
+        super(name, controller);
         this.mouseUpFunc = this.onMouseUp.bind(this);
     }
 
@@ -299,26 +349,6 @@ export class ReleaseDiagram extends Transition {
     }
 }
 
-export class MultiTouchEnd extends Transition {
-    private readonly mouseDownFunc: EventCallback;
-
-    constructor(name: string, controller: Controller) {
-        super(name, controller);
-        this.mouseDownFunc = this.onMouseDown.bind(this)
-    }
-
-    onMouseDown(event, touchInputPos: Position) {
-        console.log(event.targetTouches);
-        this.switchState();
-        event.preventDefault();
-    };
-
-    activate() {
-        super.activate();
-        this.registerEventHandler(EventType.TouchStart, this.mouseDownFunc);
-    }
-}
-
 export class TouchEnd extends Transition {
     private readonly touchEndFunc: EventCallback;
 
@@ -328,9 +358,10 @@ export class TouchEnd extends Transition {
     }
 
     onTouchEnd(event, touchInputPos: Position) {
-        console.log("touch end");
-        this.switchState();
-        event.preventDefault();
+        if(event.touches === undefined || event.touches.length<=1) {
+            this.switchState();
+            event.preventDefault();
+        }
     };
 
     activate() {

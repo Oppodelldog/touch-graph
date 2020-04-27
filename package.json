@@ -2,13 +2,16 @@
   "name": "touch-graph",
   "version": "1.0.0",
   "description": "",
-  "private": true,
+  "private": false,
+  "types": "dist/index.d.ts",
   "directories": {
     "example": "example"
   },
   "dependencies": {
     "@types/d3": "^5.7.2",
-    "d3": "^5.15.0"
+    "d3": "^5.15.0",
+    "dts-gen": "^0.6.0",
+    "yargs": "^15.3.1"
   },
   "devDependencies": {
     "awesome-typescript-loader": "^5.2.1",
@@ -24,5 +27,5 @@
     "start": "webpack-dev-server --open --host 0.0.0.0"
   },
   "author": "",
-  "license": "ISC"
+  "license": "MIT"
 }

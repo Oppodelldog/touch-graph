@@ -9,7 +9,7 @@ module.exports = {
     output: {
         filename: 'touch-graph.js',
         path: path.resolve(__dirname, 'dist'),
-        library: 'touchGraph'
+        library: 'touchGraph',
     },
     devServer: {
         contentBase: './dist',

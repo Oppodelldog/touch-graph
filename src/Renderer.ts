@@ -1,4 +1,4 @@
-import d3 = require("d3");
+import * as d3 from "d3";
 import Node from "./data/Node"
 import {Position} from "./data/Position";
 import {EventCallback, EventType, ViewEvents} from "./ViewEvents";

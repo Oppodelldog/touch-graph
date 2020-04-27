@@ -1,4 +1,5 @@
 .docker
 !.docker/droxy.toml
 node_modules
-dist/touch-graph.js
+dist
+!/dist/touch-graph.js

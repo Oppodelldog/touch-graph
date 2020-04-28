@@ -8,6 +8,7 @@ var Node = /** @class */ (function () {
         this.type = "";
         this.caption = "";
         this.customClass = "";
+        this.userData = {};
     }
     Node.prototype.hasPort = function (portId) {
         return this.portsIn.concat(this.portsOut).filter(function (port) { return port.id === portId; }).length !== 0;

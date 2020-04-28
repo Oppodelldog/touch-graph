@@ -2,6 +2,6 @@ export default class Port {
     id: string;
     name: string;
     caption: string;
-    data: any;
+    userData: any;
     constructor();
 }

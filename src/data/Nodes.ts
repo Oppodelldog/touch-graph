@@ -37,7 +37,7 @@ export default class Nodes {
             return result[0];
         }
 
-        throw `node not found for portId '${portId}'`;
+        throw new Error(`node not found for portId '${portId}'`);
     }
 
     public isInPort(portId: string): boolean {

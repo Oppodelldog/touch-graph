@@ -49,6 +49,7 @@ export declare class Controller extends ObservableController {
     registerEventHandler(eventType: EventType, callback: EventCallback): string;
     removeEventHandler(id: string): void;
     getNumberOfPortConnections(portId: any): number;
+    getPortConnections(portId: string): Connection[];
     addConnection(connection: Connection): boolean;
     createNode(): Node;
     createPort(): Port;

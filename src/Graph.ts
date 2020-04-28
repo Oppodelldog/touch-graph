@@ -6,6 +6,7 @@ import {ConnectionUpdate, Controller, ObservableController} from "./Controller";
 import {CallbackValidateNewConnection, GraphCallbackInterface, GraphInterface} from "./GraphInterface";
 import {Renderer, ViewInterface} from "./Renderer";
 import {AppFlow} from "./AppFlow";
+import {Connections} from "./data/Connections";
 
 export class Graph implements GraphInterface, GraphCallbackInterface {
     private readonly controller: Controller;
@@ -113,5 +114,9 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
 
     getNodeFromPortId(portId: string): Node {
         return this.controller.getNodeFromPortId(portId);
+    }
+
+    getPortConnections(portId: string): Connection[] {
+        return this.controller.getPortConnections(portId);
     }
 }

@@ -3,6 +3,7 @@ import {Connection} from "./data/Connection";
 import Nodes from "./data/Nodes";
 import Port from "./data/Port";
 import {ConnectionUpdate} from "./Controller";
+import {Connections} from "./data/Connections";
 
 export type CallbackValidateNewConnection = (connection: Connection) => boolean;
 
@@ -53,4 +54,6 @@ export interface GraphInterface {
     getBoundingClientRect(): DOMRect
 
     getNodeFromPortId(portId:string):Node
+
+    getPortConnections(portId: string): Connection[]
 }

@@ -81,6 +81,9 @@ var Graph = /** @class */ (function () {
     Graph.prototype.getNodeFromPortId = function (portId) {
         return this.controller.getNodeFromPortId(portId);
     };
+    Graph.prototype.getPortConnections = function (portId) {
+        return this.controller.getPortConnections(portId);
+    };
     return Graph;
 }());
 export { Graph };

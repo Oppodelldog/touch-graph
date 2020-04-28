@@ -80,6 +80,9 @@ export class Controller extends ObservableController {
         return this.connections.getByPortId(portId).length;
     }
 
+    public getPortConnections(portId:string): Connection[] {
+        return this.connections.getByPortId(portId)
+    }
     public addConnection(connection: Connection): boolean {
         if (!this.onValidateNewConnection(connection)) {
             return false;

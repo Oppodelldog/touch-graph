@@ -80,6 +80,9 @@ var Controller = /** @class */ (function (_super) {
     Controller.prototype.getNumberOfPortConnections = function (portId) {
         return this.connections.getByPortId(portId).length;
     };
+    Controller.prototype.getPortConnections = function (portId) {
+        return this.connections.getByPortId(portId);
+    };
     Controller.prototype.addConnection = function (connection) {
         if (!this.onValidateNewConnection(connection)) {
             return false;

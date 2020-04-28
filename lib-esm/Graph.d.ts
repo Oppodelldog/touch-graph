@@ -42,4 +42,5 @@ export declare class Graph implements GraphInterface, GraphCallbackInterface {
     private initStates;
     getBoundingClientRect(): DOMRect;
     getNodeFromPortId(portId: string): Node;
+    getPortConnections(portId: string): Connection[];
 }

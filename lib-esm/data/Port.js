@@ -2,6 +2,7 @@ var Port = /** @class */ (function () {
     function Port() {
         this.id = "";
         this.name = "";
+        this.caption = "";
     }
     return Port;
 }());

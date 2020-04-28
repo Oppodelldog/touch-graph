@@ -51,4 +51,6 @@ export interface GraphInterface {
     moveTo(x, y): void
 
     getBoundingClientRect(): DOMRect
+
+    getNodeFromPortId(portId:string):Node
 }

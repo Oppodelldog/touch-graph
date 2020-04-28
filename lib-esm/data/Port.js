@@ -3,6 +3,7 @@ var Port = /** @class */ (function () {
         this.id = "";
         this.name = "";
         this.caption = "";
+        this.userData = {};
     }
     return Port;
 }());

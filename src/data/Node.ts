@@ -9,6 +9,7 @@ export default class Node {
     public type: string;
     public caption: string;
     public customClass: string;
+    public userData: any;
 
     constructor() {
         this.x = 0;
@@ -19,6 +20,7 @@ export default class Node {
         this.type = "";
         this.caption = "";
         this.customClass = "";
+        this.userData = {};
     }
 
     public hasPort(portId: string): boolean {

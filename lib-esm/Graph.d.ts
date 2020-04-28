@@ -41,4 +41,5 @@ export declare class Graph implements GraphInterface, GraphCallbackInterface {
     moveTo(x: any, y: any): void;
     private initStates;
     getBoundingClientRect(): DOMRect;
+    getNodeFromPortId(portId: string): Node;
 }

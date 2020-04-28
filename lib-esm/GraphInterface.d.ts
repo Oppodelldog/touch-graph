@@ -39,4 +39,5 @@ export interface GraphInterface {
     setScale(scale: any): void;
     moveTo(x: any, y: any): void;
     getBoundingClientRect(): DOMRect;
+    getNodeFromPortId(portId: string): Node;
 }

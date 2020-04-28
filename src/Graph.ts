@@ -110,4 +110,8 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
     getBoundingClientRect(): DOMRect {
         return this.renderer.getBoundingClientRect();
     }
+
+    getNodeFromPortId(portId: string): Node {
+        return this.controller.getNodeFromPortId(portId);
+    }
 }

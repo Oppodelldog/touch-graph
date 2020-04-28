@@ -78,6 +78,9 @@ var Graph = /** @class */ (function () {
     Graph.prototype.getBoundingClientRect = function () {
         return this.renderer.getBoundingClientRect();
     };
+    Graph.prototype.getNodeFromPortId = function (portId) {
+        return this.controller.getNodeFromPortId(portId);
+    };
     return Graph;
 }());
 export { Graph };

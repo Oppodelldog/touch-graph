@@ -108,15 +108,19 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
         AppFlow.init(this.controller);
     }
 
-    getBoundingClientRect(): DOMRect {
+    public getBoundingClientRect(): DOMRect {
         return this.renderer.getBoundingClientRect();
     }
 
-    getNodeFromPortId(portId: string): Node {
+    public  getNodeFromPortId(portId: string): Node {
         return this.controller.getNodeFromPortId(portId);
     }
 
-    getPortConnections(portId: string): Connection[] {
+    public getPortConnections(portId: string): Connection[] {
         return this.controller.getPortConnections(portId);
+    }
+
+    public updateAllNodePositions(): void{
+        this.controller.updateAllNodePositions();
     }
 }

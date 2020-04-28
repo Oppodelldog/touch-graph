@@ -80,9 +80,10 @@ export class Controller extends ObservableController {
         return this.connections.getByPortId(portId).length;
     }
 
-    public getPortConnections(portId:string): Connection[] {
+    public getPortConnections(portId: string): Connection[] {
         return this.connections.getByPortId(portId)
     }
+
     public addConnection(connection: Connection): boolean {
         if (!this.onValidateNewConnection(connection)) {
             return false;
@@ -133,8 +134,8 @@ export class Controller extends ObservableController {
     public setScale(scale): void {
         const minScale = 0.01;
         this.scale = scale;
-        if(this.scale<minScale){
-            this.scale=minScale;
+        if (this.scale < minScale) {
+            this.scale = minScale;
         }
         this.onScaleChanged.notify(this.scale);
     }
@@ -211,6 +212,10 @@ export class Controller extends ObservableController {
     public updateNodePos(node: Node): void {
         this.onMoveNode.notify(node);
         this.renderNodeConnections(node);
+    }
+
+    public updateAllNodePositions(): void {
+        this.getNodes().forEach((node) => this.updateNodePos(node))
     }
 
     public renderNodeConnections(node: Node) {

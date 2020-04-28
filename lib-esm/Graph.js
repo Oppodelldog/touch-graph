@@ -84,6 +84,9 @@ var Graph = /** @class */ (function () {
     Graph.prototype.getPortConnections = function (portId) {
         return this.controller.getPortConnections(portId);
     };
+    Graph.prototype.updateAllNodePositions = function () {
+        this.controller.updateAllNodePositions();
+    };
     return Graph;
 }());
 export { Graph };

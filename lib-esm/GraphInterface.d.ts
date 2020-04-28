@@ -41,4 +41,5 @@ export interface GraphInterface {
     getBoundingClientRect(): DOMRect;
     getNodeFromPortId(portId: string): Node;
     getPortConnections(portId: string): Connection[];
+    updateAllNodePositions(): void;
 }

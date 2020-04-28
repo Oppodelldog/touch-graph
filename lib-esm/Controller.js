@@ -185,6 +185,10 @@ var Controller = /** @class */ (function (_super) {
         this.onMoveNode.notify(node);
         this.renderNodeConnections(node);
     };
+    Controller.prototype.updateAllNodePositions = function () {
+        var _this = this;
+        this.getNodes().forEach(function (node) { return _this.updateNodePos(node); });
+    };
     Controller.prototype.renderNodeConnections = function (node) {
         var _this = this;
         this.connections.getByNodeId(node.id).forEach(function (connection) {

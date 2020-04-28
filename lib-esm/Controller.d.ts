@@ -72,6 +72,7 @@ export declare class Controller extends ObservableController {
     isNodeHovered(x: number, y: number): boolean;
     getNodeById(nodeId: string): Node | null;
     updateNodePos(node: Node): void;
+    updateAllNodePositions(): void;
     renderNodeConnections(node: Node): void;
     selectNode(nodeId: string): void;
     private updateNodeSelection;

@@ -75,6 +75,9 @@ var Graph = /** @class */ (function () {
     Graph.prototype.initStates = function () {
         AppFlow.init(this.controller);
     };
+    Graph.prototype.getBoundingClientRect = function () {
+        return this.renderer.getBoundingClientRect();
+    };
     return Graph;
 }());
 export { Graph };

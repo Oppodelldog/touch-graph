@@ -106,4 +106,8 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
     private initStates(): void {
         AppFlow.init(this.controller);
     }
+
+    getBoundingClientRect(): DOMRect {
+        return this.renderer.getBoundingClientRect();
+    }
 }

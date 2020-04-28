@@ -232,6 +232,9 @@ var Renderer = /** @class */ (function () {
     Renderer.getConnectionElementId = function (connectionId) {
         return "p_" + connectionId;
     };
+    Renderer.prototype.getBoundingClientRect = function () {
+        return this.htmlCanvas.getBoundingClientRect();
+    };
     return Renderer;
 }());
 export { Renderer };

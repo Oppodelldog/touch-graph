@@ -40,4 +40,5 @@ export declare class Graph implements GraphInterface, GraphCallbackInterface {
     setScale(scale: any): void;
     moveTo(x: any, y: any): void;
     private initStates;
+    getBoundingClientRect(): DOMRect;
 }

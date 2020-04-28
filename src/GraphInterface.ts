@@ -49,4 +49,6 @@ export interface GraphInterface {
     setScale(scale): void
 
     moveTo(x, y): void
+
+    getBoundingClientRect(): DOMRect
 }

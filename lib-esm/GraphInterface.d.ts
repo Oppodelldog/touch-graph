@@ -38,4 +38,5 @@ export interface GraphInterface {
     addNode(node: Node): void;
     setScale(scale: any): void;
     moveTo(x: any, y: any): void;
+    getBoundingClientRect(): DOMRect;
 }

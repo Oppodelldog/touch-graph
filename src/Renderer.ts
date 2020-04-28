@@ -330,4 +330,7 @@ export class Renderer implements RenderInterface, ViewInterface {
         return "p_" + connectionId;
     }
 
+    getBoundingClientRect():DOMRect {
+        return this.htmlCanvas.getBoundingClientRect();
+    }
 }

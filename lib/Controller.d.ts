@@ -49,6 +49,7 @@ export declare class Controller extends ObservableController {
     registerEventHandler(eventType: EventType, callback: EventCallback): string;
     removeEventHandler(id: string): void;
     getNumberOfPortConnections(portId: any): number;
+    getPortConnections(portId: string): Connection[];
     addConnection(connection: Connection): boolean;
     createNode(): Node;
     createPort(): Port;
@@ -71,6 +72,7 @@ export declare class Controller extends ObservableController {
     isNodeHovered(x: number, y: number): boolean;
     getNodeById(nodeId: string): Node | null;
     updateNodePos(node: Node): void;
+    updateAllNodePositions(): void;
     renderNodeConnections(node: Node): void;
     selectNode(nodeId: string): void;
     private updateNodeSelection;

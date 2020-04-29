@@ -1,38 +1,42 @@
-  [[command]]
-        name = "npm"
-        uniqueNames=true
-        isInteractive   = true
-        requireEnvVars  = true
-        removeContainer = true
-        workDir         = "${PWD}"
-        entryPoint = "npm"
-        image = "node:12.4.0"
-        envvars         = [
-          "PWD=${PWD}",
-          "HOME=${HOME}"
-        ]
-        volumes         = [
-            "${PWD}:${PWD}",
-            "${HOME}:${HOME}"
-        ]
-        ports = [
-            "8080:8080"
-        ]
+
+   [[command]]
+    name            = "node-template"
+    workDir         = "${PWD}"
+    isTemplate      = true
+    removeContainer = true
+    impersonate     = true
+    addGroups       = true
+    isInteractive   = true
+    requireEnvVars  = true
+    image           = "node:14.0.0"
+    volumes         = [
+        "${PWD}:${PWD}",
+        "${HOME}:${HOME}",
+        "${SSH_AUTH_SOCK}:/run/ssh.sock",
+        "/etc/passwd:/etc/passwd:ro",
+        "/etc/group:/etc/group:ro",
+        "/tmp:/tmp",
+        "/dev/shm:/dev/shm",
+        "/var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket",
+    ]
 
   [[command]]
         name = "node"
-        uniqueNames=true
-        isInteractive   = true
-        requireEnvVars  = true
-        removeContainer = true
-        workDir         = "${PWD}"
+        template="node-template"
         entryPoint = "node"
-        image = "node:12.4.0"
         envvars         = [
           "PWD=${PWD}",
           "HOME=${HOME}"
         ]
-        volumes         = [
-            "${PWD}:${PWD}",
-            "${HOME}:${HOME}"
-        ]
+
+  [[command]]
+    name="npx"
+    template="node-template"
+    entryPoint = "npx"
+
+  [[command]]
+    name="yarn"
+    template="node-template"
+    entryPoint = "yarn"
+    uniqueNames=true
+    ports=["8080:8080"]

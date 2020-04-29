@@ -6,7 +6,6 @@ import {ConnectionUpdate, Controller, ObservableController} from "./Controller";
 import {CallbackValidateNewConnection, GraphCallbackInterface, GraphInterface} from "./GraphInterface";
 import {Renderer, ViewInterface} from "./Renderer";
 import {AppFlow} from "./AppFlow";
-import {Connections} from "./data/Connections";
 
 export class Graph implements GraphInterface, GraphCallbackInterface {
     private readonly controller: Controller;

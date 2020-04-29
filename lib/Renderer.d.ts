@@ -68,4 +68,5 @@ export declare class Renderer implements RenderInterface, ViewInterface {
     removeNode(nodeId: string): void;
     removeConnection(connectionId: string): void;
     private static getConnectionElementId;
+    getBoundingClientRect(): DOMRect;
 }

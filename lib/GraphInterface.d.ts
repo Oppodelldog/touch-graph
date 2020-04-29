@@ -38,4 +38,8 @@ export interface GraphInterface {
     addNode(node: Node): void;
     setScale(scale: any): void;
     moveTo(x: any, y: any): void;
+    getBoundingClientRect(): DOMRect;
+    getNodeFromPortId(portId: string): Node;
+    getPortConnections(portId: string): Connection[];
+    updateAllNodePositions(): void;
 }

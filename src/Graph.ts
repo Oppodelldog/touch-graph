@@ -122,4 +122,8 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
     public updateAllNodePositions(): void{
         this.controller.updateAllNodePositions();
     }
+
+    public center(x: any, y: any):void{
+        this.controller.center(x,y);
+    }
 }

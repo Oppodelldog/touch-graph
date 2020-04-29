@@ -42,4 +42,5 @@ export interface GraphInterface {
     getNodeFromPortId(portId: string): Node;
     getPortConnections(portId: string): Connection[];
     updateAllNodePositions(): void;
+    center(x: any, y: any): void;
 }

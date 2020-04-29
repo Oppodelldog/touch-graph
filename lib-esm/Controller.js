@@ -58,6 +58,11 @@ var Controller = /** @class */ (function (_super) {
         _this.selectedNodes = [];
         return _this;
     }
+    Controller.prototype.clear = function () {
+        var _this = this;
+        this.nodes.forEach(function (node) { return _this.removeNode(node.id); });
+        this.connections.forEach(function (connection) { return _this.removeConnection(connection.id); });
+    };
     Controller.prototype.newConnectionUpdate = function (connection) {
         var update = new ConnectionUpdate();
         update.connection = connection;

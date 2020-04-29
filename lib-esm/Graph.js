@@ -87,6 +87,9 @@ var Graph = /** @class */ (function () {
     Graph.prototype.updateAllNodePositions = function () {
         this.controller.updateAllNodePositions();
     };
+    Graph.prototype.clear = function () {
+        this.controller.clear();
+    };
     return Graph;
 }());
 export { Graph };

@@ -51,6 +51,11 @@ export class Controller extends ObservableController {
         this.selectedNodes = [];
     }
 
+    public clear():void{
+        this.nodes.forEach((node)=>this.removeNode(node.id));
+        this.connections.forEach((connection)=>this.removeConnection(connection.id));
+    }
+
     private newConnectionUpdate(connection: Connection): ConnectionUpdate {
         const update = new ConnectionUpdate();
 

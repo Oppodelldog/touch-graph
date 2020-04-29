@@ -43,6 +43,7 @@ export declare class Controller extends ObservableController {
     private readonly selectedNodes;
     private scale;
     constructor(view: ViewInterface);
+    clear(): void;
     private newConnectionUpdate;
     updateConnection(connection: Connection): void;
     getNodes(): Nodes;

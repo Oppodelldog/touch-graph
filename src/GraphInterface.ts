@@ -58,4 +58,6 @@ export interface GraphInterface {
     getPortConnections(portId: string): Connection[]
 
     updateAllNodePositions(): void
+
+    clear():void
 }

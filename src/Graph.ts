@@ -99,7 +99,7 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
         this.controller.setScale(scale)
     }
 
-    public moveTo(x, y): void {
+    public moveTo(x:number, y:number): void {
         this.controller.moveTo(x, y)
     }
 
@@ -121,9 +121,5 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
 
     public updateAllNodePositions(): void{
         this.controller.updateAllNodePositions();
-    }
-
-    public center(x: any, y: any):void{
-        this.controller.center(x,y);
     }
 }

@@ -38,7 +38,7 @@ export declare class Graph implements GraphInterface, GraphCallbackInterface {
     createPort(): Port;
     addNode(node: Node): void;
     setScale(scale: any): void;
-    moveTo(x: any, y: any): void;
+    moveTo(x: number, y: number): void;
     private initStates;
     getBoundingClientRect(): DOMRect;
     getNodeFromPortId(portId: string): Node;

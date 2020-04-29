@@ -87,9 +87,6 @@ var Graph = /** @class */ (function () {
     Graph.prototype.updateAllNodePositions = function () {
         this.controller.updateAllNodePositions();
     };
-    Graph.prototype.center = function (x, y) {
-        this.controller.center(x, y);
-    };
     return Graph;
 }());
 export { Graph };

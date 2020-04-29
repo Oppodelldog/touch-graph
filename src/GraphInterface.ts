@@ -49,7 +49,7 @@ export interface GraphInterface {
 
     setScale(scale): void
 
-    moveTo(x, y): void
+    moveTo(x: number, y: number): void
 
     getBoundingClientRect(): DOMRect
 
@@ -58,6 +58,4 @@ export interface GraphInterface {
     getPortConnections(portId: string): Connection[]
 
     updateAllNodePositions(): void
-
-    center(x: any, y: any):void
 }

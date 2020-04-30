@@ -10,9 +10,7 @@
   "dependencies": {
     "@types/d3": "^5.7.2",
     "d3": "^5.15.0",
-    "dts-gen": "^0.6.0",
-    "yargs": "^15.3.1",
-    "raw-loader": "^4.0.0"
+    "yargs": "^15.3.1"
   },
   "devDependencies": {
     "awesome-typescript-loader": "^5.2.1",

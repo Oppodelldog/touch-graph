@@ -35,7 +35,7 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
     }
 
     public onMoveCanvas(f: (pos: { x: number, y: number }) => void): void {
-        this.controller.onMoveCanvas.subscribe(f)
+        this.controller.onCenterCanvas.subscribe(f)
     }
 
     public onScaleChanged(f: (scale: number) => void): void {

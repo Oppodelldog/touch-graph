@@ -34,7 +34,8 @@ var ObservableController = /** @class */ (function () {
         this.onNewConnection = new Observer();
         this.onUpdateConnection = new Observer();
         this.onRemoveConnection = new Observer();
-        this.onMoveCanvas = new Observer();
+        this.onCenterCanvas = new Observer();
+        this.onDragCanvas = new Observer();
         this.onScaleChanged = new Observer();
         this.onDragConnectionLine = new Observer();
         this.onRemoveConnectionLine = new Observer();
@@ -134,10 +135,8 @@ var Controller = /** @class */ (function (_super) {
         this.onScaleChanged.notify(this.scale);
     };
     Controller.prototype.moveTo = function (x, y) {
-        var offset = this.view.getOffsetForCenteredPosition(x, y, this.diagram.xOffset, this.diagram.yOffset);
-        this.diagram.xOffset = offset.x;
-        this.diagram.yOffset = offset.y;
-        this.updateCanvasPosition(this.diagram.xOffset, this.diagram.yOffset);
+        console.log(x, y);
+        this.centerPosition(x, y);
     };
     Controller.prototype.center = function (x, y) {
         var nodeId = this.view.getHoveredNodeId(x, y);
@@ -162,19 +161,17 @@ var Controller = /** @class */ (function (_super) {
         this.onRemoveConnectionLine.notify();
     };
     Controller.prototype.dragStartDiagram = function (x, y) {
-        console.log("draw start", x, y);
         this.diagram.dragStart(x, y);
     };
     Controller.prototype.dragMoveDiagram = function (x, y) {
-        this.diagram.dragMove(x, y);
-        this.updateCanvasPosition(this.diagram.xDrag, this.diagram.yDrag);
+        var dragOffset = this.diagram.getDraggedOffset(x, y);
+        this.onDragCanvas.notify({ x: dragOffset.x, y: dragOffset.y });
     };
     Controller.prototype.dragStopDiagram = function () {
         this.diagram.dragStop();
-        this.updateCanvasPosition(this.diagram.xOffset, this.diagram.yOffset);
     };
-    Controller.prototype.updateCanvasPosition = function (x, y) {
-        this.onMoveCanvas.notify({ x: x, y: y });
+    Controller.prototype.centerPosition = function (x, y) {
+        this.onCenterCanvas.notify({ x: x, y: y });
     };
     Controller.prototype.isCanvasHovered = function (x, y) {
         return this.view.isCanvasHovered(x, y);

@@ -23,7 +23,8 @@ export abstract class ObservableController {
     public readonly onNewConnection: Observer<ConnectionUpdate> = new Observer<ConnectionUpdate>();
     public readonly onUpdateConnection: Observer<ConnectionUpdate> = new Observer<ConnectionUpdate>();
     public readonly onRemoveConnection: Observer<Connection> = new Observer<Connection>();
-    public readonly onMoveCanvas: Observer<{ x: number, y: number }> = new Observer<{ x: number, y: number }>();
+    public readonly onCenterCanvas: Observer<{ x: number, y: number }> = new Observer<{ x: number, y: number }>();
+    public readonly onDragCanvas: Observer<{ x: number, y: number }> = new Observer<{ x: number, y: number }>();
     public readonly onScaleChanged: Observer<number> = new Observer<number>();
     public readonly onDragConnectionLine: Observer<{ x1: number, y1: number, x2: number, y2: number }> = new Observer<{ x1: number, y1: number, x2: number, y2: number }>();
     public readonly onRemoveConnectionLine: Observer<void> = new Observer<void>();
@@ -147,10 +148,8 @@ export class Controller extends ObservableController {
     }
 
     public moveTo(x, y): void {
-        const offset = this.view.getOffsetForCenteredPosition(x, y, this.diagram.xOffset, this.diagram.yOffset);
-        this.diagram.xOffset = offset.x;
-        this.diagram.yOffset = offset.y;
-        this.updateCanvasPosition(this.diagram.xOffset, this.diagram.yOffset)
+        console.log(x,y);
+        this.centerPosition(x,y)
     }
 
     public center(x: any, y: any) {
@@ -182,22 +181,20 @@ export class Controller extends ObservableController {
     }
 
     public dragStartDiagram(x: number, y: number): void {
-        console.log("draw start", x, y);
         this.diagram.dragStart(x, y);
     }
 
     public dragMoveDiagram(x: number, y: number): void {
-        this.diagram.dragMove(x, y);
-        this.updateCanvasPosition(this.diagram.xDrag, this.diagram.yDrag);
+        let dragOffset = this.diagram.getDraggedOffset(x, y);
+        this.onDragCanvas.notify({x: dragOffset.x, y: dragOffset.y});
     }
 
     public dragStopDiagram(): void {
         this.diagram.dragStop();
-        this.updateCanvasPosition(this.diagram.xOffset, this.diagram.yOffset)
     }
 
-    private updateCanvasPosition(x: number, y: number): void {
-        this.onMoveCanvas.notify({x: x, y: y});
+    private centerPosition(x: number, y: number): void {
+        this.onCenterCanvas.notify({x: x, y: y});
     }
 
     public isCanvasHovered(x: number, y: number): boolean {

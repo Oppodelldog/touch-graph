@@ -20,7 +20,7 @@ export interface RenderInterface {
 
     updateLine(update: ConnectionUpdate): void
 
-    updateCanvasPosition(x?: number, y?: number): void
+    centerAtPosition(x?: number, y?: number): void
 
     setScale(scale: number): void
 
@@ -91,7 +91,8 @@ export class Renderer implements RenderInterface, ViewInterface {
         controller.onScaleChanged.subscribe((scale: number) => this.setScale(scale));
         controller.onDragConnectionLine.subscribe((line: { x1: number, y1: number, x2: number, y2: number }) => this.updateGrabLine(line.x1, line.y1, line.x2, line.y2));
         controller.onRemoveConnectionLine.subscribe(() => this.removeGrabLine());
-        controller.onMoveCanvas.subscribe((pos: { x: number, y: number }) => this.updateCanvasPosition(pos.x, pos.y));
+        controller.onCenterCanvas.subscribe((pos: { x: number, y: number }) => this.centerAtPosition(pos.x, pos.y));
+        controller.onDragCanvas.subscribe((pos: { x: number, y: number }) => this.dragCanvas(pos.x, pos.y));
         controller.onNodeSelectionChanged.subscribe((change: { node: Node, selected: boolean }) => this.updateNodeSelection(change.node.id, change.selected));
     }
 
@@ -187,9 +188,14 @@ export class Renderer implements RenderInterface, ViewInterface {
     }
 
     private getCenterScreenDiagramPos(): Position {
+        let center = Renderer.getScreenCenterPos();
+        return this.getDiagramPosFromScreenCoordinates(center.x, center.y);
+    }
+
+    private static getScreenCenterPos(): Position {
         let centerX = document.documentElement.clientWidth / 2;
         let centerY = document.documentElement.clientHeight / 2;
-        return this.getDiagramPosFromScreenCoordinates(centerX, centerY);
+        return {x: centerX, y: centerY} as Position;
     }
 
     private portPos(v: number): number {
@@ -306,8 +312,18 @@ export class Renderer implements RenderInterface, ViewInterface {
         return {x: diagramX / this.scale, y: diagramY / this.scale} as Position;
     }
 
-    public updateCanvasPosition(x: number, y: number): void {
-        this.setCanvasPosition(x, y);
+    public centerAtPosition(canvasX: number, canvasY: number): void {
+        let scaledX = canvasX * this.scale;
+        let scaledY = canvasY * this.scale;
+        let screenCenter = Renderer.getScreenCenterPos();
+        let deltaX = screenCenter.x - scaledX - this.canvasX;
+        let deltaY = screenCenter.y - scaledY - this.canvasY;
+        this.setCanvasPosition(this.canvasX + deltaX, this.canvasY + deltaY);
+        this.applyLayerTransforms();
+    }
+
+    private dragCanvas(x: number, y: number) {
+        this.setCanvasPosition(this.canvasX - x, this.canvasY - y);
         this.applyLayerTransforms();
     }
 

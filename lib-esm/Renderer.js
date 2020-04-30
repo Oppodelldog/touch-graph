@@ -34,7 +34,8 @@ var Renderer = /** @class */ (function () {
         controller.onScaleChanged.subscribe(function (scale) { return _this.setScale(scale); });
         controller.onDragConnectionLine.subscribe(function (line) { return _this.updateGrabLine(line.x1, line.y1, line.x2, line.y2); });
         controller.onRemoveConnectionLine.subscribe(function () { return _this.removeGrabLine(); });
-        controller.onMoveCanvas.subscribe(function (pos) { return _this.updateCanvasPosition(pos.x, pos.y); });
+        controller.onCenterCanvas.subscribe(function (pos) { return _this.centerAtPosition(pos.x, pos.y); });
+        controller.onDragCanvas.subscribe(function (pos) { return _this.dragCanvas(pos.x, pos.y); });
         controller.onNodeSelectionChanged.subscribe(function (change) { return _this.updateNodeSelection(change.node.id, change.selected); });
     };
     Renderer.prototype.getCanvasRect = function () {
@@ -113,9 +114,13 @@ var Renderer = /** @class */ (function () {
         this.setCanvasPosition(newCanvasX, newCanvasY);
     };
     Renderer.prototype.getCenterScreenDiagramPos = function () {
+        var center = Renderer.getScreenCenterPos();
+        return this.getDiagramPosFromScreenCoordinates(center.x, center.y);
+    };
+    Renderer.getScreenCenterPos = function () {
         var centerX = document.documentElement.clientWidth / 2;
         var centerY = document.documentElement.clientHeight / 2;
-        return this.getDiagramPosFromScreenCoordinates(centerX, centerY);
+        return { x: centerX, y: centerY };
     };
     Renderer.prototype.portPos = function (v) {
         return v + this.portRadius + 1;
@@ -214,8 +219,17 @@ var Renderer = /** @class */ (function () {
         var diagramY = viewY - diagramCanvasRect.y;
         return { x: diagramX / this.scale, y: diagramY / this.scale };
     };
-    Renderer.prototype.updateCanvasPosition = function (x, y) {
-        this.setCanvasPosition(x, y);
+    Renderer.prototype.centerAtPosition = function (canvasX, canvasY) {
+        var scaledX = canvasX * this.scale;
+        var scaledY = canvasY * this.scale;
+        var screenCenter = Renderer.getScreenCenterPos();
+        var deltaX = screenCenter.x - scaledX - this.canvasX;
+        var deltaY = screenCenter.y - scaledY - this.canvasY;
+        this.setCanvasPosition(this.canvasX + deltaX, this.canvasY + deltaY);
+        this.applyLayerTransforms();
+    };
+    Renderer.prototype.dragCanvas = function (x, y) {
+        this.setCanvasPosition(this.canvasX - x, this.canvasY - y);
         this.applyLayerTransforms();
     };
     Renderer.prototype.registerEventHandler = function (eventType, callback) {

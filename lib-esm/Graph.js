@@ -21,7 +21,7 @@ var Graph = /** @class */ (function () {
         this.controller.onMoveNode.subscribe(f);
     };
     Graph.prototype.onMoveCanvas = function (f) {
-        this.controller.onMoveCanvas.subscribe(f);
+        this.controller.onCenterCanvas.subscribe(f);
     };
     Graph.prototype.onScaleChanged = function (f) {
         this.controller.onScaleChanged.subscribe(f);

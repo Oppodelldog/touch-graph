@@ -9,7 +9,7 @@ export interface RenderInterface {
     updateNodePos(node: Node): void;
     updateNodeSelection(nodeId: string, selected: boolean): void;
     updateLine(update: ConnectionUpdate): void;
-    updateCanvasPosition(x?: number, y?: number): void;
+    centerAtPosition(x?: number, y?: number): void;
     setScale(scale: number): void;
     updateGrabLine(x1: number, y1: number, x2: number, y2: number): void;
     removeGrabLine(): void;
@@ -52,6 +52,7 @@ export declare class Renderer implements RenderInterface, ViewInterface {
     setScale(scale: number): void;
     private alignPositionForCenteredScaling;
     private getCenterScreenDiagramPos;
+    private static getScreenCenterPos;
     private portPos;
     updateNodePos(node: Node): void;
     getOffsetForCenteredPosition(x: any, y: any, xOffset: number, yOffset: number): {
@@ -65,7 +66,8 @@ export declare class Renderer implements RenderInterface, ViewInterface {
     updateGrabLine(x1: number, y1: number, x2: number, y2: number): void;
     removeGrabLine(): void;
     getDiagramPosFromScreenCoordinates(viewX: any, viewY: any): Position;
-    updateCanvasPosition(x: number, y: number): void;
+    centerAtPosition(canvasX: number, canvasY: number): void;
+    private dragCanvas;
     registerEventHandler(eventType: EventType, callback: EventCallback): string;
     removeEventHandler(id: string): void;
     updateNodeSelection(nodeId: string, selected: boolean): void;

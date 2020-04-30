@@ -21,7 +21,11 @@ export declare abstract class ObservableController {
     readonly onNewConnection: Observer<ConnectionUpdate>;
     readonly onUpdateConnection: Observer<ConnectionUpdate>;
     readonly onRemoveConnection: Observer<Connection>;
-    readonly onMoveCanvas: Observer<{
+    readonly onCenterCanvas: Observer<{
+        x: number;
+        y: number;
+    }>;
+    readonly onDragCanvas: Observer<{
         x: number;
         y: number;
     }>;
@@ -67,7 +71,7 @@ export declare class Controller extends ObservableController {
     dragStartDiagram(x: number, y: number): void;
     dragMoveDiagram(x: number, y: number): void;
     dragStopDiagram(): void;
-    private updateCanvasPosition;
+    private centerPosition;
     isCanvasHovered(x: number, y: number): boolean;
     getHoveredNodeId(x: number, y: number): string;
     isNodeHovered(x: number, y: number): boolean;

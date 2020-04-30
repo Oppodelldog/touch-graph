@@ -60,8 +60,9 @@ var Controller = /** @class */ (function (_super) {
     }
     Controller.prototype.clear = function () {
         var _this = this;
-        this.nodes.forEach(function (node) { return _this.removeNode(node.id); });
-        this.connections.forEach(function (connection) { return _this.removeConnection(connection.id); });
+        console.log(this.nodes);
+        this.nodes.getAll().map(function (n) { return n.id; }).forEach(function (id) { return _this.removeNode(id); });
+        this.connections.getAll().map(function (c) { return c.id; }).forEach(function (id) { return _this.removeConnection(id); });
     };
     Controller.prototype.newConnectionUpdate = function (connection) {
         var update = new ConnectionUpdate();
@@ -241,6 +242,7 @@ var Controller = /** @class */ (function (_super) {
     Controller.prototype.removeNode = function (nodeId) {
         var _this = this;
         var node = this.getNodeById(nodeId);
+        console.log("remove node " + nodeId);
         this.nodes.remove(nodeId);
         this.connections.getByNodeId(nodeId).forEach(function (connection) {
             _this.removeConnection(connection.id);

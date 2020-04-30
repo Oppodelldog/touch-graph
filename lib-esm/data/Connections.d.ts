@@ -3,6 +3,7 @@ export declare class Connections {
     private connections;
     constructor();
     getById(connectionId: string): Connection;
+    getAll(): Connection[];
     getByPortId(portId: string): Connection[];
     getByNodeId(nodeId: string): Connection[];
     push(connection: Connection): void;

@@ -1,4 +1,5 @@
 import {Connection} from "./Connection";
+import Node from "./Node";
 
 export class Connections {
     private connections: Array<Connection>;
@@ -14,6 +15,10 @@ export class Connections {
         }
 
         throw new Error("Connection not found: " + connectionId);
+    }
+
+    public getAll(): Connection[] {
+        return this.connections
     }
 
     public getByPortId(portId: string): Connection[] {

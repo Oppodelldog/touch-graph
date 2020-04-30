@@ -9,6 +9,9 @@ var Connections = /** @class */ (function () {
         }
         throw new Error("Connection not found: " + connectionId);
     };
+    Connections.prototype.getAll = function () {
+        return this.connections;
+    };
     Connections.prototype.getByPortId = function (portId) {
         return this.connections.filter(function (connection) { return connection.from.portId === portId || connection.to.portId === portId; });
     };

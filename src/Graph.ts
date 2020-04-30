@@ -4,16 +4,22 @@ import Nodes from "./data/Nodes";
 import Port from "./data/Port";
 import {ConnectionUpdate, Controller, ObservableController} from "./Controller";
 import {CallbackValidateNewConnection, GraphCallbackInterface, GraphInterface} from "./GraphInterface";
-import {Renderer, ViewInterface} from "./Renderer";
+import {Renderer, RendererInterface, ViewInterface} from "./Renderer";
 import {AppFlow} from "./AppFlow";
+
+export function NewGraph(): Graph {
+    const renderer = new Renderer()
+    const controller = new Controller(renderer);
+    return new Graph(renderer, controller);
+}
 
 export class Graph implements GraphInterface, GraphCallbackInterface {
     private readonly controller: Controller;
-    private readonly renderer: Renderer;
+    private readonly renderer: RendererInterface;
 
-    constructor() {
-        this.renderer = new Renderer();
-        this.controller = new Controller(this.renderer as ViewInterface);
+    constructor(renderer: RendererInterface,controller:Controller) {
+        this.renderer = renderer;
+        this.controller = controller
         this.renderer.bind(this.controller as ObservableController);
         this.initStates();
     }
@@ -99,7 +105,7 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
         this.controller.setScale(scale)
     }
 
-    public moveTo(x:number, y:number): void {
+    public moveTo(x: number, y: number): void {
         this.controller.moveTo(x, y)
     }
 
@@ -111,7 +117,7 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
         return this.renderer.getBoundingClientRect();
     }
 
-    public  getNodeFromPortId(portId: string): Node {
+    public getNodeFromPortId(portId: string): Node {
         return this.controller.getNodeFromPortId(portId);
     }
 
@@ -119,11 +125,11 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
         return this.controller.getPortConnections(portId);
     }
 
-    public updateAllNodePositions(): void{
+    public updateAllNodePositions(): void {
         this.controller.updateAllNodePositions();
     }
 
-    public clear():void{
+    public clear(): void {
         this.controller.clear();
     }
 }

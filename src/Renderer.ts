@@ -27,6 +27,8 @@ export interface RenderInterface {
     updateGrabLine(x1: number, y1: number, x2: number, y2: number): void
 
     removeGrabLine(): void
+
+    bind(controller: ObservableController): void
 }
 
 export interface ViewInterface {
@@ -43,9 +45,14 @@ export interface ViewInterface {
     onClickLine(f: (connectionId) => void): void;
 
     getOffsetForCenteredPosition(x: any, y: any, xOffset: number, yOffset: number): { x: number, y: number };
+
+    getBoundingClientRect(): DOMRect;
 }
 
-export class Renderer implements RenderInterface, ViewInterface {
+export interface RendererInterface extends RenderInterface, ViewInterface {
+}
+
+export class Renderer implements RendererInterface {
 
     private readonly canvas: HTMLElement;
     private readonly backgroundCanvas: HTMLElement;

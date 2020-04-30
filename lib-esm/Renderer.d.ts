@@ -13,6 +13,7 @@ export interface RenderInterface {
     setScale(scale: number): void;
     updateGrabLine(x1: number, y1: number, x2: number, y2: number): void;
     removeGrabLine(): void;
+    bind(controller: ObservableController): void;
 }
 export interface ViewInterface {
     getHoveredNodeId(x: number, y: number): string;
@@ -25,8 +26,11 @@ export interface ViewInterface {
         x: number;
         y: number;
     };
+    getBoundingClientRect(): DOMRect;
 }
-export declare class Renderer implements RenderInterface, ViewInterface {
+export interface RendererInterface extends RenderInterface, ViewInterface {
+}
+export declare class Renderer implements RendererInterface {
     private readonly canvas;
     private readonly backgroundCanvas;
     private readonly svgCanvas;

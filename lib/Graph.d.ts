@@ -2,12 +2,14 @@ import Node from "./data/Node";
 import { Connection } from "./data/Connection";
 import Nodes from "./data/Nodes";
 import Port from "./data/Port";
-import { ConnectionUpdate } from "./Controller";
+import { ConnectionUpdate, Controller } from "./Controller";
 import { CallbackValidateNewConnection, GraphCallbackInterface, GraphInterface } from "./GraphInterface";
+import { RendererInterface } from "./Renderer";
+export declare function NewGraph(): Graph;
 export declare class Graph implements GraphInterface, GraphCallbackInterface {
     private readonly controller;
     private readonly renderer;
-    constructor();
+    constructor(renderer: RendererInterface, controller: Controller);
     onValidateNewConnection(f: CallbackValidateNewConnection): void;
     onNewNode(f: (node: Node) => void): void;
     onRemoveNode(f: (node: Node) => void): void;

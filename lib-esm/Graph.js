@@ -1,10 +1,15 @@
 import { Controller } from "./Controller";
 import { Renderer } from "./Renderer";
 import { AppFlow } from "./AppFlow";
+export function NewGraph() {
+    var renderer = new Renderer();
+    var controller = new Controller(renderer);
+    return new Graph(renderer, controller);
+}
 var Graph = /** @class */ (function () {
-    function Graph() {
-        this.renderer = new Renderer();
-        this.controller = new Controller(this.renderer);
+    function Graph(renderer, controller) {
+        this.renderer = renderer;
+        this.controller = controller;
         this.renderer.bind(this.controller);
         this.initStates();
     }

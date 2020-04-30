@@ -161,22 +161,23 @@ var Controller = /** @class */ (function (_super) {
     Controller.prototype.removeGrabLine = function () {
         this.onRemoveConnectionLine.notify();
     };
-    Controller.prototype.dragStopDiagram = function () {
-        this.diagram.dragStop();
-        this.updateCanvasPosition(this.diagram.xOffset, this.diagram.yOffset);
+    Controller.prototype.dragStartDiagram = function (x, y) {
+        console.log("draw start", x, y);
+        this.diagram.dragStart(x, y);
     };
     Controller.prototype.dragMoveDiagram = function (x, y) {
         this.diagram.dragMove(x, y);
         this.updateCanvasPosition(this.diagram.xDrag, this.diagram.yDrag);
+    };
+    Controller.prototype.dragStopDiagram = function () {
+        this.diagram.dragStop();
+        this.updateCanvasPosition(this.diagram.xOffset, this.diagram.yOffset);
     };
     Controller.prototype.updateCanvasPosition = function (x, y) {
         this.onMoveCanvas.notify({ x: x, y: y });
     };
     Controller.prototype.isCanvasHovered = function (x, y) {
         return this.view.isCanvasHovered(x, y);
-    };
-    Controller.prototype.dragStartDiagram = function (x, y) {
-        this.diagram.dragStart(x, y);
     };
     Controller.prototype.getHoveredNodeId = function (x, y) {
         return this.view.getHoveredNodeId(x, y);

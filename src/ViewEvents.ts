@@ -66,7 +66,7 @@ export class ViewEvents {
             case EventType.KeyUp:
                 return (event) => {
                     const touchInputPos = this.getTouchInputPos(event);
-                    const diagramInputPos = this.renderer.getDiagramPos(touchInputPos.x, touchInputPos.y);
+                    const diagramInputPos = this.renderer.getDiagramPosFromScreenCoordinates(touchInputPos.x, touchInputPos.y);
                     callback(event, touchInputPos, diagramInputPos)
                 }
         }

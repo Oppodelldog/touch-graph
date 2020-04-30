@@ -58,6 +58,8 @@ export class Renderer implements RenderInterface, ViewInterface {
     private readonly viewEvents: ViewEvents;
     private portRadius: number = 7;
     private scale: number = 1;
+    private canvasX = 0;
+    private canvasY = 0;
     private _onClickLine: (connectionId: any) => void = () => void {};
 
     constructor() {
@@ -164,19 +166,30 @@ export class Renderer implements RenderInterface, ViewInterface {
         return portElements;
     }
 
-    private updateLayerTransforms(): void {
+    private applyLayerTransforms(): void {
         this.canvasLayers.forEach((layer) => layer.style.transform = `${this.canvasLayersTransforms.translate} ${this.canvasLayersTransforms.scale}`);
     }
 
-    public updateCanvasPosition(x: number, y: number): void {
-        this.canvasLayersTransforms.translate = `translate(${x}px,${y}px)`;
-        this.updateLayerTransforms();
-    }
-
     public setScale(scale: number): void {
+        const scaledBy = scale - this.scale;
+        this.alignPositionForCenteredScaling(scaledBy);
+
         this.scale = scale;
         this.canvasLayersTransforms.scale = `scale(${scale})`;
-        this.updateLayerTransforms();
+        this.applyLayerTransforms();
+    }
+
+    private alignPositionForCenteredScaling(scaledBy: number): void {
+        let center = this.getCenterScreenDiagramPos()
+        let newCanvasX = this.canvasX - center.x * scaledBy;
+        let newCanvasY = this.canvasY - center.y * scaledBy;
+        this.setCanvasPosition(newCanvasX, newCanvasY);
+    }
+
+    private getCenterScreenDiagramPos(): Position {
+        let centerX = document.documentElement.clientWidth / 2;
+        let centerY = document.documentElement.clientHeight / 2;
+        return this.getDiagramPosFromScreenCoordinates(centerX, centerY);
     }
 
     private portPos(v: number): number {
@@ -203,13 +216,12 @@ export class Renderer implements RenderInterface, ViewInterface {
     public getHoveredNodeId(x: number, y: number): string {
         let touchedNodeId = "";
         this.nodeElements.forEach(nodeElement => {
-                const rect = nodeElement.getBoundingClientRect();
-                if (x >= rect.left && x <= (rect.width + rect.left)
-                    && y > rect.top && y < (rect.height + rect.top)) {
-                    touchedNodeId = nodeElement.id;
-                }
+            const rect = nodeElement.getBoundingClientRect();
+            if (x >= rect.left && x <= (rect.width + rect.left)
+                && y > rect.top && y < (rect.height + rect.top)) {
+                touchedNodeId = nodeElement.id;
             }
-        );
+        });
 
         return touchedNodeId;
     }
@@ -219,13 +231,12 @@ export class Renderer implements RenderInterface, ViewInterface {
         let touchedNodeId = this.getHoveredNodeId(x, y);
         if (touchedNodeId) {
             document.querySelectorAll(".port").forEach(portElement => {
-                    const rect = portElement.getBoundingClientRect();
-                    if (x >= rect.left && x <= (rect.width + rect.left)
-                        && y > rect.top && y < (rect.height + rect.top)) {
-                        touchedPortId = portElement.id;
-                    }
+                const rect = portElement.getBoundingClientRect();
+                if (x >= rect.left && x <= (rect.width + rect.left)
+                    && y > rect.top && y < (rect.height + rect.top)) {
+                    touchedPortId = portElement.id;
                 }
-            );
+            });
         }
 
         return touchedPortId;
@@ -288,11 +299,16 @@ export class Renderer implements RenderInterface, ViewInterface {
         this.svg.select("#" + id).remove();
     }
 
-    public getDiagramPos(viewX: any, viewY: any): Position {
+    public getDiagramPosFromScreenCoordinates(viewX: any, viewY: any): Position {
         const diagramCanvasRect = this.htmlCanvas.getBoundingClientRect();
         const diagramX = viewX - diagramCanvasRect.x;
         const diagramY = viewY - diagramCanvasRect.y;
         return {x: diagramX / this.scale, y: diagramY / this.scale} as Position;
+    }
+
+    public updateCanvasPosition(x: number, y: number): void {
+        this.setCanvasPosition(x, y);
+        this.applyLayerTransforms();
     }
 
     public registerEventHandler(eventType: EventType, callback: EventCallback): string {
@@ -330,7 +346,13 @@ export class Renderer implements RenderInterface, ViewInterface {
         return "p_" + connectionId;
     }
 
-    getBoundingClientRect():DOMRect {
+    getBoundingClientRect(): DOMRect {
         return this.htmlCanvas.getBoundingClientRect();
+    }
+
+    private setCanvasPosition(x: number, y: number) {
+        this.canvasX = x;
+        this.canvasY = y;
+        this.canvasLayersTransforms.translate = `translate(${x}px,${y}px)`;
     }
 }

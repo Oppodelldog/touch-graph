@@ -38,6 +38,8 @@ export declare class Renderer implements RenderInterface, ViewInterface {
     private readonly viewEvents;
     private portRadius;
     private scale;
+    private canvasX;
+    private canvasY;
     private _onClickLine;
     constructor();
     bind(controller: ObservableController): void;
@@ -46,9 +48,10 @@ export declare class Renderer implements RenderInterface, ViewInterface {
     private static addDivElement;
     renderNode(node: any): void;
     private createNodePorts;
-    private updateLayerTransforms;
-    updateCanvasPosition(x: number, y: number): void;
+    private applyLayerTransforms;
     setScale(scale: number): void;
+    private alignPositionForCenteredScaling;
+    private getCenterScreenDiagramPos;
     private portPos;
     updateNodePos(node: Node): void;
     getOffsetForCenteredPosition(x: any, y: any, xOffset: number, yOffset: number): {
@@ -61,7 +64,8 @@ export declare class Renderer implements RenderInterface, ViewInterface {
     updateLine(update: ConnectionUpdate): void;
     updateGrabLine(x1: number, y1: number, x2: number, y2: number): void;
     removeGrabLine(): void;
-    getDiagramPos(viewX: any, viewY: any): Position;
+    getDiagramPosFromScreenCoordinates(viewX: any, viewY: any): Position;
+    updateCanvasPosition(x: number, y: number): void;
     registerEventHandler(eventType: EventType, callback: EventCallback): string;
     removeEventHandler(id: string): void;
     updateNodeSelection(nodeId: string, selected: boolean): void;
@@ -69,4 +73,5 @@ export declare class Renderer implements RenderInterface, ViewInterface {
     removeConnection(connectionId: string): void;
     private static getConnectionElementId;
     getBoundingClientRect(): DOMRect;
+    private setCanvasPosition;
 }

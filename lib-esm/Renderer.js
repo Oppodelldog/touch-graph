@@ -7,6 +7,8 @@ var Renderer = /** @class */ (function () {
         this.canvasLayers = [];
         this.portRadius = 7;
         this.scale = 1;
+        this.canvasX = 0;
+        this.canvasY = 0;
         this._onClickLine = function () { return void {}; };
         this.canvas = document.getElementById(canvasElementId);
         if (this.canvas == null) {
@@ -93,18 +95,27 @@ var Renderer = /** @class */ (function () {
         });
         return portElements;
     };
-    Renderer.prototype.updateLayerTransforms = function () {
+    Renderer.prototype.applyLayerTransforms = function () {
         var _this = this;
         this.canvasLayers.forEach(function (layer) { return layer.style.transform = _this.canvasLayersTransforms.translate + " " + _this.canvasLayersTransforms.scale; });
     };
-    Renderer.prototype.updateCanvasPosition = function (x, y) {
-        this.canvasLayersTransforms.translate = "translate(" + x + "px," + y + "px)";
-        this.updateLayerTransforms();
-    };
     Renderer.prototype.setScale = function (scale) {
+        var scaledBy = scale - this.scale;
+        this.alignPositionForCenteredScaling(scaledBy);
         this.scale = scale;
         this.canvasLayersTransforms.scale = "scale(" + scale + ")";
-        this.updateLayerTransforms();
+        this.applyLayerTransforms();
+    };
+    Renderer.prototype.alignPositionForCenteredScaling = function (scaledBy) {
+        var center = this.getCenterScreenDiagramPos();
+        var newCanvasX = this.canvasX - center.x * scaledBy;
+        var newCanvasY = this.canvasY - center.y * scaledBy;
+        this.setCanvasPosition(newCanvasX, newCanvasY);
+    };
+    Renderer.prototype.getCenterScreenDiagramPos = function () {
+        var centerX = document.documentElement.clientWidth / 2;
+        var centerY = document.documentElement.clientHeight / 2;
+        return this.getDiagramPosFromScreenCoordinates(centerX, centerY);
     };
     Renderer.prototype.portPos = function (v) {
         return v + this.portRadius + 1;
@@ -197,11 +208,15 @@ var Renderer = /** @class */ (function () {
         var id = "grab-line";
         this.svg.select("#" + id).remove();
     };
-    Renderer.prototype.getDiagramPos = function (viewX, viewY) {
+    Renderer.prototype.getDiagramPosFromScreenCoordinates = function (viewX, viewY) {
         var diagramCanvasRect = this.htmlCanvas.getBoundingClientRect();
         var diagramX = viewX - diagramCanvasRect.x;
         var diagramY = viewY - diagramCanvasRect.y;
         return { x: diagramX / this.scale, y: diagramY / this.scale };
+    };
+    Renderer.prototype.updateCanvasPosition = function (x, y) {
+        this.setCanvasPosition(x, y);
+        this.applyLayerTransforms();
     };
     Renderer.prototype.registerEventHandler = function (eventType, callback) {
         return this.viewEvents.registerEventHandler(eventType, callback);
@@ -234,6 +249,11 @@ var Renderer = /** @class */ (function () {
     };
     Renderer.prototype.getBoundingClientRect = function () {
         return this.htmlCanvas.getBoundingClientRect();
+    };
+    Renderer.prototype.setCanvasPosition = function (x, y) {
+        this.canvasX = x;
+        this.canvasY = y;
+        this.canvasLayersTransforms.translate = "translate(" + x + "px," + y + "px)";
     };
     return Renderer;
 }());

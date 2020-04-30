@@ -64,11 +64,11 @@ export declare class Controller extends ObservableController {
     updateGrabLine(x: number, y: number, x2: number, y2: number): void;
     getNodeFromPortId(portId: string): Node;
     removeGrabLine(): void;
-    dragStopDiagram(): void;
+    dragStartDiagram(x: number, y: number): void;
     dragMoveDiagram(x: number, y: number): void;
+    dragStopDiagram(): void;
     private updateCanvasPosition;
     isCanvasHovered(x: number, y: number): boolean;
-    dragStartDiagram(x: number, y: number): void;
     getHoveredNodeId(x: number, y: number): string;
     isNodeHovered(x: number, y: number): boolean;
     getNodeById(nodeId: string): Node | null;

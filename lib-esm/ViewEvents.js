@@ -46,7 +46,7 @@ var ViewEvents = /** @class */ (function () {
             case EventType.KeyUp:
                 return function (event) {
                     var touchInputPos = _this.getTouchInputPos(event);
-                    var diagramInputPos = _this.renderer.getDiagramPos(touchInputPos.x, touchInputPos.y);
+                    var diagramInputPos = _this.renderer.getDiagramPosFromScreenCoordinates(touchInputPos.x, touchInputPos.y);
                     callback(event, touchInputPos, diagramInputPos);
                 };
         }

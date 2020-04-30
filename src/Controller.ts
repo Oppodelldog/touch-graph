@@ -54,7 +54,7 @@ export class Controller extends ObservableController {
     public clear(): void {
         console.log(this.nodes);
         this.nodes.getAll().map((n) => n.id).forEach((id) => this.removeNode(id));
-        this.connections.getAll().map((c)=>c.id).forEach((id) => this.removeConnection(id));
+        this.connections.getAll().map((c) => c.id).forEach((id) => this.removeConnection(id));
     }
 
     private newConnectionUpdate(connection: Connection): ConnectionUpdate {
@@ -181,14 +181,19 @@ export class Controller extends ObservableController {
         this.onRemoveConnectionLine.notify()
     }
 
-    public dragStopDiagram(): void {
-        this.diagram.dragStop();
-        this.updateCanvasPosition(this.diagram.xOffset, this.diagram.yOffset)
+    public dragStartDiagram(x: number, y: number): void {
+        console.log("draw start", x, y);
+        this.diagram.dragStart(x, y);
     }
 
     public dragMoveDiagram(x: number, y: number): void {
         this.diagram.dragMove(x, y);
         this.updateCanvasPosition(this.diagram.xDrag, this.diagram.yDrag);
+    }
+
+    public dragStopDiagram(): void {
+        this.diagram.dragStop();
+        this.updateCanvasPosition(this.diagram.xOffset, this.diagram.yOffset)
     }
 
     private updateCanvasPosition(x: number, y: number): void {
@@ -197,10 +202,6 @@ export class Controller extends ObservableController {
 
     public isCanvasHovered(x: number, y: number): boolean {
         return this.view.isCanvasHovered(x, y);
-    }
-
-    public dragStartDiagram(x: number, y: number): void {
-        this.diagram.dragStart(x, y);
     }
 
     public getHoveredNodeId(x: number, y: number): string {

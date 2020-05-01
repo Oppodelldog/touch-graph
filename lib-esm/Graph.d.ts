@@ -26,9 +26,9 @@ export declare class Graph implements GraphInterface, GraphCallbackInterface {
         Y2: any;
     }) => void): void;
     onRemoveConnectionLine(f: () => void): void;
-    onNodeSelectionChanged(f: ({ Node: Node, Selected: boolean }: {
-        Node: any;
-        Selected: any;
+    onNodeSelectionChanged(f: ({ node: Node, selected: boolean }: {
+        node: any;
+        selected: any;
     }) => void): void;
     onNewConnection(f: (connection: ConnectionUpdate) => void): void;
     onUpdateConnection(f: (connection: ConnectionUpdate) => void): void;

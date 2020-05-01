@@ -56,7 +56,7 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
         this.controller.onRemoveConnectionLine.subscribe(f)
     }
 
-    public onNodeSelectionChanged(f: ({Node: Node, Selected: boolean}) => void): void {
+    public onNodeSelectionChanged(f: ({node: Node, selected: boolean}) => void): void {
         this.controller.onNodeSelectionChanged.subscribe(f);
     }
 

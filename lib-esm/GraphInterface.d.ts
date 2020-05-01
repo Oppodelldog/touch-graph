@@ -7,9 +7,9 @@ export declare type CallbackValidateNewConnection = (connection: Connection) => 
 export interface GraphCallbackInterface {
     onValidateNewConnection(f: CallbackValidateNewConnection): void;
     onNewNode(f: (node: Node) => void): void;
-    onNodeSelectionChanged(f: ({ Node: Node, Selected: boolean }: {
-        Node: any;
-        Selected: any;
+    onNodeSelectionChanged(f: ({ node: Node, selected: boolean }: {
+        node: any;
+        selected: any;
     }) => void): void;
     onRemoveNode(f: (node: Node) => void): void;
     onMoveNode(f: (node: Node) => void): void;

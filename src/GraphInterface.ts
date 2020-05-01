@@ -12,7 +12,7 @@ export interface GraphCallbackInterface {
 
     onNewNode(f: (node: Node) => void): void
 
-    onNodeSelectionChanged(f: ({Node: Node, Selected: boolean}) => void): void
+    onNodeSelectionChanged(f: ({node: Node, selected: boolean}) => void): void
 
     onRemoveNode(f: (node: Node) => void): void
 

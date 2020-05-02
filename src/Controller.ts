@@ -327,5 +327,6 @@ export class Controller extends ObservableController {
         port.caption = caption;
         node.portsIn.push(port)
         this.onAddPort.notify({node:node,port:port});
+        this.renderNodeConnections(node);
     }
 }

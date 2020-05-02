@@ -12,6 +12,7 @@ export default class Node {
     constructor();
     hasPort(portId: string): boolean;
     getPortById(portId: string): Port | null;
+    removePort(portId: string): void;
     isInPort(portId: string): boolean;
     isOutPort(portId: string): boolean;
     addInPort(port: Port): void;

@@ -63,5 +63,7 @@ export interface GraphInterface {
 
     setPortCaption(portId:string,caption:string):void
 
+    removePort(portId:string):void
+
     clear(): void
 }

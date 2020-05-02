@@ -20,6 +20,10 @@ var Node = /** @class */ (function () {
         }
         return null;
     };
+    Node.prototype.removePort = function (portId) {
+        this.portsIn = this.portsIn.filter(function (port) { return port.id !== portId; });
+        this.portsOut = this.portsOut.filter(function (port) { return port.id !== portId; });
+    };
     Node.prototype.isInPort = function (portId) {
         return this.portsIn.filter(function (port) { return port.id === portId; }).length === 1;
     };

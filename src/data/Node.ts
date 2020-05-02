@@ -35,6 +35,11 @@ export default class Node {
         return null;
     }
 
+    public removePort(portId: string): void {
+        this.portsIn = this.portsIn.filter((port: Port) => port.id !== portId);
+        this.portsOut = this.portsOut.filter((port: Port) => port.id !== portId);
+    }
+
     public isInPort(portId: string): boolean {
         return this.portsIn.filter((port) => port.id === portId).length === 1;
     }

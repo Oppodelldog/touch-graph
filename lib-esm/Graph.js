@@ -101,6 +101,9 @@ var Graph = /** @class */ (function () {
     Graph.prototype.setPortCaption = function (portId, caption) {
         this.controller.setPortCaption(portId, caption);
     };
+    Graph.prototype.removePort = function (portId) {
+        this.controller.removePort(portId);
+    };
     return Graph;
 }());
 export { Graph };

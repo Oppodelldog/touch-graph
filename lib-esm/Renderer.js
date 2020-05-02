@@ -39,6 +39,7 @@ var Renderer = /** @class */ (function () {
         controller.onNodeSelectionChanged.subscribe(function (change) { return _this.updateNodeSelection(change.node.id, change.selected); });
         controller.onSetNodeCaption.subscribe(function (node) { return _this.updateNodeCaption(node); });
         controller.onSetPortName.subscribe(function (change) { return _this.updatePortName(change.node, change.port); });
+        controller.onRemovePort.subscribe(function (node) { return _this.renderNode(node); });
     };
     Renderer.prototype.getCanvasRect = function () {
         return this.canvas.getBoundingClientRect();

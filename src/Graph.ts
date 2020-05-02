@@ -140,4 +140,8 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
     setPortCaption(portId: string, caption: string): void {
         this.controller.setPortCaption(portId, caption);
     }
+
+    removePort(portId:string):void{
+        this.controller.removePort(portId);
+    }
 }

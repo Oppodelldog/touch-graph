@@ -44,5 +44,6 @@ export interface GraphInterface {
     updateAllNodePositions(): void;
     setNodeCaption(nodeId: string, caption: string): void;
     setPortCaption(portId: string, caption: string): void;
+    removePort(portId: string): void;
     clear(): void;
 }

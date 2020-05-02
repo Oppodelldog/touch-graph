@@ -279,7 +279,7 @@ var Controller = /** @class */ (function (_super) {
             return;
         }
         var swapIndex = index;
-        if (index + 1 < node.portsIn.length - 1) {
+        if (index + 1 < node.portsIn.length) {
             swapIndex = index + 1;
         }
         else {

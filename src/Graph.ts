@@ -144,4 +144,8 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
     removePort(portId:string):void{
         this.controller.removePort(portId);
     }
+
+    addInPort(caption:string, nodeId:string):void{
+        this.controller.addInPort(caption,nodeId);
+    }
 }

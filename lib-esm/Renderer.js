@@ -40,6 +40,7 @@ var Renderer = /** @class */ (function () {
         controller.onSetNodeCaption.subscribe(function (node) { return _this.updateNodeCaption(node); });
         controller.onSetPortName.subscribe(function (change) { return _this.updatePortName(change.node, change.port); });
         controller.onRemovePort.subscribe(function (node) { return _this.renderNode(node); });
+        controller.onAddPort.subscribe(function (change) { return _this.renderNode(change.node); });
     };
     Renderer.prototype.getCanvasRect = function () {
         return this.canvas.getBoundingClientRect();

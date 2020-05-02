@@ -42,6 +42,7 @@ var ObservableController = /** @class */ (function () {
         this.onSetNodeCaption = new Observer();
         this.onSetPortName = new Observer();
         this.onRemovePort = new Observer();
+        this.onAddPort = new Observer();
     }
     return ObservableController;
 }());
@@ -277,6 +278,16 @@ var Controller = /** @class */ (function (_super) {
         this.connections.getByPortId(portId).forEach(function (connection) { return _this.removeConnection(connection.id); });
         this.onRemovePort.notify(node);
         this.renderNodeConnections(node);
+    };
+    Controller.prototype.addInPort = function (caption, nodeId) {
+        var node = this.getNodeById(nodeId);
+        if (node === null) {
+            return;
+        }
+        var port = this.createPort();
+        port.caption = caption;
+        node.portsIn.push(port);
+        this.onAddPort.notify({ node: node, port: port });
     };
     return Controller;
 }(ObservableController));

@@ -65,5 +65,7 @@ export interface GraphInterface {
 
     removePort(portId:string):void
 
+    addInPort(caption:string, nodeId:string):void;
+
     clear(): void
 }

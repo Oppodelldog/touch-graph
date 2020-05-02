@@ -31,6 +31,8 @@ export abstract class ObservableController {
     public readonly onSetNodeCaption: Observer<Node> = new Observer<Node>();
     public readonly onSetPortName: Observer<{ node: Node, port: Port }> = new Observer<{ node: Node, port: Port }>();
     public readonly onRemovePort: Observer<Node> = new Observer<Node>();
+    public readonly onAddPort: Observer<{ node: Node, port: Port }> = new Observer<{ node: Node, port: Port }>();
+
 }
 
 export class Controller extends ObservableController {
@@ -314,5 +316,16 @@ export class Controller extends ObservableController {
         this.connections.getByPortId(portId).forEach((connection: Connection) => this.removeConnection(connection.id));
         this.onRemovePort.notify(node);
         this.renderNodeConnections(node);
+    }
+
+    addInPort(caption: string, nodeId: string) {
+        let node = this.getNodeById(nodeId);
+        if(node===null){
+            return;
+        }
+        let port = this.createPort();
+        port.caption = caption;
+        node.portsIn.push(port)
+        this.onAddPort.notify({node:node,port:port});
     }
 }

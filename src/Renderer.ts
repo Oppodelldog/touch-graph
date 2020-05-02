@@ -104,7 +104,8 @@ export class Renderer implements RendererInterface {
         controller.onNodeSelectionChanged.subscribe((change: { node: Node, selected: boolean }) => this.updateNodeSelection(change.node.id, change.selected));
         controller.onSetNodeCaption.subscribe((node: Node) => this.updateNodeCaption(node));
         controller.onSetPortName.subscribe((change: { node: Node, port: Port }) => this.updatePortName(change.node, change.port));
-        controller.onRemovePort.subscribe((node: Node ) => this.renderNode(node))
+        controller.onRemovePort.subscribe((node: Node) => this.renderNode(node))
+        controller.onAddPort.subscribe((change: { node: Node, port: Port }) => this.renderNode(change.node));
     }
 
     private getCanvasRect(): DOMRect {

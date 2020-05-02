@@ -327,10 +327,30 @@ export class Controller extends ObservableController {
         let swappedPort = node.portsIn[swapIndex];
         node.portsIn[swapIndex] = node.portsIn[index];
         node.portsIn[index] = swappedPort;
+        this.renderNodeConnections(node);
     }
 
     moveInPortUp(portId: string): void {
+        let node = this.getNodeFromPortId(portId);
+        if (node === null) {
+            return;
+        }
 
+        let index = node.portsIn.findIndex((port: Port) => port.id === portId);
+        if (index === -1) {
+            return;
+        }
+
+        let swapIndex = index;
+        if (index - 1 > 0) {
+            swapIndex = index - 1;
+        } else {
+            swapIndex = node.portsIn.length - 1;
+        }
+        let swappedPort = node.portsIn[swapIndex];
+        node.portsIn[swapIndex] = node.portsIn[index];
+        node.portsIn[index] = swappedPort;
+        this.renderNodeConnections(node);
     }
 
     removePort(portId: string) {

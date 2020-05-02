@@ -148,4 +148,12 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
     addInPort(caption:string, nodeId:string):void{
         this.controller.addInPort(caption,nodeId);
     }
+
+    moveInPortDown(portId: string): void{
+        this.controller.moveInPortDown(portId);
+    }
+
+    moveInPortUp(portId: string): void{
+        this.controller.moveInPortUp(portId);
+    }
 }

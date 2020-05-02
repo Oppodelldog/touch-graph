@@ -287,8 +287,28 @@ var Controller = /** @class */ (function (_super) {
         var swappedPort = node.portsIn[swapIndex];
         node.portsIn[swapIndex] = node.portsIn[index];
         node.portsIn[index] = swappedPort;
+        this.renderNodeConnections(node);
     };
     Controller.prototype.moveInPortUp = function (portId) {
+        var node = this.getNodeFromPortId(portId);
+        if (node === null) {
+            return;
+        }
+        var index = node.portsIn.findIndex(function (port) { return port.id === portId; });
+        if (index === -1) {
+            return;
+        }
+        var swapIndex = index;
+        if (index - 1 > 0) {
+            swapIndex = index - 1;
+        }
+        else {
+            swapIndex = node.portsIn.length - 1;
+        }
+        var swappedPort = node.portsIn[swapIndex];
+        node.portsIn[swapIndex] = node.portsIn[index];
+        node.portsIn[index] = swappedPort;
+        this.renderNodeConnections(node);
     };
     Controller.prototype.removePort = function (portId) {
         var _this = this;

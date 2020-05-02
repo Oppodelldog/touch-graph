@@ -46,5 +46,7 @@ export interface GraphInterface {
     setPortCaption(portId: string, caption: string): void;
     removePort(portId: string): void;
     addInPort(caption: string, nodeId: string): void;
+    moveInPortDown(portId: string): void;
+    moveInPortUp(portId: string): void;
     clear(): void;
 }

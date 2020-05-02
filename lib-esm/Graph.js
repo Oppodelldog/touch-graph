@@ -107,6 +107,12 @@ var Graph = /** @class */ (function () {
     Graph.prototype.addInPort = function (caption, nodeId) {
         this.controller.addInPort(caption, nodeId);
     };
+    Graph.prototype.moveInPortDown = function (portId) {
+        this.controller.moveInPortDown(portId);
+    };
+    Graph.prototype.moveInPortUp = function (portId) {
+        this.controller.moveInPortUp(portId);
+    };
     return Graph;
 }());
 export { Graph };

@@ -313,5 +313,6 @@ export class Controller extends ObservableController {
         node.removePort(portId);
         this.connections.getByPortId(portId).forEach((connection: Connection) => this.removeConnection(connection.id));
         this.onRemovePort.notify(node);
+        this.renderNodeConnections(node);
     }
 }

@@ -38,6 +38,10 @@ export declare abstract class ObservableController {
     }>;
     readonly onRemoveConnectionLine: Observer<void>;
     readonly onSetNodeCaption: Observer<Node>;
+    readonly onSetPortName: Observer<{
+        node: Node;
+        port: Port;
+    }>;
 }
 export declare class Controller extends ObservableController {
     onValidateNewConnection: (connection: Connection) => boolean;
@@ -89,4 +93,5 @@ export declare class Controller extends ObservableController {
     deleteSelectedNodes(): void;
     private removeNode;
     setNodeCaption(nodeId: string, caption: string): void;
+    setPortName(portId: string, name: string): void;
 }

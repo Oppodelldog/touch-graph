@@ -4,6 +4,7 @@ import {Position} from "./data/Position";
 import {EventCallback, EventType, ViewEvents} from "./ViewEvents";
 import {ConnectionUpdate, ObservableController} from "./Controller";
 import {Connection} from "./data/Connection";
+import Port from "./data/Port";
 
 const canvasElementId = "touch-graph";
 
@@ -102,6 +103,7 @@ export class Renderer implements RendererInterface {
         controller.onDragCanvas.subscribe((pos: { x: number, y: number }) => this.dragCanvas(pos.x, pos.y));
         controller.onNodeSelectionChanged.subscribe((change: { node: Node, selected: boolean }) => this.updateNodeSelection(change.node.id, change.selected));
         controller.onSetNodeCaption.subscribe((node: Node) => this.updateNodeCaption(node));
+        controller.onSetPortName.subscribe((change: { node: Node, port: Port }) => this.updatePortName(change.node, change.port));
     }
 
     private getCanvasRect(): DOMRect {
@@ -381,6 +383,10 @@ export class Renderer implements RendererInterface {
     }
 
     private updateNodeCaption(node: Node) {
+        this.renderNode(node);
+    }
+
+    private updatePortName(node: Node, port: Port) {
         this.renderNode(node);
     }
 }

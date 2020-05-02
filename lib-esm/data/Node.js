@@ -13,6 +13,13 @@ var Node = /** @class */ (function () {
     Node.prototype.hasPort = function (portId) {
         return this.portsIn.concat(this.portsOut).filter(function (port) { return port.id === portId; }).length !== 0;
     };
+    Node.prototype.getPortById = function (portId) {
+        var ports = this.portsIn.concat(this.portsOut).filter(function (port) { return port.id === portId; });
+        if (ports.length === 1) {
+            return ports[0];
+        }
+        return null;
+    };
     Node.prototype.isInPort = function (portId) {
         return this.portsIn.filter(function (port) { return port.id === portId; }).length === 1;
     };

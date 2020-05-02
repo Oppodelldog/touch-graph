@@ -40,6 +40,7 @@ var ObservableController = /** @class */ (function () {
         this.onDragConnectionLine = new Observer();
         this.onRemoveConnectionLine = new Observer();
         this.onSetNodeCaption = new Observer();
+        this.onSetPortName = new Observer();
     }
     return ObservableController;
 }());
@@ -255,6 +256,15 @@ var Controller = /** @class */ (function (_super) {
         }
         node.caption = caption;
         this.onSetNodeCaption.notify(node);
+    };
+    Controller.prototype.setPortName = function (portId, name) {
+        var node = this.getNodeFromPortId(portId);
+        if (node === null) {
+            return;
+        }
+        var port = node.getPortById(portId);
+        port.name = name;
+        this.onSetPortName.notify({ node: node, port: port });
     };
     return Controller;
 }(ObservableController));

@@ -27,6 +27,14 @@ export default class Node {
         return this.portsIn.concat(this.portsOut).filter((port) => port.id === portId).length !== 0;
     }
 
+    public getPortById(portId: string): Port | null {
+        let ports = this.portsIn.concat(this.portsOut).filter((port) => port.id === portId);
+        if (ports.length === 1) {
+            return ports[0];
+        }
+        return null;
+    }
+
     public isInPort(portId: string): boolean {
         return this.portsIn.filter((port) => port.id === portId).length === 1;
     }

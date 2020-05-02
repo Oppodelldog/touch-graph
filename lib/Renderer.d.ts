@@ -81,4 +81,5 @@ export declare class Renderer implements RendererInterface {
     getBoundingClientRect(): DOMRect;
     private setCanvasPosition;
     private updateNodeCaption;
+    private updatePortName;
 }

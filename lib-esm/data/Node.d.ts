@@ -11,6 +11,7 @@ export default class Node {
     userData: any;
     constructor();
     hasPort(portId: string): boolean;
+    getPortById(portId: string): Port | null;
     isInPort(portId: string): boolean;
     isOutPort(portId: string): boolean;
     addInPort(port: Port): void;

@@ -29,6 +29,7 @@ export abstract class ObservableController {
     public readonly onDragConnectionLine: Observer<{ x1: number, y1: number, x2: number, y2: number }> = new Observer<{ x1: number, y1: number, x2: number, y2: number }>();
     public readonly onRemoveConnectionLine: Observer<void> = new Observer<void>();
     public readonly onSetNodeCaption: Observer<Node> = new Observer<Node>();
+    public readonly onSetPortName: Observer<{node:Node,port:Port}> =new Observer<{node: Node, port: Port}>();
 }
 
 export class Controller extends ObservableController {
@@ -291,5 +292,15 @@ export class Controller extends ObservableController {
 
         node.caption = caption;
         this.onSetNodeCaption.notify(node);
+    }
+
+    setPortName(portId: string, name: string) {
+        let node = this.getNodeFromPortId(portId);
+        if (node === null) {
+            return;
+        }
+        let port = node.getPortById(portId);
+        port.name = name;
+        this.onSetPortName.notify({node:node,port:port});
     }
 }

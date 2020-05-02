@@ -202,7 +202,6 @@ var Controller = /** @class */ (function (_super) {
         });
     };
     Controller.prototype.selectNode = function (nodeId) {
-        console.log("select node: " + nodeId);
         this.selectedNodes.push(nodeId);
         this.updateNodeSelection(nodeId);
     };
@@ -242,7 +241,6 @@ var Controller = /** @class */ (function (_super) {
     Controller.prototype.removeNode = function (nodeId) {
         var _this = this;
         var node = this.getNodeById(nodeId);
-        console.log("remove node " + nodeId);
         this.nodes.remove(nodeId);
         this.connections.getByNodeId(nodeId).forEach(function (connection) {
             _this.removeConnection(connection.id);
@@ -256,6 +254,7 @@ var Controller = /** @class */ (function (_super) {
         }
         node.caption = caption;
         this.onSetNodeCaption.notify(node);
+        this.renderNodeConnections(node);
     };
     Controller.prototype.setPortCaption = function (portId, caption) {
         var node = this.getNodeFromPortId(portId);
@@ -265,6 +264,7 @@ var Controller = /** @class */ (function (_super) {
         var port = node.getPortById(portId);
         port.caption = caption;
         this.onSetPortName.notify({ node: node, port: port });
+        this.renderNodeConnections(node);
     };
     return Controller;
 }(ObservableController));

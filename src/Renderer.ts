@@ -388,5 +388,6 @@ export class Renderer implements RendererInterface {
 
     private updatePortName(node: Node, port: Port) {
         this.renderNode(node);
+
     }
 }

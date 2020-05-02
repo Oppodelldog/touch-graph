@@ -231,7 +231,6 @@ export class Controller extends ObservableController {
     }
 
     public selectNode(nodeId: string) {
-        console.log("select node: " + nodeId);
         this.selectedNodes.push(nodeId);
         this.updateNodeSelection(nodeId);
     }
@@ -276,7 +275,6 @@ export class Controller extends ObservableController {
 
     private removeNode(nodeId: string) {
         const node = this.getNodeById(nodeId);
-        console.log("remove node " + nodeId);
         this.nodes.remove(nodeId);
         this.connections.getByNodeId(nodeId).forEach((connection) => {
             this.removeConnection(connection.id);
@@ -292,6 +290,7 @@ export class Controller extends ObservableController {
 
         node.caption = caption;
         this.onSetNodeCaption.notify(node);
+        this.renderNodeConnections(node);
     }
 
     setPortCaption(portId: string, caption: string) {
@@ -302,5 +301,6 @@ export class Controller extends ObservableController {
         let port = node.getPortById(portId);
         port.caption = caption;
         this.onSetPortName.notify({node:node,port:port});
+        this.renderNodeConnections(node);
     }
 }

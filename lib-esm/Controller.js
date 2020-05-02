@@ -274,9 +274,8 @@ var Controller = /** @class */ (function (_super) {
             return;
         }
         node.removePort(portId);
-        this.connections.getByPortId(portId).forEach(function (connection) { return _this.connections.remove(connection.id); });
+        this.connections.getByPortId(portId).forEach(function (connection) { return _this.removeConnection(connection.id); });
         this.onRemovePort.notify(node);
-        this.renderNodeConnections(node);
     };
     return Controller;
 }(ObservableController));

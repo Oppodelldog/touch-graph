@@ -268,11 +268,13 @@ var Controller = /** @class */ (function (_super) {
         this.renderNodeConnections(node);
     };
     Controller.prototype.removePort = function (portId) {
+        var _this = this;
         var node = this.getNodeFromPortId(portId);
         if (node === null) {
             return;
         }
         node.removePort(portId);
+        this.connections.getByPortId(portId).forEach(function (connection) { return _this.connections.remove(connection.id); });
         this.onRemovePort.notify(node);
         this.renderNodeConnections(node);
     };

@@ -294,13 +294,13 @@ export class Controller extends ObservableController {
         this.onSetNodeCaption.notify(node);
     }
 
-    setPortName(portId: string, name: string) {
+    setPortCaption(portId: string, caption: string) {
         let node = this.getNodeFromPortId(portId);
         if (node === null) {
             return;
         }
         let port = node.getPortById(portId);
-        port.name = name;
+        port.caption = caption;
         this.onSetPortName.notify({node:node,port:port});
     }
 }

@@ -98,8 +98,8 @@ var Graph = /** @class */ (function () {
     Graph.prototype.setNodeCaption = function (nodeId, caption) {
         this.controller.setNodeCaption(nodeId, caption);
     };
-    Graph.prototype.setPortName = function (portId, name) {
-        this.controller.setPortName(portId, name);
+    Graph.prototype.setPortCaption = function (portId, caption) {
+        this.controller.setPortCaption(portId, caption);
     };
     return Graph;
 }());

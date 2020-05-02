@@ -17,7 +17,7 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
     private readonly controller: Controller;
     private readonly renderer: RendererInterface;
 
-    constructor(renderer: RendererInterface,controller:Controller) {
+    constructor(renderer: RendererInterface, controller: Controller) {
         this.renderer = renderer;
         this.controller = controller
         this.renderer.bind(this.controller as ObservableController);
@@ -134,10 +134,10 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
     }
 
     setNodeCaption(nodeId: string, caption: string): void {
-        this.controller.setNodeCaption(nodeId,caption);
+        this.controller.setNodeCaption(nodeId, caption);
     }
 
-    setPortName(portId:string,name:string):void{
-        this.controller.setPortName(portId,name);
+    setPortCaption(portId: string, caption: string): void {
+        this.controller.setPortCaption(portId, caption);
     }
 }

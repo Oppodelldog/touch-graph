@@ -257,13 +257,13 @@ var Controller = /** @class */ (function (_super) {
         node.caption = caption;
         this.onSetNodeCaption.notify(node);
     };
-    Controller.prototype.setPortName = function (portId, name) {
+    Controller.prototype.setPortCaption = function (portId, caption) {
         var node = this.getNodeFromPortId(portId);
         if (node === null) {
             return;
         }
         var port = node.getPortById(portId);
-        port.name = name;
+        port.caption = caption;
         this.onSetPortName.notify({ node: node, port: port });
     };
     return Controller;

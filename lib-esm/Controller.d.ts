@@ -93,5 +93,5 @@ export declare class Controller extends ObservableController {
     deleteSelectedNodes(): void;
     private removeNode;
     setNodeCaption(nodeId: string, caption: string): void;
-    setPortName(portId: string, name: string): void;
+    setPortCaption(portId: string, caption: string): void;
 }

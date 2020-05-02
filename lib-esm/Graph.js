@@ -95,6 +95,9 @@ var Graph = /** @class */ (function () {
     Graph.prototype.clear = function () {
         this.controller.clear();
     };
+    Graph.prototype.setNodeCaption = function (nodeId, caption) {
+        this.controller.setNodeCaption(nodeId, caption);
+    };
     return Graph;
 }());
 export { Graph };

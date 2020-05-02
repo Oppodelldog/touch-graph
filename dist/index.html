@@ -64,6 +64,8 @@
     graph.addConnection(n2.id, n2p1.id, n1.id, n1p1.id);
     graph.addConnection(n3.id, n3p1.id, n1.id, n1p2.id);
 
+    setInterval(()=>graph.setNodeCaption(n4.id,new Date()),2000);
+
    // graph.clear();
 
     // custom connection handling, only allow to connect:

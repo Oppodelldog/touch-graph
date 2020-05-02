@@ -15,6 +15,7 @@
         "${SSH_AUTH_SOCK}:/run/ssh.sock",
         "/etc/passwd:/etc/passwd:ro",
         "/etc/group:/etc/group:ro",
+        "/media/nils/code:/media/nils/code",
         "/tmp:/tmp",
         "/dev/shm:/dev/shm",
         "/var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket",

@@ -37,6 +37,7 @@ var Renderer = /** @class */ (function () {
         controller.onCenterCanvas.subscribe(function (pos) { return _this.centerAtPosition(pos.x, pos.y); });
         controller.onDragCanvas.subscribe(function (pos) { return _this.dragCanvas(pos.x, pos.y); });
         controller.onNodeSelectionChanged.subscribe(function (change) { return _this.updateNodeSelection(change.node.id, change.selected); });
+        controller.onSetNodeCaption.subscribe(function (node) { return _this.updateNodeCaption(node); });
     };
     Renderer.prototype.getCanvasRect = function () {
         return this.canvas.getBoundingClientRect();
@@ -51,7 +52,7 @@ var Renderer = /** @class */ (function () {
         return el;
     };
     Renderer.prototype.renderNode = function (node) {
-        var div = document.getElementById("#" + node.id);
+        var div = document.getElementById(node.id);
         if (div) {
             div.parentNode.removeChild(div);
         }
@@ -268,6 +269,9 @@ var Renderer = /** @class */ (function () {
         this.canvasX = x;
         this.canvasY = y;
         this.canvasLayersTransforms.translate = "translate(" + x + "px," + y + "px)";
+    };
+    Renderer.prototype.updateNodeCaption = function (node) {
+        this.renderNode(node);
     };
     return Renderer;
 }());

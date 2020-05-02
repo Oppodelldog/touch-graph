@@ -28,6 +28,7 @@ export abstract class ObservableController {
     public readonly onScaleChanged: Observer<number> = new Observer<number>();
     public readonly onDragConnectionLine: Observer<{ x1: number, y1: number, x2: number, y2: number }> = new Observer<{ x1: number, y1: number, x2: number, y2: number }>();
     public readonly onRemoveConnectionLine: Observer<void> = new Observer<void>();
+    public readonly onSetNodeCaption: Observer<Node> = new Observer<Node>();
 }
 
 export class Controller extends ObservableController {
@@ -148,8 +149,8 @@ export class Controller extends ObservableController {
     }
 
     public moveTo(x, y): void {
-        console.log(x,y);
-        this.centerPosition(x,y)
+        console.log(x, y);
+        this.centerPosition(x, y)
     }
 
     public center(x: any, y: any) {
@@ -280,5 +281,15 @@ export class Controller extends ObservableController {
             this.removeConnection(connection.id);
         });
         this.onRemoveNode.notify(node);
+    }
+
+    setNodeCaption(nodeId: string, caption: string) {
+        let node = this.getNodeById(nodeId);
+        if (node === null) {
+            return;
+        }
+
+        node.caption = caption;
+        this.onSetNodeCaption.notify(node);
     }
 }

@@ -101,6 +101,7 @@ export class Renderer implements RendererInterface {
         controller.onCenterCanvas.subscribe((pos: { x: number, y: number }) => this.centerAtPosition(pos.x, pos.y));
         controller.onDragCanvas.subscribe((pos: { x: number, y: number }) => this.dragCanvas(pos.x, pos.y));
         controller.onNodeSelectionChanged.subscribe((change: { node: Node, selected: boolean }) => this.updateNodeSelection(change.node.id, change.selected));
+        controller.onSetNodeCaption.subscribe((node: Node) => this.updateNodeCaption(node));
     }
 
     private getCanvasRect(): DOMRect {
@@ -120,7 +121,7 @@ export class Renderer implements RendererInterface {
     }
 
     public renderNode(node): void {
-        let div = document.getElementById("#" + node.id);
+        let div = document.getElementById(node.id);
         if (div) {
             div.parentNode.removeChild(div);
         }
@@ -377,5 +378,9 @@ export class Renderer implements RendererInterface {
         this.canvasX = x;
         this.canvasY = y;
         this.canvasLayersTransforms.translate = `translate(${x}px,${y}px)`;
+    }
+
+    private updateNodeCaption(node: Node) {
+        this.renderNode(node);
     }
 }

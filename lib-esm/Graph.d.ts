@@ -47,4 +47,5 @@ export declare class Graph implements GraphInterface, GraphCallbackInterface {
     getPortConnections(portId: string): Connection[];
     updateAllNodePositions(): void;
     clear(): void;
+    setNodeCaption(nodeId: string, caption: string): void;
 }

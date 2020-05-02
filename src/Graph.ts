@@ -132,4 +132,8 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
     public clear(): void {
         this.controller.clear();
     }
+
+    setNodeCaption(nodeId: string, caption: string): void {
+        this.controller.setNodeCaption(nodeId,caption);
+    }
 }

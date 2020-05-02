@@ -39,6 +39,7 @@ var ObservableController = /** @class */ (function () {
         this.onScaleChanged = new Observer();
         this.onDragConnectionLine = new Observer();
         this.onRemoveConnectionLine = new Observer();
+        this.onSetNodeCaption = new Observer();
     }
     return ObservableController;
 }());
@@ -246,6 +247,14 @@ var Controller = /** @class */ (function (_super) {
             _this.removeConnection(connection.id);
         });
         this.onRemoveNode.notify(node);
+    };
+    Controller.prototype.setNodeCaption = function (nodeId, caption) {
+        var node = this.getNodeById(nodeId);
+        if (node === null) {
+            return;
+        }
+        node.caption = caption;
+        this.onSetNodeCaption.notify(node);
     };
     return Controller;
 }(ObservableController));

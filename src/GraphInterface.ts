@@ -59,5 +59,7 @@ export interface GraphInterface {
 
     updateAllNodePositions(): void
 
-    clear():void
+    setNodeCaption(nodeId: string, caption: string): void
+
+    clear(): void
 }

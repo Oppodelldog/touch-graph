@@ -99,6 +99,8 @@ export declare class Controller extends ObservableController {
     private removeNode;
     setNodeCaption(nodeId: string, caption: string): void;
     setPortCaption(portId: string, caption: string): void;
+    moveInPortDown(portId: string): void;
+    moveInPortUp(portId: string): void;
     removePort(portId: string): void;
     addInPort(caption: string, nodeId: string): void;
 }

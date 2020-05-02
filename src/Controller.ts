@@ -307,6 +307,32 @@ export class Controller extends ObservableController {
         this.renderNodeConnections(node);
     }
 
+    moveInPortDown(portId: string): void {
+        let node = this.getNodeFromPortId(portId);
+        if (node === null) {
+            return;
+        }
+
+        let index = node.portsIn.findIndex((port: Port) => port.id === portId);
+        if (index === -1) {
+            return;
+        }
+
+        let swapIndex = index;
+        if (index + 1 < node.portsIn.length - 1) {
+            swapIndex = index + 1;
+        } else {
+            swapIndex = 0;
+        }
+        let swappedPort = node.portsIn[swapIndex];
+        node.portsIn[swapIndex] = node.portsIn[index];
+        node.portsIn[index] = swappedPort;
+    }
+
+    moveInPortUp(portId: string): void {
+
+    }
+
     removePort(portId: string) {
         let node = this.getNodeFromPortId(portId);
         if (node === null) {
@@ -320,13 +346,13 @@ export class Controller extends ObservableController {
 
     addInPort(caption: string, nodeId: string) {
         let node = this.getNodeById(nodeId);
-        if(node===null){
+        if (node === null) {
             return;
         }
         let port = this.createPort();
         port.caption = caption;
         node.portsIn.push(port)
-        this.onAddPort.notify({node:node,port:port});
+        this.onAddPort.notify({node: node, port: port});
         this.renderNodeConnections(node);
     }
 }

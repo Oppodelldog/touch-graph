@@ -268,6 +268,28 @@ var Controller = /** @class */ (function (_super) {
         this.onSetPortName.notify({ node: node, port: port });
         this.renderNodeConnections(node);
     };
+    Controller.prototype.moveInPortDown = function (portId) {
+        var node = this.getNodeFromPortId(portId);
+        if (node === null) {
+            return;
+        }
+        var index = node.portsIn.findIndex(function (port) { return port.id === portId; });
+        if (index === -1) {
+            return;
+        }
+        var swapIndex = index;
+        if (index + 1 < node.portsIn.length - 1) {
+            swapIndex = index + 1;
+        }
+        else {
+            swapIndex = 0;
+        }
+        var swappedPort = node.portsIn[swapIndex];
+        node.portsIn[swapIndex] = node.portsIn[index];
+        node.portsIn[index] = swappedPort;
+    };
+    Controller.prototype.moveInPortUp = function (portId) {
+    };
     Controller.prototype.removePort = function (portId) {
         var _this = this;
         var node = this.getNodeFromPortId(portId);

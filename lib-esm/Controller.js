@@ -43,6 +43,7 @@ var ObservableController = /** @class */ (function () {
         this.onSetPortName = new Observer();
         this.onRemovePort = new Observer();
         this.onAddPort = new Observer();
+        this.onMoveInPort = new Observer();
     }
     return ObservableController;
 }());
@@ -287,6 +288,7 @@ var Controller = /** @class */ (function (_super) {
         var swappedPort = node.portsIn[swapIndex];
         node.portsIn[swapIndex] = node.portsIn[index];
         node.portsIn[index] = swappedPort;
+        this.onMoveInPort.notify({ node: node, previousIndex: index, newIndex: swapIndex });
         this.renderNodeConnections(node);
     };
     Controller.prototype.moveInPortUp = function (portId) {
@@ -308,6 +310,7 @@ var Controller = /** @class */ (function (_super) {
         var swappedPort = node.portsIn[swapIndex];
         node.portsIn[swapIndex] = node.portsIn[index];
         node.portsIn[index] = swappedPort;
+        this.onMoveInPort.notify({ node: node, previousIndex: index, newIndex: swapIndex });
         this.renderNodeConnections(node);
     };
     Controller.prototype.removePort = function (portId) {

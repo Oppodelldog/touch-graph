@@ -32,6 +32,7 @@ export abstract class ObservableController {
     public readonly onSetPortName: Observer<{ node: Node, port: Port }> = new Observer<{ node: Node, port: Port }>();
     public readonly onRemovePort: Observer<Node> = new Observer<Node>();
     public readonly onAddPort: Observer<{ node: Node, port: Port }> = new Observer<{ node: Node, port: Port }>();
+    public readonly onMoveInPort: Observer<{ node: Node, previousIndex: number, newIndex: number }> = new Observer<{ previousIndex: number, newIndex: number }>();
 
 }
 
@@ -327,6 +328,7 @@ export class Controller extends ObservableController {
         let swappedPort = node.portsIn[swapIndex];
         node.portsIn[swapIndex] = node.portsIn[index];
         node.portsIn[index] = swappedPort;
+        this.onMoveInPort.notify({node: node, previousIndex: index, newIndex: swapIndex});
         this.renderNodeConnections(node);
     }
 
@@ -350,6 +352,7 @@ export class Controller extends ObservableController {
         let swappedPort = node.portsIn[swapIndex];
         node.portsIn[swapIndex] = node.portsIn[index];
         node.portsIn[index] = swappedPort;
+        this.onMoveInPort.notify({node: node, previousIndex: index, newIndex: swapIndex});
         this.renderNodeConnections(node);
     }
 

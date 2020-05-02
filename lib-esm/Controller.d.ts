@@ -47,6 +47,11 @@ export declare abstract class ObservableController {
         node: Node;
         port: Port;
     }>;
+    readonly onMoveInPort: Observer<{
+        node: Node;
+        previousIndex: number;
+        newIndex: number;
+    }>;
 }
 export declare class Controller extends ObservableController {
     onValidateNewConnection: (connection: Connection) => boolean;

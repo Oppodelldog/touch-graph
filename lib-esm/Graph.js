@@ -113,6 +113,12 @@ var Graph = /** @class */ (function () {
     Graph.prototype.moveInPortUp = function (portId) {
         this.controller.moveInPortUp(portId);
     };
+    Graph.prototype.setCustomCssClass = function (nodeId, className) {
+        this.controller.setCustomCssClass(nodeId, className);
+    };
+    Graph.prototype.removeCustomCssClass = function (nodeId, className) {
+        this.controller.removeCustomCssClass(nodeId, className);
+    };
     return Graph;
 }());
 export { Graph };

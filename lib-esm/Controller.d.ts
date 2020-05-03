@@ -56,6 +56,10 @@ export declare abstract class ObservableController {
         node: Node;
         cssClassName: string;
     }>;
+    readonly onRemoveCustomCssClass: Observer<{
+        node: Node;
+        cssClassName: string;
+    }>;
 }
 export declare class Controller extends ObservableController {
     onValidateNewConnection: (connection: Connection) => boolean;
@@ -113,4 +117,5 @@ export declare class Controller extends ObservableController {
     removePort(portId: string): void;
     addInPort(caption: string, nodeId: string): void;
     setCustomCssClass(nodeId: string, className: string): void;
+    removeCustomCssClass(nodeId: string, className: string): void;
 }

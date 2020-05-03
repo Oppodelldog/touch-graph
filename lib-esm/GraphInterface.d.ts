@@ -49,4 +49,6 @@ export interface GraphInterface {
     moveInPortDown(portId: string): void;
     moveInPortUp(portId: string): void;
     clear(): void;
+    setCustomCssClass(nodeId: string, className: string): void;
+    removeCustomCssClass(nodeId: string, className: string): void;
 }

@@ -53,4 +53,6 @@ export declare class Graph implements GraphInterface, GraphCallbackInterface {
     addInPort(caption: string, nodeId: string): void;
     moveInPortDown(portId: string): void;
     moveInPortUp(portId: string): void;
+    setCustomCssClass(nodeId: string, className: string): void;
+    removeCustomCssClass(nodeId: string, className: string): void;
 }

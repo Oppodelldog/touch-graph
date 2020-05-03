@@ -43,6 +43,7 @@ var Renderer = /** @class */ (function () {
         controller.onAddPort.subscribe(function (change) { return _this.renderNode(change.node); });
         controller.onMoveInPort.subscribe(function (change) { return _this.renderNode(change.node); });
         controller.onAddCustomCssClass.subscribe(function (change) { return _this.renderNode(change.node); });
+        controller.onRemoveCustomCssClass.subscribe(function (change) { return _this.renderNode(change.node); });
     };
     Renderer.prototype.getCanvasRect = function () {
         return this.canvas.getBoundingClientRect();

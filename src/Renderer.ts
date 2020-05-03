@@ -107,6 +107,8 @@ export class Renderer implements RendererInterface {
         controller.onRemovePort.subscribe((node: Node) => this.renderNode(node))
         controller.onAddPort.subscribe((change: { node: Node, port: Port }) => this.renderNode(change.node));
         controller.onMoveInPort.subscribe((change: { node: Node, previousIndex: number, newIndex: number }) => this.renderNode(change.node))
+        controller.onAddCustomCssClass.subscribe((change: { node: Node, cssClassName: string }) => this.renderNode(change.node))
+        controller.onRemoveCustomCssClass.subscribe((change: { node: Node, cssClassName: string }) => this.renderNode(change.node))
     }
 
     private getCanvasRect(): DOMRect {

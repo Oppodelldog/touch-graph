@@ -141,19 +141,26 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
         this.controller.setPortCaption(portId, caption);
     }
 
-    removePort(portId:string):void{
+    removePort(portId: string): void {
         this.controller.removePort(portId);
     }
 
-    addInPort(caption:string, nodeId:string):void{
-        this.controller.addInPort(caption,nodeId);
+    addInPort(caption: string, nodeId: string): void {
+        this.controller.addInPort(caption, nodeId);
     }
 
-    moveInPortDown(portId: string): void{
+    moveInPortDown(portId: string): void {
         this.controller.moveInPortDown(portId);
     }
 
-    moveInPortUp(portId: string): void{
+    moveInPortUp(portId: string): void {
         this.controller.moveInPortUp(portId);
+    }
+
+    setCustomCssClass(nodeId: string, className: string): void {
+        this.controller.setCustomCssClass(nodeId, className);
+    }
+    removeCustomCssClass(nodeId: string, className: string): void {
+        this.controller.removeCustomCssClass(nodeId, className);
     }
 }

@@ -33,6 +33,8 @@ export abstract class ObservableController {
     public readonly onRemovePort: Observer<Node> = new Observer<Node>();
     public readonly onAddPort: Observer<{ node: Node, port: Port }> = new Observer<{ node: Node, port: Port }>();
     public readonly onMoveInPort: Observer<{ node: Node, previousIndex: number, newIndex: number }> = new Observer<{ previousIndex: number, newIndex: number }>();
+    public readonly onAddCustomCssClass: Observer<{ node: Node, cssClassName: string }> = new Observer<{ node: Node, cssClassName: string }>();
+    public readonly onRemoveCustomCssClass: Observer<{ node: Node, cssClassName: string }> = new Observer<{ node: Node, cssClassName: string }>();
 
 }
 
@@ -377,5 +379,30 @@ export class Controller extends ObservableController {
         node.portsIn.push(port)
         this.onAddPort.notify({node: node, port: port});
         this.renderNodeConnections(node);
+    }
+
+    setCustomCssClass(nodeId: string, className: string): void {
+        let node = this.getNodeById(nodeId);
+        if (node === null) {
+            return;
+        }
+        let exists = node.customClasses.findIndex((cls) => cls === className) > -1;
+        if (!exists) {
+            node.customClasses.push(className);
+            this.onAddCustomCssClass.notify({node: node, cssClassName: className});
+        }
+    }
+
+    removeCustomCssClass(nodeId: string, className: string): void {
+        let node = this.getNodeById(nodeId);
+        if (node === null) {
+            return;
+        }
+        let exists = node.customClasses.findIndex((cls) => cls === className) > -1;
+        if (!exists) {
+            node.customClasses = node.customClasses.filter((cls) => cls !== className);
+            this.onRemoveCustomCssClass.notify({node: node, cssClassName: className});
+        }
+
     }
 }

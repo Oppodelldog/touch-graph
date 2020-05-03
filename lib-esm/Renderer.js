@@ -61,7 +61,7 @@ var Renderer = /** @class */ (function () {
             div.parentNode.removeChild(div);
         }
         div = document.createElement("div");
-        div.className = "node " + node.customClass;
+        div.className = "node " + node.customClasses.join(' ');
         div.id = node.id;
         var title = document.createElement("div");
         title.className = "title";

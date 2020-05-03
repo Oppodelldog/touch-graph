@@ -131,7 +131,7 @@ export class Renderer implements RendererInterface {
             div.parentNode.removeChild(div);
         }
         div = document.createElement("div");
-        div.className = "node " + node.customClass;
+        div.className = "node " + node.customClasses.join(' ');
         div.id = node.id;
 
         const title = document.createElement("div");

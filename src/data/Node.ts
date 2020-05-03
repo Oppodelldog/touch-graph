@@ -8,7 +8,7 @@ export default class Node {
     public portsOut: any[];
     public type: string;
     public caption: string;
-    public customClass: string;
+    public customClasses: string[];
     public userData: any;
 
     constructor() {
@@ -19,7 +19,7 @@ export default class Node {
         this.portsOut = [];
         this.type = "";
         this.caption = "";
-        this.customClass = "";
+        this.customClasses = [];
         this.userData = {};
     }
 

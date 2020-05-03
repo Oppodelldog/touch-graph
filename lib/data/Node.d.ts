@@ -7,7 +7,7 @@ export default class Node {
     portsOut: any[];
     type: string;
     caption: string;
-    customClass: string;
+    customClasses: string[];
     userData: any;
     constructor();
     hasPort(portId: string): boolean;

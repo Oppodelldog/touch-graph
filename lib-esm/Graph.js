@@ -3,7 +3,8 @@ import { Renderer } from "./Renderer";
 import { AppFlow } from "./AppFlow";
 export function NewGraph() {
     var renderer = new Renderer();
-    var controller = new Controller(renderer);
+    var controller = new Controller();
+    controller.connectView(renderer);
     return new Graph(renderer, controller);
 }
 var Graph = /** @class */ (function () {

@@ -65,11 +65,12 @@ export declare class Controller extends ObservableController {
     onValidateNewConnection: (connection: Connection) => boolean;
     private readonly connections;
     private readonly nodes;
-    private readonly view;
     private readonly diagram;
     private readonly selectedNodes;
+    private view;
     private scale;
-    constructor(view: ViewInterface);
+    constructor();
+    connectView(view: ViewInterface): void;
     clear(): void;
     private newConnectionUpdate;
     updateConnection(connection: Connection): void;
@@ -118,4 +119,5 @@ export declare class Controller extends ObservableController {
     addInPort(caption: string, nodeId: string): void;
     setCustomCssClass(nodeId: string, className: string): void;
     removeCustomCssClass(nodeId: string, className: string): void;
+    private getView;
 }

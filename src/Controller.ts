@@ -43,21 +43,24 @@ export class Controller extends ObservableController {
 
     private readonly connections: Connections;
     private readonly nodes: Nodes;
-    private readonly view: ViewInterface;
     private readonly diagram: Diagram;
     private readonly selectedNodes: string[];
+    private view: ViewInterface;
     private scale: number = 1;
 
-    constructor(view: ViewInterface) {
+    constructor() {
         super();
-        this.view = view;
         this.diagram = new Diagram();
         this.nodes = new Nodes();
         this.connections = new Connections();
-        this.view.onClickLine((connectionId) => {
+        this.selectedNodes = [];
+    }
+
+    public connectView(view: ViewInterface): void {
+        this.view = view;
+        this.getView().onClickLine((connectionId) => {
             this.removeConnection(connectionId);
         });
-        this.selectedNodes = [];
     }
 
     public clear(): void {
@@ -84,11 +87,11 @@ export class Controller extends ObservableController {
     }
 
     public registerEventHandler(eventType: EventType, callback: EventCallback): string {
-        return this.view.registerEventHandler(eventType, callback);
+        return this.getView().registerEventHandler(eventType, callback);
     }
 
     public removeEventHandler(id: string) {
-        this.view.removeEventHandler(id);
+        this.getView().removeEventHandler(id);
     }
 
     public getNumberOfPortConnections(portId): number {
@@ -161,7 +164,7 @@ export class Controller extends ObservableController {
     }
 
     public center(x: any, y: any) {
-        let nodeId = this.view.getHoveredNodeId(x, y);
+        let nodeId = this.getView().getHoveredNodeId(x, y);
         let node = this.nodes.getById(nodeId);
         if (node !== null) {
             this.moveTo(node.x, node.y);
@@ -173,7 +176,7 @@ export class Controller extends ObservableController {
     }
 
     public getHoveredPortId(x: number, y: number): string {
-        return this.view.getHoveredPortId(x, y);
+        return this.getView().getHoveredPortId(x, y);
     }
 
     public updateGrabLine(x: number, y: number, x2: number, y2: number): void {
@@ -206,15 +209,15 @@ export class Controller extends ObservableController {
     }
 
     public isCanvasHovered(x: number, y: number): boolean {
-        return this.view.isCanvasHovered(x, y);
+        return this.getView().isCanvasHovered(x, y);
     }
 
     public getHoveredNodeId(x: number, y: number): string {
-        return this.view.getHoveredNodeId(x, y);
+        return this.getView().getHoveredNodeId(x, y);
     }
 
     public isNodeHovered(x: number, y: number): boolean {
-        return this.view.getHoveredNodeId(x, y) !== "";
+        return this.getView().getHoveredNodeId(x, y) !== "";
     }
 
     public getNodeById(nodeId: string): Node | null {
@@ -404,5 +407,12 @@ export class Controller extends ObservableController {
             this.onRemoveCustomCssClass.notify({node: node, cssClassName: className});
         }
 
+    }
+
+    private getView(): ViewInterface {
+        if (this.view === undefined) {
+            throw new Error("no view connected");
+        }
+        return this.view;
     }
 }

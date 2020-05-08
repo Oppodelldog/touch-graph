@@ -9,7 +9,8 @@ import {AppFlow} from "./AppFlow";
 
 export function NewGraph(): Graph {
     const renderer = new Renderer()
-    const controller = new Controller(renderer);
+    const controller = new Controller();
+    controller.connectView(renderer);
     return new Graph(renderer, controller);
 }
 
@@ -160,6 +161,7 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
     setCustomCssClass(nodeId: string, className: string): void {
         this.controller.setCustomCssClass(nodeId, className);
     }
+
     removeCustomCssClass(nodeId: string, className: string): void {
         this.controller.removeCustomCssClass(nodeId, className);
     }

@@ -52,20 +52,23 @@ var ObservableController = /** @class */ (function () {
 export { ObservableController };
 var Controller = /** @class */ (function (_super) {
     __extends(Controller, _super);
-    function Controller(view) {
+    function Controller() {
         var _this = _super.call(this) || this;
         _this.onValidateNewConnection = function () { return true; };
         _this.scale = 1;
-        _this.view = view;
         _this.diagram = new Diagram();
         _this.nodes = new Nodes();
         _this.connections = new Connections();
-        _this.view.onClickLine(function (connectionId) {
-            _this.removeConnection(connectionId);
-        });
         _this.selectedNodes = [];
         return _this;
     }
+    Controller.prototype.connectView = function (view) {
+        var _this = this;
+        this.view = view;
+        this.getView().onClickLine(function (connectionId) {
+            _this.removeConnection(connectionId);
+        });
+    };
     Controller.prototype.clear = function () {
         var _this = this;
         console.log(this.nodes);
@@ -86,10 +89,10 @@ var Controller = /** @class */ (function (_super) {
         return this.nodes;
     };
     Controller.prototype.registerEventHandler = function (eventType, callback) {
-        return this.view.registerEventHandler(eventType, callback);
+        return this.getView().registerEventHandler(eventType, callback);
     };
     Controller.prototype.removeEventHandler = function (id) {
-        this.view.removeEventHandler(id);
+        this.getView().removeEventHandler(id);
     };
     Controller.prototype.getNumberOfPortConnections = function (portId) {
         return this.connections.getByPortId(portId).length;
@@ -146,7 +149,7 @@ var Controller = /** @class */ (function (_super) {
         this.centerPosition(x, y);
     };
     Controller.prototype.center = function (x, y) {
-        var nodeId = this.view.getHoveredNodeId(x, y);
+        var nodeId = this.getView().getHoveredNodeId(x, y);
         var node = this.nodes.getById(nodeId);
         if (node !== null) {
             this.moveTo(node.x, node.y);
@@ -156,7 +159,7 @@ var Controller = /** @class */ (function (_super) {
         return this.scale;
     };
     Controller.prototype.getHoveredPortId = function (x, y) {
-        return this.view.getHoveredPortId(x, y);
+        return this.getView().getHoveredPortId(x, y);
     };
     Controller.prototype.updateGrabLine = function (x, y, x2, y2) {
         this.onDragConnectionLine.notify({ x1: x, y1: y, x2: x2, y2: y2 });
@@ -181,13 +184,13 @@ var Controller = /** @class */ (function (_super) {
         this.onCenterCanvas.notify({ x: x, y: y });
     };
     Controller.prototype.isCanvasHovered = function (x, y) {
-        return this.view.isCanvasHovered(x, y);
+        return this.getView().isCanvasHovered(x, y);
     };
     Controller.prototype.getHoveredNodeId = function (x, y) {
-        return this.view.getHoveredNodeId(x, y);
+        return this.getView().getHoveredNodeId(x, y);
     };
     Controller.prototype.isNodeHovered = function (x, y) {
-        return this.view.getHoveredNodeId(x, y) !== "";
+        return this.getView().getHoveredNodeId(x, y) !== "";
     };
     Controller.prototype.getNodeById = function (nodeId) {
         return this.nodes.getById(nodeId);
@@ -358,6 +361,12 @@ var Controller = /** @class */ (function (_super) {
             node.customClasses = node.customClasses.filter(function (cls) { return cls !== className; });
             this.onRemoveCustomCssClass.notify({ node: node, cssClassName: className });
         }
+    };
+    Controller.prototype.getView = function () {
+        if (this.view === undefined) {
+            throw new Error("no view connected");
+        }
+        return this.view;
     };
     return Controller;
 }(ObservableController));

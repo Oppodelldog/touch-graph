@@ -11,7 +11,6 @@ export function NewGraph() {
 var Graph = /** @class */ (function () {
     function Graph(controller) {
         this.controller = controller;
-        this.initStates();
     }
     Graph.prototype.setRenderer = function (renderer) {
         this.renderer = renderer;

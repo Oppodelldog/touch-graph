@@ -12,6 +12,7 @@ export function NewGraph(): Graph {
     const controller = new Controller();
     let graph = new Graph(controller);
     graph.setRenderer(renderer)
+    graph.initStates();
 
     return graph;
 }
@@ -22,7 +23,6 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
 
     constructor(controller: Controller) {
         this.controller = controller
-        this.initStates();
     }
 
     public setRenderer(renderer: RendererInterface) {
@@ -116,7 +116,7 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
         this.controller.moveTo(x, y)
     }
 
-    private initStates(): void {
+    public initStates(): void {
         AppFlow.init(this.controller);
     }
 

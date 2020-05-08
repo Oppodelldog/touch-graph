@@ -10,19 +10,25 @@ import {AppFlow} from "./AppFlow";
 export function NewGraph(): Graph {
     const renderer = new Renderer()
     const controller = new Controller();
-    controller.connectView(renderer);
-    return new Graph(renderer, controller);
+    let graph = new Graph(controller);
+    graph.setRenderer(renderer)
+
+    return graph;
 }
 
 export class Graph implements GraphInterface, GraphCallbackInterface {
     private readonly controller: Controller;
-    private readonly renderer: RendererInterface;
+    private renderer: RendererInterface;
 
-    constructor(renderer: RendererInterface, controller: Controller) {
-        this.renderer = renderer;
+    constructor(controller: Controller) {
         this.controller = controller
-        this.renderer.bind(this.controller as ObservableController);
         this.initStates();
+    }
+
+    public setRenderer(renderer: RendererInterface) {
+        this.renderer = renderer;
+        this.controller.connectView(this.renderer);
+        this.renderer.bind(this.controller as ObservableController);
     }
 
     public onValidateNewConnection(f: CallbackValidateNewConnection): void {

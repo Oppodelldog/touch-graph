@@ -4,16 +4,20 @@ import { AppFlow } from "./AppFlow";
 export function NewGraph() {
     var renderer = new Renderer();
     var controller = new Controller();
-    controller.connectView(renderer);
-    return new Graph(renderer, controller);
+    var graph = new Graph(controller);
+    graph.setRenderer(renderer);
+    return graph;
 }
 var Graph = /** @class */ (function () {
-    function Graph(renderer, controller) {
-        this.renderer = renderer;
+    function Graph(controller) {
         this.controller = controller;
-        this.renderer.bind(this.controller);
         this.initStates();
     }
+    Graph.prototype.setRenderer = function (renderer) {
+        this.renderer = renderer;
+        this.controller.connectView(this.renderer);
+        this.renderer.bind(this.controller);
+    };
     Graph.prototype.onValidateNewConnection = function (f) {
         this.controller.onValidateNewConnection = function (connection) { return f(connection); };
     };

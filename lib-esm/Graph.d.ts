@@ -8,8 +8,9 @@ import { RendererInterface } from "./Renderer";
 export declare function NewGraph(): Graph;
 export declare class Graph implements GraphInterface, GraphCallbackInterface {
     private readonly controller;
-    private readonly renderer;
-    constructor(renderer: RendererInterface, controller: Controller);
+    private renderer;
+    constructor(controller: Controller);
+    setRenderer(renderer: RendererInterface): void;
     onValidateNewConnection(f: CallbackValidateNewConnection): void;
     onNewNode(f: (node: Node) => void): void;
     onRemoveNode(f: (node: Node) => void): void;

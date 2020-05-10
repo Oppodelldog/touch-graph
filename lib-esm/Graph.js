@@ -6,6 +6,7 @@ export function NewGraph() {
     var controller = new Controller();
     var graph = new Graph(controller);
     graph.setRenderer(renderer);
+    graph.initStates();
     return graph;
 }
 var Graph = /** @class */ (function () {

@@ -402,7 +402,7 @@ export class Controller extends ObservableController {
             return;
         }
         let exists = node.customClasses.findIndex((cls) => cls === className) > -1;
-        if (!exists) {
+        if (exists) {
             node.customClasses = node.customClasses.filter((cls) => cls !== className);
             this.onRemoveCustomCssClass.notify({node: node, cssClassName: className});
         }

@@ -357,7 +357,7 @@ var Controller = /** @class */ (function (_super) {
             return;
         }
         var exists = node.customClasses.findIndex(function (cls) { return cls === className; }) > -1;
-        if (!exists) {
+        if (exists) {
             node.customClasses = node.customClasses.filter(function (cls) { return cls !== className; });
             this.onRemoveCustomCssClass.notify({ node: node, cssClassName: className });
         }

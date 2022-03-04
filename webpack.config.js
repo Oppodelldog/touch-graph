@@ -12,7 +12,7 @@ module.exports = {
         library: 'touchGraph',
     },
     devServer: {
-        contentBase: './dist',
+        static: './dist',
     },
     resolve: {
         extensions: [".ts", ".js"]

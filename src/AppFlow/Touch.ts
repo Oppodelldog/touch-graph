@@ -82,11 +82,6 @@ export class MovePort extends State {
     }
 }
 
-class PinchPosition {
-    Pos1: Position;
-    Pos2: Position;
-}
-
 export class PinchZoom extends State {
     private readonly touchMoveFunc: EventCallback;
     private originalDistance: number = null;

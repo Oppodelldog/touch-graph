@@ -58,7 +58,6 @@ export class SelectOneMoreNode extends Transition {
 
 export class DeSelectNode extends Transition {
     private readonly clickFunc: EventCallback;
-    private active: boolean;
 
     constructor(name: string, controller: Controller) {
         super(name, controller);

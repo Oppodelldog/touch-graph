@@ -4,7 +4,7 @@ import Nodes from "./data/Nodes";
 import Port from "./data/Port";
 import {ConnectionUpdate, Controller, ObservableController} from "./Controller";
 import {CallbackValidateNewConnection, GraphCallbackInterface, GraphInterface} from "./GraphInterface";
-import {Renderer, RendererInterface, ViewInterface} from "./Renderer";
+import {Renderer, RendererInterface} from "./Renderer";
 import {AppFlow} from "./AppFlow";
 
 export function NewGraph(): Graph {

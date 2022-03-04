@@ -35,7 +35,6 @@ export abstract class ObservableController {
     public readonly onMoveInPort: Observer<{ node: Node, previousIndex: number, newIndex: number }> = new Observer<{ previousIndex: number, newIndex: number }>();
     public readonly onAddCustomCssClass: Observer<{ node: Node, cssClassName: string }> = new Observer<{ node: Node, cssClassName: string }>();
     public readonly onRemoveCustomCssClass: Observer<{ node: Node, cssClassName: string }> = new Observer<{ node: Node, cssClassName: string }>();
-
 }
 
 export class Controller extends ObservableController {
@@ -324,7 +323,7 @@ export class Controller extends ObservableController {
             return;
         }
 
-        let swapIndex = index;
+        let swapIndex;
         if (index + 1 < node.portsIn.length) {
             swapIndex = index + 1;
         } else {
@@ -348,7 +347,7 @@ export class Controller extends ObservableController {
             return;
         }
 
-        let swapIndex = index;
+        let swapIndex;
         if (index - 1 > 0) {
             swapIndex = index - 1;
         } else {

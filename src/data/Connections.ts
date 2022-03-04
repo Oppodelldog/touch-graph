@@ -1,5 +1,4 @@
 import {Connection} from "./Connection";
-import Node from "./Node";
 
 export class Connections {
     private connections: Array<Connection>;

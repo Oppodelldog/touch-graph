@@ -54,7 +54,6 @@ export interface RendererInterface extends RenderInterface, ViewInterface {
 }
 
 export class Renderer implements RendererInterface {
-
     private readonly canvas: HTMLElement;
     private readonly backgroundCanvas: HTMLElement;
     private readonly svgCanvas: HTMLElement;
@@ -391,7 +390,7 @@ export class Renderer implements RendererInterface {
         this.renderNode(node);
     }
 
-    private updatePortName(node: Node, port: Port) {
+    private updatePortName(node: Node, _: Port) {
         this.renderNode(node);
     }
 }

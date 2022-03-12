@@ -2,10 +2,12 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -71,9 +73,8 @@ var Controller = /** @class */ (function (_super) {
     };
     Controller.prototype.clear = function () {
         var _this = this;
-        console.log(this.nodes);
-        this.nodes.getAll().map(function (n) { return n.id; }).forEach(function (id) { return _this.removeNode(id); });
-        this.connections.getAll().map(function (c) { return c.id; }).forEach(function (id) { return _this.removeConnection(id); });
+        this.nodes.getAll().forEach(function (n) { return _this.removeNode(n.id); });
+        this.connections.getAll().forEach(function (c) { return _this.removeConnection(c.id); });
     };
     Controller.prototype.newConnectionUpdate = function (connection) {
         var update = new ConnectionUpdate();
@@ -145,15 +146,17 @@ var Controller = /** @class */ (function (_super) {
         this.onScaleChanged.notify(this.scale);
     };
     Controller.prototype.moveTo = function (x, y) {
-        console.log(x, y);
         this.centerPosition(x, y);
     };
     Controller.prototype.center = function (x, y) {
         var nodeId = this.getView().getHoveredNodeId(x, y);
         var node = this.nodes.getById(nodeId);
         if (node !== null) {
-            this.moveTo(node.x, node.y);
+            this.centerNode(node);
         }
+    };
+    Controller.prototype.centerNode = function (node) {
+        this.moveTo(node.x, node.y);
     };
     Controller.prototype.getScale = function () {
         return this.scale;
@@ -283,7 +286,7 @@ var Controller = /** @class */ (function (_super) {
         if (index === -1) {
             return;
         }
-        var swapIndex = index;
+        var swapIndex;
         if (index + 1 < node.portsIn.length) {
             swapIndex = index + 1;
         }
@@ -305,7 +308,7 @@ var Controller = /** @class */ (function (_super) {
         if (index === -1) {
             return;
         }
-        var swapIndex = index;
+        var swapIndex;
         if (index - 1 > 0) {
             swapIndex = index - 1;
         }

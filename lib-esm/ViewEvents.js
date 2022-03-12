@@ -102,7 +102,7 @@ var ViewEvents = /** @class */ (function () {
         delete this.eventCallbacks[id];
     };
     ViewEvents.prototype.isTouchDevice = function () {
-        return !!('ontouchstart' in window || navigator.msMaxTouchPoints);
+        return !!('ontouchstart' in window || navigator.maxTouchPoints);
     };
     return ViewEvents;
 }());

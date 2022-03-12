@@ -21,7 +21,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -m es6 --outDir lib-esm && webpack --display-error-details && cp ./src/Flow/states.dot lib-esm/Flow/states.dot && cp ./src/Flow/states.dot lib/Flow/states.dot",
+    "build": "tsc -m es6 --outDir lib-esm && webpack && cp ./src/Flow/states.dot lib-esm/Flow/states.dot && cp ./src/Flow/states.dot lib/Flow/states.dot",
     "start": "webpack-dev-server --open --host 0.0.0.0"
   },
   "author": "",

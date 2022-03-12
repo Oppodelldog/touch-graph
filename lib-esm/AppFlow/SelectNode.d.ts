@@ -17,7 +17,6 @@ export declare class SelectOneMoreNode extends Transition {
 }
 export declare class DeSelectNode extends Transition {
     private readonly clickFunc;
-    private active;
     constructor(name: string, controller: Controller);
     private onClick;
     activate(): void;

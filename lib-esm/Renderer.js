@@ -12,7 +12,7 @@ var Renderer = /** @class */ (function () {
         this._onClickLine = function () { return void {}; };
         this.canvas = document.getElementById(canvasElementId);
         if (this.canvas == null) {
-            throw new Error("need a div tag with id='" + canvasElementId + "'");
+            throw new Error("need a div tag with id='".concat(canvasElementId, "'"));
         }
         this.backgroundCanvas = Renderer.addDivElement("background-canvas", "div", this.canvas);
         this.htmlCanvas = Renderer.addDivElement("html-canvas", "div", this.canvas);
@@ -105,13 +105,13 @@ var Renderer = /** @class */ (function () {
     };
     Renderer.prototype.applyLayerTransforms = function () {
         var _this = this;
-        this.canvasLayers.forEach(function (layer) { return layer.style.transform = _this.canvasLayersTransforms.translate + " " + _this.canvasLayersTransforms.scale; });
+        this.canvasLayers.forEach(function (layer) { return layer.style.transform = "".concat(_this.canvasLayersTransforms.translate, " ").concat(_this.canvasLayersTransforms.scale); });
     };
     Renderer.prototype.setScale = function (scale) {
         var scaledBy = scale - this.scale;
         this.alignPositionForCenteredScaling(scaledBy);
         this.scale = scale;
-        this.canvasLayersTransforms.scale = "scale(" + scale + ")";
+        this.canvasLayersTransforms.scale = "scale(".concat(scale, ")");
         this.applyLayerTransforms();
     };
     Renderer.prototype.alignPositionForCenteredScaling = function (scaledBy) {
@@ -202,7 +202,7 @@ var Renderer = /** @class */ (function () {
         })
             .attr("stroke-width", "2")
             .attr("fill", "none")
-            .attr("d", "M" + x1 + " " + y1 + " Q" + x1 + " " + y2 + " " + x2 + " " + y2);
+            .attr("d", "M".concat(x1, " ").concat(y1, " Q").concat(x1, " ").concat(y2, " ").concat(x2, " ").concat(y2));
     };
     Renderer.prototype.updateGrabLine = function (x1, y1, x2, y2) {
         var id = "grab-line";
@@ -214,7 +214,7 @@ var Renderer = /** @class */ (function () {
             .attr("stroke", "black")
             .attr("stroke-width", "2")
             .attr("fill", "none")
-            .attr("d", "M" + x1 + " " + y1 + " Q" + x1 + " " + y2 + " " + x2 + " " + y2);
+            .attr("d", "M".concat(x1, " ").concat(y1, " Q").concat(x1, " ").concat(y2, " ").concat(x2, " ").concat(y2));
     };
     Renderer.prototype.removeGrabLine = function () {
         var id = "grab-line";
@@ -274,12 +274,12 @@ var Renderer = /** @class */ (function () {
     Renderer.prototype.setCanvasPosition = function (x, y) {
         this.canvasX = x;
         this.canvasY = y;
-        this.canvasLayersTransforms.translate = "translate(" + x + "px," + y + "px)";
+        this.canvasLayersTransforms.translate = "translate(".concat(x, "px,").concat(y, "px)");
     };
     Renderer.prototype.updateNodeCaption = function (node) {
         this.renderNode(node);
     };
-    Renderer.prototype.updatePortName = function (node, port) {
+    Renderer.prototype.updatePortName = function (node, _) {
         this.renderNode(node);
     };
     return Renderer;

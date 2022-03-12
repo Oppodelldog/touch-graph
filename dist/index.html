@@ -7,6 +7,8 @@
 <body>
 <button onclick="clearGraph()">clear</button>
 <button onclick="addNode()">add node</button>
+<button onclick="updateAllPositions()">update All Pos</button>
+
 <div id="touch-graph">
 </div>
 <script src="touch-graph.js"></script>
@@ -66,9 +68,9 @@
     graph.addConnection(n2.id, n2p1.id, n1.id, n1p1.id);
     graph.addConnection(n3.id, n3p1.id, n1.id, n1p2.id);
 
-    setInterval(()=>graph.setNodeCaption(n4.id,new Date()),2000);
+    setInterval(() => graph.setNodeCaption(n4.id, new Date()), 2000);
 
-   // graph.clear();
+    // graph.clear();
 
     // custom connection handling, only allow to connect:
     // * only between different nodes
@@ -96,8 +98,8 @@
 
         return true;
     });
-    
-    function log(s){
+
+    function log(s) {
         //console.log(s)
     }
 
@@ -132,11 +134,11 @@
         log("connection removed: " + connection.id);
     });
     graph.onUpdateConnection(function (connectionUpdate) {
-        log("connection updated: ",connectionUpdate);
+        log("connection updated: ", connectionUpdate);
     });
 
 
-    function addNode(){
+    function addNode() {
         let n2 = graph.createNode();
         n2.x = 500;
         n2.y = 230;
@@ -149,10 +151,14 @@
         n2.addOutPort(n2p2);
         graph.addNode(n2);
     }
-    function clearGraph(){
+
+    function clearGraph() {
         graph.clear();
     }
 
+    function updateAllPositions() {
+        graph.updateAllNodePositions();
+    }
 </script>
 </body>
 </html>

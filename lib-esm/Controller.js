@@ -73,8 +73,14 @@ var Controller = /** @class */ (function (_super) {
     };
     Controller.prototype.clear = function () {
         var _this = this;
-        this.nodes.getAll().forEach(function (n) { return _this.removeNode(n.id); });
-        this.connections.getAll().forEach(function (c) { return _this.removeConnection(c.id); });
+        var allNodes = this.nodes.getAll();
+        if (allNodes.length > 0) {
+            allNodes.map(function (n) { return n.id; }).forEach(function (id) { return _this.removeNode(id); });
+        }
+        var allConnections = this.connections.getAll();
+        if (allConnections.length > 0) {
+            allConnections.map(function (c) { return c.id; }).forEach(function (id) { return _this.removeConnection(id); });
+        }
     };
     Controller.prototype.newConnectionUpdate = function (connection) {
         var update = new ConnectionUpdate();

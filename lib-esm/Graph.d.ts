@@ -33,6 +33,10 @@ export declare class Graph implements GraphInterface, GraphCallbackInterface {
     }) => void): void;
     onNewConnection(f: (connection: ConnectionUpdate) => void): void;
     onUpdateConnection(f: (connection: ConnectionUpdate) => void): void;
+    onConnectionTargetNotDefined(f: ({ node: Node, port: Port }: {
+        node: any;
+        port: any;
+    }) => void): void;
     onRemoveConnection(f: (connection: Connection) => void): void;
     getNodes(): Nodes;
     getNumberOfPortConnections(portId: any): number;

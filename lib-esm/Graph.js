@@ -51,6 +51,9 @@ var Graph = /** @class */ (function () {
     Graph.prototype.onUpdateConnection = function (f) {
         this.controller.onUpdateConnection.subscribe(f);
     };
+    Graph.prototype.onConnectionTargetNotDefined = function (f) {
+        this.controller.onConnectionTargetNotDefined.subscribe(f);
+    };
     Graph.prototype.onRemoveConnection = function (f) {
         this.controller.onRemoveConnection.subscribe(f);
     };

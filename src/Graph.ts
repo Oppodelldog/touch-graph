@@ -75,6 +75,10 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
         this.controller.onUpdateConnection.subscribe(f);
     }
 
+    public onConnectionTargetNotDefined(f: ({node: Node, port: Port}) => void): void {
+        this.controller.onConnectionTargetNotDefined.subscribe(f);
+    }
+
     public onRemoveConnection(f: (connection: Connection) => void): void {
         this.controller.onRemoveConnection.subscribe(f);
     }

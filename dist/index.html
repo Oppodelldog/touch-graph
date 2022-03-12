@@ -100,7 +100,7 @@
     });
 
     function log(s) {
-        //console.log(s)
+        console.log(s)
     }
 
     graph.onNewNode(function (node) {
@@ -135,6 +135,9 @@
     });
     graph.onUpdateConnection(function (connectionUpdate) {
         log("connection updated: ", connectionUpdate);
+    });
+    graph.onConnectionTargetNotDefined(function (node, port) {
+        log("connection target not defined");
     });
 
 

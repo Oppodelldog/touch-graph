@@ -87,6 +87,7 @@ export declare class Controller extends ObservableController {
     setScale(scale: any): void;
     moveTo(x: any, y: any): void;
     center(x: any, y: any): void;
+    centerNode(node: Node): void;
     getScale(): number;
     getHoveredPortId(x: number, y: number): string;
     updateGrabLine(x: number, y: number, x2: number, y2: number): void;

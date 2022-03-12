@@ -160,7 +160,7 @@ export class Controller extends ObservableController {
         this.centerPosition(x, y)
     }
 
-    public center(x: any, y: any) {
+    public center(x: any, y: any): void {
         let nodeId = this.getView().getHoveredNodeId(x, y);
         let node = this.nodes.getById(nodeId);
         if (node !== null) {
@@ -168,7 +168,7 @@ export class Controller extends ObservableController {
         }
     }
 
-    public centerNode(node: Node) {
+    public centerNode(node: Node): void {
         this.moveTo(node.x, node.y);
     }
 

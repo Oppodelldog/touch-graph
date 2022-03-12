@@ -267,17 +267,20 @@ var ReleasePort = /** @class */ (function (_super) {
     ReleasePort.prototype.onMouseUp = function (event, touchInputPos) {
         var grabber = this.originState.grabber;
         // TODO: View logic from controller
+        var grabbedPortId = grabber.name;
+        // TODO: View logic from controller
+        var grabbedNode = this.controller.getNodeFromPortId(grabbedPortId);
+        // TODO: View logic from controller
         var targetPortId = this.controller.getHoveredPortId(touchInputPos.x, touchInputPos.y);
         if (targetPortId) {
-            var grabbedPortId = grabber.name;
-            // TODO: View logic from controller
-            var grabbedNode = this.controller.getNodeFromPortId(grabbedPortId);
-            // TODO: View logic from controller
             var targetNode = this.controller.getNodeFromPortId(targetPortId);
             var connection = this.controller.createConnection(grabbedNode.id, grabbedPortId, targetNode.id, targetPortId);
             if (this.controller.addConnection(connection)) {
                 this.controller.updateConnection(connection);
             }
+        }
+        else {
+            this.controller.abortConnectingNoTarget(grabbedNode, grabbedNode.getPortById(grabbedPortId));
         }
         this.controller.removeGrabLine();
         grabber.release();

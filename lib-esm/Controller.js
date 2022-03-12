@@ -41,6 +41,7 @@ var ObservableController = /** @class */ (function () {
         this.onScaleChanged = new Observer();
         this.onDragConnectionLine = new Observer();
         this.onRemoveConnectionLine = new Observer();
+        this.onConnectionTargetNotDefined = new Observer();
         this.onSetNodeCaption = new Observer();
         this.onSetPortName = new Observer();
         this.onRemovePort = new Observer();
@@ -119,6 +120,9 @@ var Controller = /** @class */ (function (_super) {
         this.connections.push(connection);
         this.updateConnection(connection);
         return true;
+    };
+    Controller.prototype.abortConnectingNoTarget = function (node, port) {
+        this.onConnectionTargetNotDefined.notify({ node: node, port: port });
     };
     Controller.prototype.createNode = function () {
         var node = new Node();

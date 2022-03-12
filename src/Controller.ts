@@ -28,6 +28,7 @@ export abstract class ObservableController {
     public readonly onScaleChanged: Observer<number> = new Observer<number>();
     public readonly onDragConnectionLine: Observer<{ x1: number, y1: number, x2: number, y2: number }> = new Observer<{ x1: number, y1: number, x2: number, y2: number }>();
     public readonly onRemoveConnectionLine: Observer<void> = new Observer<void>();
+    public readonly onConnectionTargetNotDefined: Observer<{ node: Node, port: Port }> = new Observer<{ node: Node, port: Port }>();
     public readonly onSetNodeCaption: Observer<Node> = new Observer<Node>();
     public readonly onSetPortName: Observer<{ node: Node, port: Port }> = new Observer<{ node: Node, port: Port }>();
     public readonly onRemovePort: Observer<Node> = new Observer<Node>();
@@ -122,6 +123,10 @@ export class Controller extends ObservableController {
         this.updateConnection(connection);
 
         return true;
+    }
+
+    public abortConnectingNoTarget(node: Node, port: Port): void {
+        this.onConnectionTargetNotDefined.notify({node, port})
     }
 
     public createNode(): Node {

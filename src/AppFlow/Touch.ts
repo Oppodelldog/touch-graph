@@ -277,19 +277,21 @@ export class ReleasePort extends Transition {
     private onMouseUp(event, touchInputPos: Position) {
         const grabber = (this.originState as MovePort).grabber;
         // TODO: View logic from controller
+        let grabbedPortId = grabber.name;
+        // TODO: View logic from controller
+        let grabbedNode = this.controller.getNodeFromPortId(grabbedPortId);
+        // TODO: View logic from controller
         let targetPortId = this.controller.getHoveredPortId(touchInputPos.x, touchInputPos.y);
         if (targetPortId) {
-
-            let grabbedPortId = grabber.name;
-            // TODO: View logic from controller
-            let grabbedNode = this.controller.getNodeFromPortId(grabbedPortId);
-            // TODO: View logic from controller
             let targetNode = this.controller.getNodeFromPortId(targetPortId);
             let connection = this.controller.createConnection(grabbedNode.id, grabbedPortId, targetNode.id, targetPortId);
             if (this.controller.addConnection(connection)) {
                 this.controller.updateConnection(connection);
             }
+        } else {
+            this.controller.abortConnectingNoTarget(grabbedNode, grabbedNode.getPortById(grabbedPortId))
         }
+
         this.controller.removeGrabLine();
         grabber.release();
         this.switchState();
@@ -353,7 +355,7 @@ export class TouchEnd extends Transition {
     }
 
     onTouchEnd(event, touchInputPos: Position) {
-        if(event.touches === undefined || event.touches.length<=1) {
+        if (event.touches === undefined || event.touches.length <= 1) {
             this.switchState();
             event.preventDefault();
         }

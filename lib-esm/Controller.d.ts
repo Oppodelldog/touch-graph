@@ -37,6 +37,10 @@ export declare abstract class ObservableController {
         y2: number;
     }>;
     readonly onRemoveConnectionLine: Observer<void>;
+    readonly onConnectionTargetNotDefined: Observer<{
+        node: Node;
+        port: Port;
+    }>;
     readonly onSetNodeCaption: Observer<Node>;
     readonly onSetPortName: Observer<{
         node: Node;
@@ -80,6 +84,7 @@ export declare class Controller extends ObservableController {
     getNumberOfPortConnections(portId: any): number;
     getPortConnections(portId: string): Connection[];
     addConnection(connection: Connection): boolean;
+    abortConnectingNoTarget(node: Node, port: Port): void;
     createNode(): Node;
     createPort(): Port;
     createConnection(nodeA: any, portA: any, nodeB: any, portB: any): Connection;

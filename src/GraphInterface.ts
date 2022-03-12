@@ -30,6 +30,8 @@ export interface GraphCallbackInterface {
     onNewConnection(f: (connectionUpdate: ConnectionUpdate) => void): void
 
     onRemoveConnection(f: (connection: Connection) => void): void
+
+    onConnectionTargetNotDefined(f: ({node: Node, port: Port}) => void): void
 }
 
 export interface GraphInterface {

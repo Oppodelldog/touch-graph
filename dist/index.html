@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, user-scalable=no">
 </head>
 <body>
+<button onclick="clearGraph()">clear</button>
+<button onclick="addNode()">add node</button>
 <div id="touch-graph">
 </div>
 <script src="touch-graph.js"></script>
@@ -132,6 +134,24 @@
     graph.onUpdateConnection(function (connectionUpdate) {
         log("connection updated: ",connectionUpdate);
     });
+
+
+    function addNode(){
+        let n2 = graph.createNode();
+        n2.x = 500;
+        n2.y = 230;
+        n2.caption = "Sub Node 1";
+        n2p1 = graph.createPort();
+        n2p1.caption = "Input";
+        n2.addInPort(n2p1);
+        n2p2 = graph.createPort();
+        n2p2.caption = "Output";
+        n2.addOutPort(n2p2);
+        graph.addNode(n2);
+    }
+    function clearGraph(){
+        graph.clear();
+    }
 
 </script>
 </body>

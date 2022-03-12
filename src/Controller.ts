@@ -63,8 +63,15 @@ export class Controller extends ObservableController {
     }
 
     public clear(): void {
-        this.nodes.getAll().forEach((n) => this.removeNode(n.id));
-        this.connections.getAll().forEach((c) => this.removeConnection(c.id));
+        let allNodes = this.nodes.getAll();
+        if (allNodes.length > 0) {
+            allNodes.map((n) => n.id).forEach((id) => this.removeNode(id));
+        }
+
+        let allConnections = this.connections.getAll();
+        if (allConnections.length > 0) {
+            allConnections.map((c) => c.id).forEach((id) => this.removeConnection(id));
+        }
     }
 
     private newConnectionUpdate(connection: Connection): ConnectionUpdate {

@@ -157,7 +157,6 @@ export class Controller extends ObservableController {
     }
 
     public moveTo(x, y): void {
-        console.log(x, y);
         this.centerPosition(x, y)
     }
 
@@ -165,8 +164,12 @@ export class Controller extends ObservableController {
         let nodeId = this.getView().getHoveredNodeId(x, y);
         let node = this.nodes.getById(nodeId);
         if (node !== null) {
-            this.moveTo(node.x, node.y);
+            this.centerNode(node);
         }
+    }
+
+    public centerNode(node: Node) {
+        this.moveTo(node.x, node.y);
     }
 
     public getScale(): number {

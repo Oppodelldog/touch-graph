@@ -4,7 +4,7 @@ export class Connection {
     public to: ConnectionEndpoint;
 
     constructor() {
-        this.id = null;
+        this.id = "";
         this.from = new ConnectionEndpoint();
         this.to = new ConnectionEndpoint();
     }

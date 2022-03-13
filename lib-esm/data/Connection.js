@@ -1,6 +1,6 @@
 var Connection = /** @class */ (function () {
     function Connection() {
-        this.id = null;
+        this.id = "";
         this.from = new ConnectionEndpoint();
         this.to = new ConnectionEndpoint();
     }

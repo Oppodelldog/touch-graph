@@ -118,6 +118,11 @@ var Controller = /** @class */ (function (_super) {
             connection.to = fromEndPoint;
         }
         this.connections.push(connection);
+        this.onNewConnection.notify({
+            connection: connection,
+            fromNode: this.getNodeById(connection.from.nodeId),
+            toNode: this.getNodeById(connection.to.nodeId)
+        });
         this.updateConnection(connection);
         return true;
     };

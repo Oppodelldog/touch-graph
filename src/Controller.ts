@@ -120,6 +120,11 @@ export class Controller extends ObservableController {
         }
 
         this.connections.push(connection);
+        this.onNewConnection.notify({
+            connection: connection,
+            fromNode: this.getNodeById(connection.from.nodeId),
+            toNode: this.getNodeById(connection.to.nodeId)
+        } as ConnectionUpdate)
         this.updateConnection(connection);
 
         return true;

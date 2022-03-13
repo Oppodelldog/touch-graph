@@ -285,7 +285,7 @@ export class ReleasePort extends Transition {
         if (targetPortId) {
             let targetNode = this.controller.getNodeFromPortId(targetPortId);
             let connection = this.controller.createConnection(grabbedNode.id, grabbedPortId, targetNode.id, targetPortId);
-            if (this.controller.addConnection(connection)) {
+            if (this.controller.requestAddConnection(connection)) {
                 this.controller.updateConnection(connection);
             }
         } else {

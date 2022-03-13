@@ -1,4 +1,4 @@
-export class Diagram {
+export class Drag {
     public grabbed: boolean;
     public grabbedAt: { x: number; y: number };
 

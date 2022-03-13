@@ -2,6 +2,7 @@ import Node from "./data/Node";
 import Nodes from "./data/Nodes";
 import Port from "./data/Port";
 import { Connection } from "./data/Connection";
+import { Connections } from "./data/Connections";
 import { ViewInterface } from "./Renderer";
 import { EventCallback, EventType } from "./ViewEvents";
 import { Observer } from "./Observer";
@@ -9,6 +10,11 @@ export declare class ConnectionUpdate {
     connection: Connection;
     fromNode: Node;
     toNode: Node;
+}
+export interface Data {
+    connections: Connections;
+    nodes: Nodes;
+    selectedNodes: string[];
 }
 export declare abstract class ObservableController {
     readonly onNewNode: Observer<Node>;
@@ -67,10 +73,9 @@ export declare abstract class ObservableController {
 }
 export declare class Controller extends ObservableController {
     onValidateNewConnection: (connection: Connection) => boolean;
-    private readonly connections;
-    private readonly nodes;
-    private readonly diagram;
-    private readonly selectedNodes;
+    onConnectionValidated: (connection: Connection) => boolean;
+    private data;
+    private readonly drag;
     private view;
     private scale;
     constructor();
@@ -83,6 +88,7 @@ export declare class Controller extends ObservableController {
     removeEventHandler(id: string): void;
     getNumberOfPortConnections(portId: any): number;
     getPortConnections(portId: string): Connection[];
+    requestAddConnection(connection: Connection): boolean;
     addConnection(connection: Connection): boolean;
     abortConnectingNoTarget(node: Node, port: Port): void;
     createNode(): Node;

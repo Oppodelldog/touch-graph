@@ -3,7 +3,7 @@ import Nodes from "./data/Nodes";
 import Port from "./data/Port";
 import {Connection} from "./data/Connection";
 import {Connections} from "./data/Connections";
-import {Diagram} from "./data/Diagram";
+import {Drag} from "./data/Drag";
 import UUID from "./UUID";
 import {ViewInterface} from "./Renderer";
 import {EventCallback, EventType} from "./ViewEvents";
@@ -13,6 +13,12 @@ export class ConnectionUpdate {
     public connection: Connection;
     public fromNode: Node;
     public toNode: Node;
+}
+
+export interface Data {
+    connections: Connections;
+    nodes: Nodes;
+    selectedNodes: string[];
 }
 
 export abstract class ObservableController {
@@ -40,20 +46,20 @@ export abstract class ObservableController {
 
 export class Controller extends ObservableController {
     public onValidateNewConnection: (connection: Connection) => boolean = () => true;
-
-    private readonly connections: Connections;
-    private readonly nodes: Nodes;
-    private readonly diagram: Diagram;
-    private readonly selectedNodes: string[];
+    public onConnectionValidated: (connection: Connection) => boolean = this.addConnection;
+    private data: Data;
+    private readonly drag: Drag;
     private view: ViewInterface;
     private scale: number = 1;
 
     constructor() {
         super();
-        this.diagram = new Diagram();
-        this.nodes = new Nodes();
-        this.connections = new Connections();
-        this.selectedNodes = [];
+        this.drag = new Drag();
+        this.data = {
+            nodes: new Nodes(),
+            connections: new Connections(),
+            selectedNodes: [],
+        } as Data;
     }
 
     public connectView(view: ViewInterface): void {
@@ -64,15 +70,17 @@ export class Controller extends ObservableController {
     }
 
     public clear(): void {
-        let allNodes = this.nodes.getAll();
+        let allNodes = this.data.nodes.getAll();
         if (allNodes.length > 0) {
             allNodes.map((n) => n.id).forEach((id) => this.removeNode(id));
         }
 
-        let allConnections = this.connections.getAll();
+        let allConnections = this.data.connections.getAll();
         if (allConnections.length > 0) {
             allConnections.map((c) => c.id).forEach((id) => this.removeConnection(id));
         }
+
+        this.data.selectedNodes = [];
     }
 
     private newConnectionUpdate(connection: Connection): ConnectionUpdate {
@@ -89,7 +97,7 @@ export class Controller extends ObservableController {
     }
 
     public getNodes(): Nodes {
-        return this.nodes;
+        return this.data.nodes;
     }
 
     public registerEventHandler(eventType: EventType, callback: EventCallback): string {
@@ -101,25 +109,29 @@ export class Controller extends ObservableController {
     }
 
     public getNumberOfPortConnections(portId): number {
-        return this.connections.getByPortId(portId).length;
+        return this.data.connections.getByPortId(portId).length;
     }
 
     public getPortConnections(portId: string): Connection[] {
-        return this.connections.getByPortId(portId)
+        return this.data.connections.getByPortId(portId)
     }
 
-    public addConnection(connection: Connection): boolean {
+    public requestAddConnection(connection: Connection): boolean {
         if (!this.onValidateNewConnection(connection)) {
             return false;
         }
 
-        if (this.nodes.isInPort(connection.from.portId)) {
+        return this.onConnectionValidated(connection)
+    }
+
+    public addConnection(connection: Connection): boolean {
+        if (this.data.nodes.isInPort(connection.from.portId)) {
             let fromEndPoint = connection.from;
             connection.from = connection.to;
             connection.to = fromEndPoint;
         }
 
-        this.connections.push(connection);
+        this.data.connections.push(connection);
         this.onNewConnection.notify({
             connection: connection,
             fromNode: this.getNodeById(connection.from.nodeId),
@@ -160,7 +172,7 @@ export class Controller extends ObservableController {
     }
 
     addNode(node: Node) {
-        this.nodes.push(node);
+        this.data.nodes.push(node);
         this.onNewNode.notify(node);
     }
 
@@ -179,7 +191,7 @@ export class Controller extends ObservableController {
 
     public center(x: any, y: any): void {
         let nodeId = this.getView().getHoveredNodeId(x, y);
-        let node = this.nodes.getById(nodeId);
+        let node = this.data.nodes.getById(nodeId);
         if (node !== null) {
             this.centerNode(node);
         }
@@ -202,7 +214,7 @@ export class Controller extends ObservableController {
     }
 
     public getNodeFromPortId(portId: string): Node {
-        return this.nodes.getNodeFromPortId(portId);
+        return this.data.nodes.getNodeFromPortId(portId);
     }
 
     public removeGrabLine(): void {
@@ -210,16 +222,16 @@ export class Controller extends ObservableController {
     }
 
     public dragStartDiagram(x: number, y: number): void {
-        this.diagram.dragStart(x, y);
+        this.drag.dragStart(x, y);
     }
 
     public dragMoveDiagram(x: number, y: number): void {
-        let dragOffset = this.diagram.getDraggedOffset(x, y);
+        let dragOffset = this.drag.getDraggedOffset(x, y);
         this.onDragCanvas.notify({x: dragOffset.x, y: dragOffset.y});
     }
 
     public dragStopDiagram(): void {
-        this.diagram.dragStop();
+        this.drag.dragStop();
     }
 
     private centerPosition(x: number, y: number): void {
@@ -239,7 +251,7 @@ export class Controller extends ObservableController {
     }
 
     public getNodeById(nodeId: string): Node | null {
-        return this.nodes.getById(nodeId);
+        return this.data.nodes.getById(nodeId);
     }
 
     public updateNodePos(node: Node): void {
@@ -252,18 +264,18 @@ export class Controller extends ObservableController {
     }
 
     public renderNodeConnections(node: Node) {
-        this.connections.getByNodeId(node.id).forEach((connection) => {
+        this.data.connections.getByNodeId(node.id).forEach((connection) => {
             this.updateConnection(connection);
         });
     }
 
     public selectNode(nodeId: string) {
-        this.selectedNodes.push(nodeId);
+        this.data.selectedNodes.push(nodeId);
         this.updateNodeSelection(nodeId);
     }
 
     private updateNodeSelection(nodeId: string) {
-        const node = this.nodes.getById(nodeId);
+        const node = this.data.nodes.getById(nodeId);
         if (node === null) {
             return;
         }
@@ -274,36 +286,36 @@ export class Controller extends ObservableController {
         if (!this.isNodeSelected(nodeId)) {
             return;
         }
-        let index = this.selectedNodes.indexOf(nodeId);
+        let index = this.data.selectedNodes.indexOf(nodeId);
         if (index >= 0) {
-            this.selectedNodes.splice(index, 1)
+            this.data.selectedNodes.splice(index, 1)
         }
 
         this.updateNodeSelection(nodeId);
     }
 
     public removeSelectedNodeKeepLatest() {
-        this.selectedNodes.splice(0, this.selectedNodes.length - 1).forEach((removedNodeIds) => this.updateNodeSelection(removedNodeIds));
+        this.data.selectedNodes.splice(0, this.data.selectedNodes.length - 1).forEach((removedNodeIds) => this.updateNodeSelection(removedNodeIds));
     }
 
     public isNodeSelected(nodeId: string) {
-        return this.selectedNodes.indexOf(nodeId) >= 0;
+        return this.data.selectedNodes.indexOf(nodeId) >= 0;
     }
 
     public removeConnection(connectionId: string) {
-        const removedConnection = this.connections.getById(connectionId);
-        this.connections.remove(connectionId);
+        const removedConnection = this.data.connections.getById(connectionId);
+        this.data.connections.remove(connectionId);
         this.onRemoveConnection.notify(removedConnection)
     }
 
     public deleteSelectedNodes() {
-        this.selectedNodes.forEach((nodeId) => this.removeNode(nodeId))
+        this.data.selectedNodes.forEach((nodeId) => this.removeNode(nodeId))
     }
 
     public removeNode(nodeId: string) {
         const node = this.getNodeById(nodeId);
-        this.nodes.remove(nodeId);
-        this.connections.getByNodeId(nodeId).forEach((connection) => {
+        this.data.nodes.remove(nodeId);
+        this.data.connections.getByNodeId(nodeId).forEach((connection) => {
             this.removeConnection(connection.id);
         });
         this.onRemoveNode.notify(node);
@@ -385,7 +397,7 @@ export class Controller extends ObservableController {
             return;
         }
         node.removePort(portId);
-        this.connections.getByPortId(portId).forEach((connection: Connection) => this.removeConnection(connection.id));
+        this.data.connections.getByPortId(portId).forEach((connection: Connection) => this.removeConnection(connection.id));
         this.onRemovePort.notify(node);
         this.renderNodeConnections(node);
     }

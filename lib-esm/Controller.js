@@ -18,7 +18,7 @@ import Nodes from "./data/Nodes";
 import Port from "./data/Port";
 import { Connection } from "./data/Connection";
 import { Connections } from "./data/Connections";
-import { Diagram } from "./data/Diagram";
+import { Drag } from "./data/Drag";
 import UUID from "./UUID";
 import { Observer } from "./Observer";
 var ConnectionUpdate = /** @class */ (function () {
@@ -58,11 +58,14 @@ var Controller = /** @class */ (function (_super) {
     function Controller() {
         var _this = _super.call(this) || this;
         _this.onValidateNewConnection = function () { return true; };
+        _this.onConnectionValidated = _this.addConnection;
         _this.scale = 1;
-        _this.diagram = new Diagram();
-        _this.nodes = new Nodes();
-        _this.connections = new Connections();
-        _this.selectedNodes = [];
+        _this.drag = new Drag();
+        _this.data = {
+            nodes: new Nodes(),
+            connections: new Connections(),
+            selectedNodes: [],
+        };
         return _this;
     }
     Controller.prototype.connectView = function (view) {
@@ -74,14 +77,15 @@ var Controller = /** @class */ (function (_super) {
     };
     Controller.prototype.clear = function () {
         var _this = this;
-        var allNodes = this.nodes.getAll();
+        var allNodes = this.data.nodes.getAll();
         if (allNodes.length > 0) {
             allNodes.map(function (n) { return n.id; }).forEach(function (id) { return _this.removeNode(id); });
         }
-        var allConnections = this.connections.getAll();
+        var allConnections = this.data.connections.getAll();
         if (allConnections.length > 0) {
             allConnections.map(function (c) { return c.id; }).forEach(function (id) { return _this.removeConnection(id); });
         }
+        this.data.selectedNodes = [];
     };
     Controller.prototype.newConnectionUpdate = function (connection) {
         var update = new ConnectionUpdate();
@@ -94,7 +98,7 @@ var Controller = /** @class */ (function (_super) {
         this.onUpdateConnection.notify(this.newConnectionUpdate(connection));
     };
     Controller.prototype.getNodes = function () {
-        return this.nodes;
+        return this.data.nodes;
     };
     Controller.prototype.registerEventHandler = function (eventType, callback) {
         return this.getView().registerEventHandler(eventType, callback);
@@ -103,21 +107,24 @@ var Controller = /** @class */ (function (_super) {
         this.getView().removeEventHandler(id);
     };
     Controller.prototype.getNumberOfPortConnections = function (portId) {
-        return this.connections.getByPortId(portId).length;
+        return this.data.connections.getByPortId(portId).length;
     };
     Controller.prototype.getPortConnections = function (portId) {
-        return this.connections.getByPortId(portId);
+        return this.data.connections.getByPortId(portId);
     };
-    Controller.prototype.addConnection = function (connection) {
+    Controller.prototype.requestAddConnection = function (connection) {
         if (!this.onValidateNewConnection(connection)) {
             return false;
         }
-        if (this.nodes.isInPort(connection.from.portId)) {
+        return this.onConnectionValidated(connection);
+    };
+    Controller.prototype.addConnection = function (connection) {
+        if (this.data.nodes.isInPort(connection.from.portId)) {
             var fromEndPoint = connection.from;
             connection.from = connection.to;
             connection.to = fromEndPoint;
         }
-        this.connections.push(connection);
+        this.data.connections.push(connection);
         this.onNewConnection.notify({
             connection: connection,
             fromNode: this.getNodeById(connection.from.nodeId),
@@ -149,7 +156,7 @@ var Controller = /** @class */ (function (_super) {
         return connection;
     };
     Controller.prototype.addNode = function (node) {
-        this.nodes.push(node);
+        this.data.nodes.push(node);
         this.onNewNode.notify(node);
     };
     Controller.prototype.setScale = function (scale) {
@@ -165,7 +172,7 @@ var Controller = /** @class */ (function (_super) {
     };
     Controller.prototype.center = function (x, y) {
         var nodeId = this.getView().getHoveredNodeId(x, y);
-        var node = this.nodes.getById(nodeId);
+        var node = this.data.nodes.getById(nodeId);
         if (node !== null) {
             this.centerNode(node);
         }
@@ -183,20 +190,20 @@ var Controller = /** @class */ (function (_super) {
         this.onDragConnectionLine.notify({ x1: x, y1: y, x2: x2, y2: y2 });
     };
     Controller.prototype.getNodeFromPortId = function (portId) {
-        return this.nodes.getNodeFromPortId(portId);
+        return this.data.nodes.getNodeFromPortId(portId);
     };
     Controller.prototype.removeGrabLine = function () {
         this.onRemoveConnectionLine.notify();
     };
     Controller.prototype.dragStartDiagram = function (x, y) {
-        this.diagram.dragStart(x, y);
+        this.drag.dragStart(x, y);
     };
     Controller.prototype.dragMoveDiagram = function (x, y) {
-        var dragOffset = this.diagram.getDraggedOffset(x, y);
+        var dragOffset = this.drag.getDraggedOffset(x, y);
         this.onDragCanvas.notify({ x: dragOffset.x, y: dragOffset.y });
     };
     Controller.prototype.dragStopDiagram = function () {
-        this.diagram.dragStop();
+        this.drag.dragStop();
     };
     Controller.prototype.centerPosition = function (x, y) {
         this.onCenterCanvas.notify({ x: x, y: y });
@@ -211,7 +218,7 @@ var Controller = /** @class */ (function (_super) {
         return this.getView().getHoveredNodeId(x, y) !== "";
     };
     Controller.prototype.getNodeById = function (nodeId) {
-        return this.nodes.getById(nodeId);
+        return this.data.nodes.getById(nodeId);
     };
     Controller.prototype.updateNodePos = function (node) {
         this.onMoveNode.notify(node);
@@ -223,16 +230,16 @@ var Controller = /** @class */ (function (_super) {
     };
     Controller.prototype.renderNodeConnections = function (node) {
         var _this = this;
-        this.connections.getByNodeId(node.id).forEach(function (connection) {
+        this.data.connections.getByNodeId(node.id).forEach(function (connection) {
             _this.updateConnection(connection);
         });
     };
     Controller.prototype.selectNode = function (nodeId) {
-        this.selectedNodes.push(nodeId);
+        this.data.selectedNodes.push(nodeId);
         this.updateNodeSelection(nodeId);
     };
     Controller.prototype.updateNodeSelection = function (nodeId) {
-        var node = this.nodes.getById(nodeId);
+        var node = this.data.nodes.getById(nodeId);
         if (node === null) {
             return;
         }
@@ -242,33 +249,33 @@ var Controller = /** @class */ (function (_super) {
         if (!this.isNodeSelected(nodeId)) {
             return;
         }
-        var index = this.selectedNodes.indexOf(nodeId);
+        var index = this.data.selectedNodes.indexOf(nodeId);
         if (index >= 0) {
-            this.selectedNodes.splice(index, 1);
+            this.data.selectedNodes.splice(index, 1);
         }
         this.updateNodeSelection(nodeId);
     };
     Controller.prototype.removeSelectedNodeKeepLatest = function () {
         var _this = this;
-        this.selectedNodes.splice(0, this.selectedNodes.length - 1).forEach(function (removedNodeIds) { return _this.updateNodeSelection(removedNodeIds); });
+        this.data.selectedNodes.splice(0, this.data.selectedNodes.length - 1).forEach(function (removedNodeIds) { return _this.updateNodeSelection(removedNodeIds); });
     };
     Controller.prototype.isNodeSelected = function (nodeId) {
-        return this.selectedNodes.indexOf(nodeId) >= 0;
+        return this.data.selectedNodes.indexOf(nodeId) >= 0;
     };
     Controller.prototype.removeConnection = function (connectionId) {
-        var removedConnection = this.connections.getById(connectionId);
-        this.connections.remove(connectionId);
+        var removedConnection = this.data.connections.getById(connectionId);
+        this.data.connections.remove(connectionId);
         this.onRemoveConnection.notify(removedConnection);
     };
     Controller.prototype.deleteSelectedNodes = function () {
         var _this = this;
-        this.selectedNodes.forEach(function (nodeId) { return _this.removeNode(nodeId); });
+        this.data.selectedNodes.forEach(function (nodeId) { return _this.removeNode(nodeId); });
     };
     Controller.prototype.removeNode = function (nodeId) {
         var _this = this;
         var node = this.getNodeById(nodeId);
-        this.nodes.remove(nodeId);
-        this.connections.getByNodeId(nodeId).forEach(function (connection) {
+        this.data.nodes.remove(nodeId);
+        this.data.connections.getByNodeId(nodeId).forEach(function (connection) {
             _this.removeConnection(connection.id);
         });
         this.onRemoveNode.notify(node);
@@ -343,7 +350,7 @@ var Controller = /** @class */ (function (_super) {
             return;
         }
         node.removePort(portId);
-        this.connections.getByPortId(portId).forEach(function (connection) { return _this.removeConnection(connection.id); });
+        this.data.connections.getByPortId(portId).forEach(function (connection) { return _this.removeConnection(connection.id); });
         this.onRemovePort.notify(node);
         this.renderNodeConnections(node);
     };

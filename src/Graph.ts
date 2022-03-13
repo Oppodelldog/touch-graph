@@ -35,6 +35,10 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
         this.controller.onValidateNewConnection = (connection) => f(connection)
     }
 
+    public onConnectionValidated(f: CallbackValidateNewConnection): void {
+        this.controller.onConnectionValidated = (connection) => f(connection)
+    }
+
     public onNewNode(f: (node: Node) => void): void {
         this.controller.onNewNode.subscribe(f)
     }
@@ -93,7 +97,7 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
 
     public addConnection(nodeA, portA, nodeB, portB): Connection | null {
         const connection = this.controller.createConnection(nodeA, portA, nodeB, portB);
-        if (this.controller.addConnection(connection)) {
+        if (this.controller.requestAddConnection(connection)) {
             return connection;
         }
 

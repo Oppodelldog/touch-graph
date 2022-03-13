@@ -12,6 +12,7 @@ export declare class Graph implements GraphInterface, GraphCallbackInterface {
     constructor(controller: Controller);
     setRenderer(renderer: RendererInterface): void;
     onValidateNewConnection(f: CallbackValidateNewConnection): void;
+    onConnectionValidated(f: CallbackValidateNewConnection): void;
     onNewNode(f: (node: Node) => void): void;
     onRemoveNode(f: (node: Node) => void): void;
     onMoveNode(f: (node: Node) => void): void;

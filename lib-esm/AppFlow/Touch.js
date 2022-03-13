@@ -275,7 +275,7 @@ var ReleasePort = /** @class */ (function (_super) {
         if (targetPortId) {
             var targetNode = this.controller.getNodeFromPortId(targetPortId);
             var connection = this.controller.createConnection(grabbedNode.id, grabbedPortId, targetNode.id, targetPortId);
-            if (this.controller.addConnection(connection)) {
+            if (this.controller.requestAddConnection(connection)) {
                 this.controller.updateConnection(connection);
             }
         }

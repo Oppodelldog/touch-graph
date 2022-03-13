@@ -4,8 +4,8 @@ export default class Node {
     public x: number;
     public y: number;
     public id: string;
-    public portsIn: any[];
-    public portsOut: any[];
+    public portsIn: Port[];
+    public portsOut: Port[];
     public type: string;
     public caption: string;
     public customClasses: string[];

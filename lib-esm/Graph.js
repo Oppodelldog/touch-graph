@@ -21,6 +21,9 @@ var Graph = /** @class */ (function () {
     Graph.prototype.onValidateNewConnection = function (f) {
         this.controller.onValidateNewConnection = function (connection) { return f(connection); };
     };
+    Graph.prototype.onConnectionValidated = function (f) {
+        this.controller.onConnectionValidated = function (connection) { return f(connection); };
+    };
     Graph.prototype.onNewNode = function (f) {
         this.controller.onNewNode.subscribe(f);
     };
@@ -65,7 +68,7 @@ var Graph = /** @class */ (function () {
     };
     Graph.prototype.addConnection = function (nodeA, portA, nodeB, portB) {
         var connection = this.controller.createConnection(nodeA, portA, nodeB, portB);
-        if (this.controller.addConnection(connection)) {
+        if (this.controller.requestAddConnection(connection)) {
             return connection;
         }
         return null;

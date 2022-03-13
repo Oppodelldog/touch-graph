@@ -3,8 +3,8 @@ export default class Node {
     x: number;
     y: number;
     id: string;
-    portsIn: any[];
-    portsOut: any[];
+    portsIn: Port[];
+    portsOut: Port[];
     type: string;
     caption: string;
     customClasses: string[];

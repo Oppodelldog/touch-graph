@@ -41,9 +41,11 @@ export declare class Graph implements GraphInterface, GraphCallbackInterface {
     getNodes(): Nodes;
     getNumberOfPortConnections(portId: any): number;
     addConnection(nodeA: any, portA: any, nodeB: any, portB: any): Connection | null;
+    removeConnection(connectionId: string): void;
     createNode(): Node;
     createPort(): Port;
     addNode(node: Node): void;
+    removeNode(nodeId: string): void;
     setScale(scale: any): void;
     moveTo(x: number, y: number): void;
     initStates(): void;

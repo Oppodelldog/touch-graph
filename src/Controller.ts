@@ -290,7 +290,7 @@ export class Controller extends ObservableController {
         return this.selectedNodes.indexOf(nodeId) >= 0;
     }
 
-    private removeConnection(connectionId: string) {
+    public removeConnection(connectionId: string) {
         const removedConnection = this.connections.getById(connectionId);
         this.connections.remove(connectionId);
         this.onRemoveConnection.notify(removedConnection)
@@ -300,7 +300,7 @@ export class Controller extends ObservableController {
         this.selectedNodes.forEach((nodeId) => this.removeNode(nodeId))
     }
 
-    private removeNode(nodeId: string) {
+    public removeNode(nodeId: string) {
         const node = this.getNodeById(nodeId);
         this.nodes.remove(nodeId);
         this.connections.getByNodeId(nodeId).forEach((connection) => {

@@ -114,9 +114,9 @@ export declare class Controller extends ObservableController {
     deselectNode(nodeId: string): void;
     removeSelectedNodeKeepLatest(): void;
     isNodeSelected(nodeId: string): boolean;
-    private removeConnection;
+    removeConnection(connectionId: string): void;
     deleteSelectedNodes(): void;
-    private removeNode;
+    removeNode(nodeId: string): void;
     setNodeCaption(nodeId: string, caption: string): void;
     setPortCaption(portId: string, caption: string): void;
     moveInPortDown(portId: string): void;

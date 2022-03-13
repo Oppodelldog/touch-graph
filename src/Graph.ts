@@ -100,6 +100,10 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
         return null;
     }
 
+    public removeConnection(connectionId: string) {
+        this.controller.removeConnection(connectionId)
+    }
+
     public createNode(): Node {
         return this.controller.createNode();
     }
@@ -110,6 +114,10 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
 
     public addNode(node: Node): void {
         this.controller.addNode(node)
+    }
+
+    public removeNode(nodeId: string): void {
+        this.controller.removeNode(nodeId)
     }
 
     public setScale(scale): void {

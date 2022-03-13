@@ -70,6 +70,9 @@ var Graph = /** @class */ (function () {
         }
         return null;
     };
+    Graph.prototype.removeConnection = function (connectionId) {
+        this.controller.removeConnection(connectionId);
+    };
     Graph.prototype.createNode = function () {
         return this.controller.createNode();
     };
@@ -78,6 +81,9 @@ var Graph = /** @class */ (function () {
     };
     Graph.prototype.addNode = function (node) {
         this.controller.addNode(node);
+    };
+    Graph.prototype.removeNode = function (nodeId) {
+        this.controller.removeNode(nodeId);
     };
     Graph.prototype.setScale = function (scale) {
         this.controller.setScale(scale);

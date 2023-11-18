@@ -8,7 +8,7 @@
     addGroups       = true
     isInteractive   = true
     requireEnvVars  = true
-    image           = "node:14.0.0"
+    image           = "node:18.15.0"
     volumes         = [
         "${PWD}:${PWD}",
         "${HOME}:${HOME}",
@@ -40,4 +40,4 @@
     template="node-template"
     entryPoint = "yarn"
     uniqueNames=true
-    ports=["8080:8080"]
+    ports=["8081:8080"]

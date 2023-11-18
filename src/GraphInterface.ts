@@ -11,7 +11,7 @@ export interface GraphCallbackInterface {
 
     onNewNode(f: (node: Node) => void): void
 
-    onNodeSelectionChanged(f: ({node: Node, selected: boolean}) => void): void
+    onNodeSelectionChanged(f: ({node, selected}) => void): void
 
     onRemoveNode(f: (node: Node) => void): void
 
@@ -21,7 +21,7 @@ export interface GraphCallbackInterface {
 
     onScaleChanged(f: (scale: number) => void): void
 
-    onDragConnectionLine(f: ({X1: x, Y1: y, X2: x2, Y2: y2}) => void): void
+    onDragConnectionLine(f: ({X1, Y1, X2, Y2}) => void): void
 
     onRemoveConnectionLine(f: () => void): void
 
@@ -31,7 +31,7 @@ export interface GraphCallbackInterface {
 
     onRemoveConnection(f: (connection: Connection) => void): void
 
-    onConnectionTargetNotDefined(f: ({node: Node, port: Port}) => void): void
+    onConnectionTargetNotDefined(f: ({node, port}) => void): void
 }
 
 export interface GraphInterface {

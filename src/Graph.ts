@@ -59,7 +59,7 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
         this.controller.onScaleChanged.subscribe(f)
     }
 
-    public onDragConnectionLine(f: ({X1: x, Y1: y, X2: x2, Y2: y2}) => void): void {
+    public onDragConnectionLine(f: ({X1, Y1, X2, Y2}) => void): void {
         this.controller.onDragConnectionLine.subscribe(f)
     }
 
@@ -67,23 +67,23 @@ export class Graph implements GraphInterface, GraphCallbackInterface {
         this.controller.onRemoveConnectionLine.subscribe(f)
     }
 
-    public onNodeSelectionChanged(f: ({node: Node, selected: boolean}) => void): void {
+    public onNodeSelectionChanged(f: ({node, selected}) => void): void {
         this.controller.onNodeSelectionChanged.subscribe(f);
     }
 
-    public onNewConnection(f: (connection: ConnectionUpdate) => void): void {
+    public onNewConnection(f: (connection) => void): void {
         this.controller.onNewConnection.subscribe(f);
     }
 
-    public onUpdateConnection(f: (connection: ConnectionUpdate) => void): void {
+    public onUpdateConnection(f: (connection) => void): void {
         this.controller.onUpdateConnection.subscribe(f);
     }
 
-    public onConnectionTargetNotDefined(f: ({node: Node, port: Port}) => void): void {
+    public onConnectionTargetNotDefined(f: ({node, port}) => void): void {
         this.controller.onConnectionTargetNotDefined.subscribe(f);
     }
 
-    public onRemoveConnection(f: (connection: Connection) => void): void {
+    public onRemoveConnection(f: (connection) => void): void {
         this.controller.onRemoveConnection.subscribe(f);
     }
 

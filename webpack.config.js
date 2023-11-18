@@ -20,8 +20,7 @@ module.exports = {
     module: {
         rules: [
             { test: /\.dot$/, use: 'raw-loader' },
-            { test: /\.ts?$/, loader: "awesome-typescript-loader" }
+            { test: /\.ts?$/, loader: "ts-loader" }
         ],
-
     },
 };
